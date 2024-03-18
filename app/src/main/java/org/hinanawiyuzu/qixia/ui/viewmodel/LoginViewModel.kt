@@ -16,7 +16,7 @@ class LoginViewModel : ViewModel() {
     val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 
     // 输入的账户名（电话号码）
-    var accountName by mutableStateOf("")
+    var accountPhone by mutableStateOf("")
         private set
 
     // 输入的账户密码
@@ -27,8 +27,8 @@ class LoginViewModel : ViewModel() {
     var hidePassword by mutableStateOf(true)
         private set
 
-    fun onAccountNameChanged(value: String) {
-        accountName = value
+    fun onAccountPhoneChanged(value: String) {
+        accountPhone = value
     }
 
     fun onAccountPasswordChanged(value: String) {
@@ -42,10 +42,10 @@ class LoginViewModel : ViewModel() {
     }
 
     fun onWechatLoginClicked() {
-
+        //TODO: 微信登录，应当要调用第三方API
     }
 
     fun onAlipayLoginClicked() {
-
+        //TODO: 支付宝登录，应当要调用第三方API
     }
 }

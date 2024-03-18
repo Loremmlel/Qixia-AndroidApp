@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">qixia</string>
     <string name="login_screen_login">登录</string>
-    <string name="login_screen_account_name_input_desc">账户名输入框</string>
+    <string name="login_screen_account_name_input_desc">电话号码输入框</string>
     <string name="login_screen_account_name_input_placeholder">电话号码</string>
     <string name="login_screen_account_password_input_placeholder">密码</string>
     <string name="login_screen_account_password_input_desc">密码输入框</string>
@@ -15,4 +15,14 @@
     <string name="login_screen_alipay_login">支付宝登录</string>
     <string name="login_screen_no_account">没有账号?</string>
     <string name="login_screen_register_new_account">注册一个新账户</string>
+    <string name="register_screen_register">注册</string>
+    <string name="register_screen_name_input_desc">姓名输入框</string>
+    <string name="register_screen_name_input_placeholder">姓名</string>
+    <string name="register_screen_phone_input_placeholder">电话号码</string>
+    <string name="register_screen_phone_input_desc">电话号码输入框</string>
+    <string name="register_screen_button_text">继续</string>
+    <string name="register_screen_agree">注册即表示您同意我们的</string>
+    <string name="register_screen_clause">条款和条件</string>
+    <string name="register_screen_and">以及</string>
+    <string name="register_screen_privacy_policy">隐私政策</string>
 </resources>

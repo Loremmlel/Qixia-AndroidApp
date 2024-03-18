@@ -61,12 +61,13 @@ fun LoginScreen(
         composable(route = "LoginScreen") {
             Column(
             ) {
-                LoginPicture(modifier.align(Alignment.CenterHorizontally))
+                LoginPicture(modifier.align(Alignment.CenterHorizontally).weight(0.33f))
                 LoginArea(
-                    accountName = loginViewModel.accountName,
+                    modifier = Modifier.weight(0.33f),
+                    accountPhone = loginViewModel.accountPhone,
                     accountPassword = loginViewModel.accountPassword,
                     hidePassword = loginViewModel.hidePassword,
-                    onAccountNameChanged = { loginViewModel.onAccountNameChanged(it) },
+                    onAccountNameChanged = { loginViewModel.onAccountPhoneChanged(it) },
                     onAccountPasswordChanged = { loginViewModel.onAccountPasswordChanged(it) },
                     onHidePasswordClicked = { loginViewModel.onHidePasswordClicked() },
                     onForgetPasswordClicked = { navController.navigate("ForgetPasswordScreen") },
@@ -119,7 +120,7 @@ fun LoginPicture(
 @Composable
 fun LoginArea(
     modifier: Modifier = Modifier,
-    accountName: String,
+    accountPhone: String,
     accountPassword: String,
     hidePassword: Boolean,
     onAccountNameChanged: (String) -> Unit,
@@ -144,7 +145,7 @@ fun LoginArea(
             )
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        // 账户名输入
+        // 账户电话输入
         TextField(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -169,7 +170,7 @@ fun LoginArea(
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Phone
             ),
-            value = accountName,
+            value = accountPhone,
             onValueChange = onAccountNameChanged
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
