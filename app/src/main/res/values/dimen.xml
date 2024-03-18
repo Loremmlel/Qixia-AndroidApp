@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="login_screen_spacer_size">10dp</dimen>
+    <dimen name="login_screen_login_button_height">70dp</dimen>
+    <dimen name="login_screen_third_party_login">100dp</dimen>
+</resources>

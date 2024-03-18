@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">qixia</string>
+    <string name="login_screen_login">登录</string>
+    <string name="login_screen_account_name_input_desc">账户名输入框</string>
+    <string name="login_screen_account_name_input_placeholder">电话号码</string>
+    <string name="login_screen_account_password_input_placeholder">密码</string>
+    <string name="login_screen_account_password_input_desc">密码输入框</string>
+    <string name="login_screen_hide_password">密码已隐藏，点击显示密码</string>
+    <string name="login_screen_display_password">密码已显示，点击隐藏密码</string>
+    <string name="login_screen_forget_password">忘记密码?</string>
+    <string name="login_screen_button_text">登录</string>
+    <string name="login_screen_or">或者</string>
+    <string name="login_screen_third_party_login">微信/支付宝登录</string>
+    <string name="login_screen_wechat_login">微信登录</string>
+    <string name="login_screen_alipay_login">支付宝登录</string>
+    <string name="login_screen_no_account">没有账号?</string>
+    <string name="login_screen_register_new_account">注册一个新账户</string>
+</resources>
