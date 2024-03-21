@@ -21,7 +21,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme

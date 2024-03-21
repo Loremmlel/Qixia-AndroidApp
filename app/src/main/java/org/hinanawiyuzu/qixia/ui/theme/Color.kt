@@ -81,3 +81,4 @@ val tertiary_color = Color(0xFF8AD4AF)
 val neutral_color = Color(0xFFB8E3CD)
 
 val light_background = Color(0xFFF1F6F7)
+val verification_input_color = Color(0xFFF0F3F6)

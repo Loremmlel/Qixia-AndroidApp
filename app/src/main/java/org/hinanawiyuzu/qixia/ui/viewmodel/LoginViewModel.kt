@@ -3,17 +3,13 @@ package org.hinanawiyuzu.qixia.ui.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.hinanawiyuzu.qixia.ui.state.LoginUiState
 
 class LoginViewModel : ViewModel() {
-    private val _loginUiState = MutableStateFlow(LoginUiState())
-
-    // asStateFlow()会将可变状态流变为只读状态流
-    val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 
     // 输入的账户名（电话号码）
     var accountPhone by mutableStateOf("")

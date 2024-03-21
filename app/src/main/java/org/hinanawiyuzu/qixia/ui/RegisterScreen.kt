@@ -10,24 +10,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,13 +29,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
+import org.hinanawiyuzu.qixia.components.CommonButton
+import org.hinanawiyuzu.qixia.components.CommonInputField
 import org.hinanawiyuzu.qixia.data.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
-import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.RegisterViewModel
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 
+/**
+ * 注册界面主函数
+ * @param modifier 修饰符
+ * @param registerViewModel 该界面的ViewModel。
+ * @param navController 默认为rememberNavController，一般无需传参
+ * @author HinanawiYuzu
+ */
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
@@ -59,16 +61,32 @@ fun RegisterScreen(
             accountPhone = registerViewModel.accountPhone,
             onAccountNameChanged = { registerViewModel.onAccountNameChanged(it) },
             onAccountPhoneChanged = { registerViewModel.onAccountPhoneChanged(it) },
-            onNextButtonClicked = {},
+            onNextButtonClicked = {
+                //TODO: 应当有连接网络并注册账户，然后再导航到主界面
+            },
             onClauseClicked = { registerViewModel.onClauseClicked() },
-            onPrivacyPolicyClicked = { registerViewModel.onPrivacyPolicyClicked()}
+            onPrivacyPolicyClicked = { registerViewModel.onPrivacyPolicyClicked() }
         )
-        ReturnToLogin()
+        ReturnToLogin(
+            onReturnToLoginClicked = {
+                //TODO: 导航到登录界面。
+            })
     }
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * 输入框和继续按钮、条款条件和隐私政策区域。
+ * @param modifier 修饰符
+ * @param accountName 用户输入的账户名，应当传入ViewModel中的属性
+ * @param accountPhone 用户输入的电话号码，应当传入ViewModel中的属性
+ * @param onAccountNameChanged 用户输入账户名的处理事件，应当传入ViewModel中的方法
+ * @param onAccountPhoneChanged 用户输入账户电话号码的处理事件，应当传入ViewModel中的方法
+ * @param onNextButtonClicked 用户点击继续的处理事件。
+ * @param onClauseClicked 用户点击条款和条件的处理事件，应当跳转到对应的页面。
+ * @param onPrivacyPolicyClicked 用户点击隐私政策的处理事件，应当跳转到对应的页面。
+ * @author HinanawiYuzu
+ */
 @Composable
 fun RegisterArea(
     modifier: Modifier = Modifier,
@@ -96,72 +114,38 @@ fun RegisterArea(
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         // 姓名输入
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            leadingIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.register_screen_name),
-                    contentDescription = stringResource(R.string.register_screen_name_input_desc)
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.register_screen_name_input_placeholder),
-                    style = TextStyle(color = Color.Gray)
-                )
-            },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.White
-            ),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Phone
-            ),
+        CommonInputField(
+            modifier = Modifier.fillMaxWidth(),
+            leadingIconRes = R.drawable.register_screen_name,
+            placeholderTextRes = R.string.register_screen_name_input_placeholder,
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
             value = accountName,
-            onValueChange = onAccountNameChanged
+            onValueChanged = onAccountNameChanged
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         // 电话号码输入
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.register_screen_phone_input_placeholder),
-                    style = TextStyle(color = Color.Gray)
-                )
-            },
-            leadingIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.login_screen_call), //有点后悔加前缀了……
-                    contentDescription = stringResource(R.string.register_screen_phone_input_desc)
-                )
-            },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.White
+        CommonInputField(
+            modifier = Modifier.fillMaxWidth(),
+            leadingIconRes = R.drawable.login_screen_call,
+            placeholderTextRes = R.string.login_screen_account_name_input_placeholder,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Next
             ),
             value = accountPhone,
-            onValueChange = onAccountPhoneChanged
+            onValueChanged = { onAccountPhoneChanged(it) },
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        Button(
-            onClick = onNextButtonClicked,
+        CommonButton(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .height(dimensionResource(id = R.dimen.login_screen_login_button_height))
                 .align(Alignment.CenterHorizontally)
                 .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = secondary_color
-            )
-        ) {
-            Text(
-                text = stringResource(R.string.register_screen_button_text),
-                style = TextStyle(fontSize = FontSize.loginScreenLoginButtonTextSize)
-            )
-        }
+            buttonTextRes = R.string.register_screen_button_text,
+            onButtonClicked = onNextButtonClicked
+        )
         Spacer(modifier = Modifier.height(15.dp))
         ClauseStatement(
             onClauseClicked = onClauseClicked,
@@ -170,6 +154,11 @@ fun RegisterArea(
     }
 }
 
+/**
+ * 注册界面的图片。
+ * @param modifier 修饰符
+ * @author HinanawiYuzu
+ */
 @Stable
 @Composable
 fun RegisterPicture(
@@ -189,6 +178,9 @@ fun RegisterPicture(
 /**
  * 条款和隐私政策声明部分
  * @param modifier 修饰符
+ * @param onClauseClicked 条款点击处理事件
+ * @param onPrivacyPolicyClicked 隐私政策点击处理事件
+ * @author HinanawiYuzu
  */
 @Composable
 fun ClauseStatement(
@@ -199,7 +191,7 @@ fun ClauseStatement(
     Row(
         modifier = modifier.fillMaxWidth(0.8f),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Center
     ) {
         Text(text = stringResource(R.string.register_screen_agree))
         TextButton(
@@ -216,7 +208,7 @@ fun ClauseStatement(
     Row(
         modifier = modifier.fillMaxWidth(0.8f),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Center
     ) {
         Text(text = stringResource(R.string.register_screen_and))
         TextButton(
@@ -232,16 +224,23 @@ fun ClauseStatement(
     }
 }
 
+/**
+ * 提示已注册用户登录的文字按钮区域
+ * @param modifier 修饰符
+ * @param onReturnToLoginClicked 返回登录界面按钮点击事件
+ * @author HinanawiYuzu
+ */
 @Composable
 fun ReturnToLogin(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onReturnToLoginClicked: () -> Unit
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = "加入过我们吗？")
-        TextButton(onClick = { /*TODO*/ }) {
+        TextButton(onClick = onReturnToLoginClicked) {
             Text(
                 text = "登录",
                 style = TextStyle(fontSize = FontSize.normalSize)

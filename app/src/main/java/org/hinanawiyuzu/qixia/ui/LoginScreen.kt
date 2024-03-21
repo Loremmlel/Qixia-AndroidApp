@@ -12,20 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +26,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,32 +36,42 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
+import org.hinanawiyuzu.qixia.components.CommonButton
+import org.hinanawiyuzu.qixia.components.CommonInputField
+import org.hinanawiyuzu.qixia.components.PasswordInputField
 import org.hinanawiyuzu.qixia.data.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.light_background
-import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.LoginViewModel
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
+/**
+ * 登录界面主函数。
+ * @param modifier 修饰符
+ * @param loginViewModel 传入LoginViewModel类。默认值为初始化的LoginViewModel
+ * @param navController 导航控制，默认为rememberNavController类型。一般无需传参
+ * @author HinanawiYuzu
+ */
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    // 登录界面状态
-    val loginUiState by loginViewModel.loginUiState.collectAsState()
     NavHost(navController = navController, startDestination = "LoginScreen") {
         composable(route = "LoginScreen") {
-            Column(
-            ) {
-                LoginPicture(modifier.align(Alignment.CenterHorizontally).weight(0.33f))
+            Column {
+                LoginPicture(
+                    modifier
+                        .align(Alignment.CenterHorizontally)
+                        .weight(0.33f)
+                )
                 LoginArea(
-                    modifier = Modifier.weight(0.33f),
+                    modifier = Modifier.weight(0.4f),
                     accountPhone = loginViewModel.accountPhone,
                     accountPassword = loginViewModel.accountPassword,
                     hidePassword = loginViewModel.hidePassword,
-                    onAccountNameChanged = { loginViewModel.onAccountPhoneChanged(it) },
+                    onAccountPhoneChanged = { loginViewModel.onAccountPhoneChanged(it) },
                     onAccountPasswordChanged = { loginViewModel.onAccountPasswordChanged(it) },
                     onHidePasswordClicked = { loginViewModel.onHidePasswordClicked() },
                     onForgetPasswordClicked = { navController.navigate("ForgetPasswordScreen") },
@@ -92,7 +96,7 @@ fun LoginScreen(
 
         }
         composable(route = "RegisterScreen") {
-
+            RegisterScreen()
         }
         composable(route = "MainScreen") {
 
@@ -100,6 +104,11 @@ fun LoginScreen(
     }
 }
 
+/**
+ * 登录界面的图片
+ * @param modifier 修饰符
+ * @author HinanawiYuzu
+ */
 @Stable
 @Composable
 fun LoginPicture(
@@ -116,14 +125,27 @@ fun LoginPicture(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+/**
+ * 用户输入框和忘记密码、登录按钮区域。
+ * @param modifier 修饰符
+ * @param accountPhone 用户输入的电话号，应当传入ViewModel的属性。
+ * @param accountPassword 用户输入的密码，应当传入ViewModel的属性。
+ * @param hidePassword 是否隐藏密码，应当传入ViewModel的属性。
+ * @param onAccountPhoneChanged 用户输入电话号的处理事件，应当传入ViewModel的方法。
+ * @param onAccountPasswordChanged 用户输入密码的处理事件，应当传入ViewModel的方法。
+ * @param onHidePasswordClicked 用户点击是否隐藏密码的处理事件，应当传入ViewModel的方法。
+ * @param onForgetPasswordClicked 用户点击忘记密码的处理事件。应当导航到恢复密码界面。
+ * @param onLoginButtonClicked 用户点击登录的处理事件，应当传入ViewModel的方法。
+ * @author HinanawiYuzu
+ */
 @Composable
 fun LoginArea(
     modifier: Modifier = Modifier,
     accountPhone: String,
     accountPassword: String,
     hidePassword: Boolean,
-    onAccountNameChanged: (String) -> Unit,
+    onAccountPhoneChanged: (String) -> Unit,
     onAccountPasswordChanged: (String) -> Unit,
     onHidePasswordClicked: () -> Unit,
     onForgetPasswordClicked: () -> Unit,
@@ -146,69 +168,26 @@ fun LoginArea(
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         // 账户电话输入
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            leadingIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.login_screen_call),
-                    contentDescription = stringResource(R.string.login_screen_account_name_input_desc)
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(
-                        R.string
-                            .login_screen_account_name_input_placeholder
-                    ),
-                    style = TextStyle(color = Color.Gray)
-                )
-            },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.White
-            ),
+        CommonInputField(
+            modifier = Modifier.fillMaxWidth(),
+            leadingIconRes = R.drawable.login_screen_call,
+            placeholderTextRes = R.string.login_screen_account_name_input_placeholder,
             keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Phone
+                keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Next
             ),
             value = accountPhone,
-            onValueChange = onAccountNameChanged
+            onValueChanged = { onAccountPhoneChanged(it) },
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         // 账户密码输入
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.login_screen_account_password_input_placeholder),
-                    style = TextStyle(color = Color.Gray)
-                )
-            },
-            leadingIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.login_screen_password),
-                    contentDescription = stringResource(R.string.login_screen_account_password_input_desc)
-                )
-            },
-            trailingIcon = {
-                IconButton(onClick = onHidePasswordClicked) {
-                    Icon(
-                        painter = painterResource(
-                            id = if (hidePassword) R.drawable.login_screen_hide_password
-                            else R.drawable.login_screen_password //TODO 显示密码的XML还没有
-                        ),
-                        contentDescription = stringResource(
-                            id = if (hidePassword) R.string.login_screen_hide_password
-                            else R.string.login_screen_display_password
-                        )
-                    )
-                }
-            },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.White
-            ),
-            value = accountPassword,
-            onValueChange = onAccountPasswordChanged
+        PasswordInputField(
+            modifier = Modifier.fillMaxWidth(),
+            password = accountPassword,
+            hidePassword = hidePassword,
+            onPasswordChanged = onAccountPasswordChanged,
+            onHidePasswordClicked = onHidePasswordClicked,
+            placeholderTextRes = R.string.login_screen_account_password_input_placeholder
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         TextButton(
@@ -222,23 +201,15 @@ fun LoginArea(
             )
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        Button(
-            onClick = onLoginButtonClicked,
+        CommonButton(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .height(dimensionResource(id = R.dimen.login_screen_login_button_height))
                 .align(Alignment.CenterHorizontally)
                 .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = secondary_color
-            )
-        ) {
-            Text(
-                text = stringResource(R.string.login_screen_button_text),
-                style = TextStyle(fontSize = FontSize.loginScreenLoginButtonTextSize)
-            )
-        }
+            buttonTextRes = R.string.login_screen_button_text,
+            onButtonClicked = onLoginButtonClicked
+        )
         Spacer(modifier = Modifier.height(15.dp))
         Row(
             modifier = Modifier
@@ -267,6 +238,13 @@ fun LoginArea(
 }
 
 
+/**
+ * 第三方登录区域。
+ * @param modifier 修饰符
+ * @param onAlipayLoginClicked 支付宝登录按钮的点击事件，应当传入ViewModel的方法
+ * @param onWechatLoginClicked 微信登录按钮的点击事件，应当传入ViewModel的方法
+ * @author HinanawiYuzu
+ */
 @Composable
 fun ThirdPartyLogin(
     modifier: Modifier = Modifier,
@@ -325,12 +303,19 @@ fun ThirdPartyLogin(
     }
 }
 
+/**
+ * 提示未注册用户注册的区域。
+ * @param modifier 修饰符
+ * @param onRegisterClicked “注册”文字点击事件，应当跳转到注册界面。
+ * @author HinanawiYuzu
+ */
 @Composable
 fun Register(
     modifier: Modifier = Modifier,
     onRegisterClicked: () -> Unit
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -346,7 +331,7 @@ fun Register(
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun LoginScreenPreview() {
     QixiaTheme {

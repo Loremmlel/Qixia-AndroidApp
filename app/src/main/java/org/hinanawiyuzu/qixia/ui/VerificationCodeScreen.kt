@@ -1,0 +1,270 @@
+package org.hinanawiyuzu.qixia.ui
+
+import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import org.hinanawiyuzu.qixia.R
+import org.hinanawiyuzu.qixia.components.CommonButton
+import org.hinanawiyuzu.qixia.data.FontSize
+import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
+import org.hinanawiyuzu.qixia.ui.theme.neutral_color
+import org.hinanawiyuzu.qixia.ui.theme.verification_input_color
+import org.hinanawiyuzu.qixia.ui.viewmodel.VerificationCodeViewModel
+import org.hinanawiyuzu.qixia.utils.advancedShadow
+
+
+@Composable
+fun VerificationCodeScreen(
+    modifier: Modifier = Modifier,
+    verificationCodeViewModel: VerificationCodeViewModel = VerificationCodeViewModel(),
+    navController: NavController = rememberNavController()
+) {
+    // 如果没有获取过设备宽度值，则获取并存储到ViewModel中。
+    if (verificationCodeViewModel.deviceWidth == 0)
+        verificationCodeViewModel.deviceWidth = LocalConfiguration.current.screenWidthDp
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TopText(
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 25.dp)
+                .weight(0.2f)
+        )
+        InputArea(
+            modifier = Modifier.weight(0.15f),
+            verificationCodeLength = 4,
+            focusRequesters = verificationCodeViewModel.focusRequesters,
+            screenWidth = verificationCodeViewModel.deviceWidth,
+            verificationCodes = verificationCodeViewModel.verificationCodes,
+            onValueChanged = { verificationCodeViewModel.onTextFieldsInput(it) },
+            onBackSpaceClicked = { verificationCodeViewModel.onBackspaceClicked(it) }
+        )
+        SendAgainText(
+            modifier = Modifier
+                .weight(0.1f)
+                .align(Alignment.End)
+                .padding(end = 20.dp),
+            onSendAgainClicked = {
+                //TODO:再次发送验证码
+            }
+        )
+        ConfirmButton(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .weight(0.8f),
+            onConfirmButtonClicked = {
+                //TODO 跳转到相应的界面。
+            }
+        )
+    }
+}
+
+@Stable
+@Composable
+fun TopText(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(R.string.verification_screen_please_input),
+            style = TextStyle(
+                fontSize = FontSize.verificationScreenLargeSize,
+                fontWeight = FontWeight.SemiBold
+            )
+        )
+        Text(
+            text = stringResource(R.string.verification_screen_already_send),
+            color = Color.DarkGray,
+            style = TextStyle(fontSize = 18.sp)
+        )
+    }
+}
+
+@Composable
+fun InputArea(
+    modifier: Modifier = Modifier,
+    verificationCodeLength: Int,
+    focusRequesters: List<FocusRequester>,
+    screenWidth: Int,
+    verificationCodes: SnapshotStateList<String>,
+    onValueChanged: (String) -> Unit,
+    onBackSpaceClicked: (Int) -> Unit
+) {
+    // Spacer的长度dp值。
+    val spacerWidth = screenWidth.toDouble() / (verificationCodeLength * 6 + 1)
+    Row(
+        modifier = modifier
+    ) {
+        repeat(verificationCodeLength) {
+            Spacer(modifier = Modifier.requiredWidth(spacerWidth.dp))
+            VerificationInputField(
+                lengthOfSide = (5 * spacerWidth).toInt(),
+                id = it,
+                focusRequester = focusRequesters[it],
+                verificationCode = verificationCodes[it],
+                onValueChanged = onValueChanged,
+                onBackSpaceClicked = onBackSpaceClicked
+            )
+        }
+        Spacer(modifier = Modifier.requiredWidth(spacerWidth.dp))
+    }
+
+}
+
+/**
+ * 一个验证码输入框。
+ *
+ * 应当传入适当的modifier来管理焦点
+ * @param modifier 修饰符
+ * @param id 自己给每个输入框分配的id。输入框在触发onValueChange函数时，会附带Id信息。
+ * @param lengthOfSide 输入框边长。一般可以获取设备Dp宽度然后进行布局。为了实现正方形的效果呢。
+ * @param focusRequester 焦点请求器。请给每个框配一个。
+ * @param verificationCode 单个输入框的验证码
+ * @param onValueChanged 常规的回调函数。没什么好说的
+ * @param onBackSpaceClicked 当点击退格时，回到上一个输入框
+ */
+@Composable
+fun VerificationInputField(
+    modifier: Modifier = Modifier,
+    id: Int,
+    lengthOfSide: Int,
+    focusRequester: FocusRequester,
+    verificationCode: String,
+    onValueChanged: (String) -> Unit,
+    onBackSpaceClicked: (Int) -> Unit,
+) {
+    var isFocused by remember { mutableStateOf(false) }
+    TextField(
+        modifier = modifier
+            .onKeyEvent {
+                // 当用户按下退格键时，进行相应的处理。
+                if (it.key == Key.Backspace) {
+                    onBackSpaceClicked(id)
+                    return@onKeyEvent true
+                }
+                false
+            }
+            .focusable()
+            .focusRequester(focusRequester)
+            .onFocusEvent {
+                isFocused = it.isFocused
+            }
+            .requiredHeight(lengthOfSide.dp)
+            .requiredWidth(lengthOfSide.dp)
+            .then(
+                if (isFocused) {
+                    // 如果这个框正在被聚焦，那么给框添加边框。
+                    Modifier.border(2.dp, neutral_color, RoundedCornerShape(percent = 20))
+                } else {
+                    Modifier
+                }
+            ),
+        shape = RoundedCornerShape(percent = 20),
+        colors = TextFieldDefaults.colors(
+            // 将输入框的下划线三种状态的颜色设置为透明，效果即隐藏下划线。
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            unfocusedContainerColor = verification_input_color,
+            focusedContainerColor = Color.White
+        ),
+        singleLine = true,
+        textStyle = TextStyle(
+            fontSize = (lengthOfSide / 2).sp,//输入的数字要和框的大小成比例……
+            textAlign = TextAlign.Center, // 居中显示
+            fontWeight = FontWeight.SemiBold,
+        ),
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+        value = verificationCode,
+        onValueChange = { onValueChanged("$it#$id") }
+    )
+
+}
+
+@Composable
+fun SendAgainText(
+    modifier: Modifier = Modifier,
+    onSendAgainClicked: () -> Unit
+) {
+    TextButton(
+        modifier = modifier,
+        onClick = { onSendAgainClicked() }
+    ) {
+        Text(
+            text = stringResource(R.string.verification_screen_send_again),
+            style = TextStyle(fontSize = 20.sp)
+        )
+    }
+}
+
+@Composable
+fun ConfirmButton(
+    modifier: Modifier = Modifier,
+    onConfirmButtonClicked: () -> Unit
+) {
+    CommonButton(
+        modifier = modifier
+            .requiredHeight(dimensionResource(id = R.dimen.login_screen_login_button_height))
+            .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
+        buttonTextRes = R.string.verification_screen_confirm_button,
+        onButtonClicked = onConfirmButtonClicked
+    )
+}
+
+@Preview
+@Composable
+fun VerificationCodeScreenPreview() {
+    QixiaTheme {
+        Column {
+            VerificationCodeScreen()
+        }
+    }
+}
