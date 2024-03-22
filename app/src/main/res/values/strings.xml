@@ -34,4 +34,7 @@
     <string name="reset_password_screen_input_confirm_new_password_placeholder">请再次输入新密码</string>
     <string name="forget_password_screen_submit_button_text">提交</string>
     <string name="reset_password_screen_submit_button_text">提交</string>
+    <string name="back">返回</string>
+    <string name="fill_personal_information_screen_age">年龄</string>
+    <string name="fill_personal_information_serial_number">智能药箱序列码(选填)</string>
 </resources>

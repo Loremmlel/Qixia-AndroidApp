@@ -62,7 +62,7 @@ fun WelcomeScreen(
 
 @Composable
 @Stable
-fun Logo(
+private fun Logo(
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -104,7 +104,7 @@ fun Logo(
 
 @Composable
 @Stable
-fun Title(
+private fun Title(
     modifier: Modifier = Modifier
 ) {
     Column(

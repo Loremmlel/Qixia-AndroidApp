@@ -3,7 +3,6 @@ package org.hinanawiyuzu.qixia.components
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,7 +20,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.sp
 import org.hinanawiyuzu.qixia.R
+import org.hinanawiyuzu.qixia.data.FontSize
 
 /**
  * 通用组件之密码输入框
@@ -50,7 +51,7 @@ fun PasswordInputField(
         placeholder = {
             Text(
                 text = stringResource(id = placeholderTextRes),
-                style = TextStyle(color = Color.Gray)
+                style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
             )
         },
         leadingIcon = {
@@ -125,7 +126,34 @@ fun CommonInputField(
         placeholder = {
             Text(
                 text = stringResource(id = placeholderTextRes),
-                style = TextStyle(color = Color.Gray)
+                style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
+            )
+        },
+        colors = colors,
+        keyboardOptions = keyboardOptions,
+        value = value,
+        onValueChange = onValueChanged
+    )
+}
+
+@Composable
+fun CommonInputFieldWithoutLeadingIcon(
+    modifier: Modifier = Modifier,
+    value: String,
+    @StringRes placeholderTextRes: Int,
+    colors: TextFieldColors = TextFieldDefaults.colors(
+        unfocusedContainerColor = Color.White
+    ),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onValueChanged: (String) -> Unit
+) {
+    TextField(
+        modifier = modifier,
+        singleLine = true,
+        placeholder = {
+            Text(
+                text = stringResource(id = placeholderTextRes),
+                style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
             )
         },
         colors = colors,

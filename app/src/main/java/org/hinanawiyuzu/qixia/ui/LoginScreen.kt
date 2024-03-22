@@ -88,7 +88,7 @@ fun LoginScreen(
                         .padding(start = 15.dp, end = 15.dp)
                         .align(Alignment.CenterHorizontally)
                 ) {
-                    Register(onRegisterClicked = { navController.navigate("RegisterScreen") })
+                    RegisterArea(onRegisterClicked = { navController.navigate("RegisterScreen") })
                 }
             }
         }
@@ -111,7 +111,7 @@ fun LoginScreen(
  */
 @Stable
 @Composable
-fun LoginPicture(
+private fun LoginPicture(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -140,7 +140,7 @@ fun LoginPicture(
  * @author HinanawiYuzu
  */
 @Composable
-fun LoginArea(
+private fun LoginArea(
     modifier: Modifier = Modifier,
     accountPhone: String,
     accountPassword: String,
@@ -246,7 +246,7 @@ fun LoginArea(
  * @author HinanawiYuzu
  */
 @Composable
-fun ThirdPartyLogin(
+private fun ThirdPartyLogin(
     modifier: Modifier = Modifier,
     onAlipayLoginClicked: () -> Unit,
     onWechatLoginClicked: () -> Unit
@@ -310,7 +310,7 @@ fun ThirdPartyLogin(
  * @author HinanawiYuzu
  */
 @Composable
-fun Register(
+private fun RegisterArea(
     modifier: Modifier = Modifier,
     onRegisterClicked: () -> Unit
 ) {

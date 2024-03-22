@@ -44,15 +44,15 @@ fun ForgetPasswordScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ForgetPasswordPicture(
+        Picture(
             modifier = modifier.weight(0.33f)
         )
-        ForgetPasswordPhoneInputArea(
+        PhoneInputArea(
             modifier = modifier.weight(0.4f),
             accountPhone = forgetPasswordViewModel.accountPhone,
             onAccountPhoneChanged = { forgetPasswordViewModel.onAccountPhoneChanged(it) }
         )
-        ForgetPasswordSubmitButton(
+        SubmitButton(
             modifier = modifier
                 .weight(0.4f)
                 .fillMaxWidth(0.8f),
@@ -63,7 +63,7 @@ fun ForgetPasswordScreen(
 
 @Stable
 @Composable
-fun ForgetPasswordPicture(
+private fun Picture(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -77,7 +77,7 @@ fun ForgetPasswordPicture(
 }
 
 @Composable
-fun ForgetPasswordPhoneInputArea(
+private fun PhoneInputArea(
     modifier: Modifier = Modifier,
     accountPhone: String,
     onAccountPhoneChanged: (String) -> Unit
@@ -115,7 +115,7 @@ fun ForgetPasswordPhoneInputArea(
 }
 
 @Composable
-fun ForgetPasswordSubmitButton(
+private fun SubmitButton(
     modifier: Modifier = Modifier,
     onSubmitButtonClicked: () -> Unit
 ) {
@@ -130,7 +130,7 @@ fun ForgetPasswordSubmitButton(
 
 @Preview
 @Composable
-fun ForgetPasswordScreenPreview() {
+private fun ForgetPasswordScreenPreview() {
     QixiaTheme {
         ForgetPasswordScreen()
     }

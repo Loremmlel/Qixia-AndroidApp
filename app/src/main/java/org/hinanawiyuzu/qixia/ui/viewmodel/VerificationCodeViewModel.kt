@@ -16,7 +16,7 @@ class VerificationCodeViewModel() : ViewModel() {
 
     // 存储验证码。其实用Char会更好，但是为什么''不行而""可以。
     // 新：同理这里也硬编码了四位
-    var verificationCodes = mutableStateListOf<String>("", "", "", "")
+    var verificationCodes = mutableStateListOf("", "", "", "")
         private set
 
     /**
@@ -57,7 +57,7 @@ class VerificationCodeViewModel() : ViewModel() {
      * @param target 目标文本框id。我加这个的目的，单纯只是考虑到退格的情况。
      * 退格时，输入的文本为空，那么焦点应当转到第一个为空的输入框的前一个输入框。
      */
-    fun requestFocusOfNoInput(target: Int) {
+    private fun requestFocusOfNoInput(target: Int) {
         if (target >= 0)
             focusRequesters[target].requestFocus()
         else {

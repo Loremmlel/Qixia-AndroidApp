@@ -88,7 +88,7 @@ fun RegisterScreen(
  * @author HinanawiYuzu
  */
 @Composable
-fun RegisterArea(
+private fun RegisterArea(
     modifier: Modifier = Modifier,
     accountName: String,
     accountPhone: String,
@@ -161,7 +161,7 @@ fun RegisterArea(
  */
 @Stable
 @Composable
-fun RegisterPicture(
+private fun RegisterPicture(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -183,7 +183,7 @@ fun RegisterPicture(
  * @author HinanawiYuzu
  */
 @Composable
-fun ClauseStatement(
+private fun ClauseStatement(
     modifier: Modifier = Modifier,
     onClauseClicked: () -> Unit,
     onPrivacyPolicyClicked: () -> Unit
@@ -231,7 +231,7 @@ fun ClauseStatement(
  * @author HinanawiYuzu
  */
 @Composable
-fun ReturnToLogin(
+private fun ReturnToLogin(
     modifier: Modifier = Modifier,
     onReturnToLoginClicked: () -> Unit
 ) {

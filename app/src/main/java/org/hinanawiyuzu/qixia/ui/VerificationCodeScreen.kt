@@ -105,7 +105,7 @@ fun VerificationCodeScreen(
 
 @Stable
 @Composable
-fun TopText(
+private fun TopText(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -129,7 +129,7 @@ fun TopText(
 }
 
 @Composable
-fun InputArea(
+private fun InputArea(
     modifier: Modifier = Modifier,
     verificationCodeLength: Int,
     focusRequesters: List<FocusRequester>,
@@ -172,7 +172,7 @@ fun InputArea(
  * @param onBackSpaceClicked 当点击退格时，回到上一个输入框
  */
 @Composable
-fun VerificationInputField(
+private fun VerificationInputField(
     modifier: Modifier = Modifier,
     id: Int,
     lengthOfSide: Int,
@@ -230,7 +230,7 @@ fun VerificationInputField(
 }
 
 @Composable
-fun SendAgainText(
+private fun SendAgainText(
     modifier: Modifier = Modifier,
     onSendAgainClicked: () -> Unit
 ) {
@@ -246,7 +246,7 @@ fun SendAgainText(
 }
 
 @Composable
-fun ConfirmButton(
+private fun ConfirmButton(
     modifier: Modifier = Modifier,
     onConfirmButtonClicked: () -> Unit
 ) {

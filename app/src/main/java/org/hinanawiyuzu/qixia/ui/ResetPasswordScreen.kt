@@ -43,10 +43,10 @@ fun ResetPasswordScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ResetPasswordPicture(
+        Picture(
             modifier = modifier.weight(0.33f)
         )
-        ResetPasswordInputArea(
+        InputArea(
             modifier = modifier.weight(0.4f),
             newPassword = resetPasswordViewModel.newPassword,
             confirmNewPassword = resetPasswordViewModel.confirmNewPassword,
@@ -57,7 +57,7 @@ fun ResetPasswordScreen(
             onHideNewPasswordClicked = { resetPasswordViewModel.onHideNewPasswordClicked() },
             onHideConfirmNewPasswordClicked = { resetPasswordViewModel.onHideConfirmNewPasswordClicked() }
         )
-        ResetPasswordSubmitButton(
+        SubmitButton(
             modifier = modifier
                 .fillMaxWidth(0.8f)
                 .weight(0.3f),
@@ -68,7 +68,7 @@ fun ResetPasswordScreen(
 
 @Stable
 @Composable
-fun ResetPasswordPicture(
+private fun Picture(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -82,7 +82,7 @@ fun ResetPasswordPicture(
 }
 
 @Composable
-fun ResetPasswordInputArea(
+private fun InputArea(
     modifier: Modifier = Modifier,
     newPassword: String,
     confirmNewPassword: String,
@@ -132,7 +132,7 @@ fun ResetPasswordInputArea(
 }
 
 @Composable
-fun ResetPasswordSubmitButton(
+private fun SubmitButton(
     modifier: Modifier = Modifier,
     onSubmitButtonClicked: () -> Unit
 ) {

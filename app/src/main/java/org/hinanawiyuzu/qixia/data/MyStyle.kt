@@ -7,7 +7,12 @@ import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 import org.hinanawiyuzu.qixia.ui.theme.tertiary_color
 
 object FontSize {
+    val tinySize = 12.sp
+    val smallSize = 14.sp
     val normalSize = 16.sp
+    val bigSize = 18.sp
+    val largeSize = 20.sp
+    val veryLargeSize = 24.sp
     val loginScreenLoginSize = 35.sp
     val loginScreenForgetPasswordSize = 20.sp
     val loginScreenOrSize = 20.sp
