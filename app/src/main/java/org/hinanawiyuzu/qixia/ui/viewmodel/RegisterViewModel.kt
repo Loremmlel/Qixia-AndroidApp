@@ -1,21 +1,24 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import org.hinanawiyuzu.qixia.ui.state.RegisterUiState
 
-class RegisterViewModel: ViewModel() {
-    var accountName by mutableStateOf("")
-        private set
-    var accountPhone by mutableStateOf("")
-        private set
+class RegisterViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(RegisterUiState())
+    val uiState = _uiState.asStateFlow()
     fun onAccountNameChanged(value: String) {
-        accountName = value
+        _uiState.update { currentState ->
+            currentState.copy(accountName = value)
+        }
     }
 
     fun onAccountPhoneChanged(value: String) {
-        accountPhone = value
+        _uiState.update { currentState ->
+            currentState.copy(accountPhone = value)
+        }
     }
 
     fun onClauseClicked() {

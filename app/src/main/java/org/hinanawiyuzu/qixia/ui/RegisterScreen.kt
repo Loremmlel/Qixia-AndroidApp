@@ -15,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -26,7 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
@@ -34,6 +36,7 @@ import org.hinanawiyuzu.qixia.components.CommonInputField
 import org.hinanawiyuzu.qixia.data.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.RegisterViewModel
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 
@@ -48,29 +51,37 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
 fun RegisterScreen(
     modifier: Modifier = Modifier,
     registerViewModel: RegisterViewModel = viewModel(),
-    navController: NavController = rememberNavController()
+    navController: NavHostController = rememberNavController()
 ) {
+    val registerUiState by registerViewModel.uiState.collectAsState()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RegisterPicture(modifier = Modifier.weight(0.33f))
+        RegisterPicture(modifier = Modifier
+            .weight(0.33f)
+            .padding(20.dp))
         RegisterArea(
             modifier = Modifier.weight(0.4f),
-            accountName = registerViewModel.accountName,
-            accountPhone = registerViewModel.accountPhone,
+            accountName = registerUiState.accountName,
+            accountPhone = registerUiState.accountPhone,
             onAccountNameChanged = { registerViewModel.onAccountNameChanged(it) },
             onAccountPhoneChanged = { registerViewModel.onAccountPhoneChanged(it) },
             onNextButtonClicked = {
-                //TODO: 应当有连接网络并注册账户，然后再导航到主界面
+                navController.navigate(
+                    route = LoginRoute.VerificationCodeScreen.name
+                )
             },
             onClauseClicked = { registerViewModel.onClauseClicked() },
             onPrivacyPolicyClicked = { registerViewModel.onPrivacyPolicyClicked() }
         )
         ReturnToLogin(
             onReturnToLoginClicked = {
-                //TODO: 导航到登录界面。
-            })
+                navController.navigate(LoginRoute.LoginScreen.name) {
+                    navController.popBackStack(LoginRoute.LoginScreen.name, inclusive = true)
+                }
+            }
+        )
     }
 }
 
@@ -109,7 +120,7 @@ private fun RegisterArea(
             modifier = Modifier.align(Alignment.Start),
             text = stringResource(R.string.register_screen_register),
             style = TextStyle(
-                fontSize = FontSize.loginScreenLoginSize
+                fontSize = FontSize.extraLargeSize
             )
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
@@ -118,7 +129,6 @@ private fun RegisterArea(
             modifier = Modifier.fillMaxWidth(),
             leadingIconRes = R.drawable.register_screen_name,
             placeholderTextRes = R.string.register_screen_name_input_placeholder,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
             value = accountName,
             onValueChanged = onAccountNameChanged
         )
@@ -239,10 +249,10 @@ private fun ReturnToLogin(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "加入过我们吗？")
+        Text(text = stringResource(R.string.register_screen_already_join_us))
         TextButton(onClick = onReturnToLoginClicked) {
             Text(
-                text = "登录",
+                text = stringResource(R.string.register_screen_login),
                 style = TextStyle(fontSize = FontSize.normalSize)
             )
         }

@@ -1,16 +1,24 @@
 package org.hinanawiyuzu.qixia.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import org.hinanawiyuzu.qixia.data.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 
@@ -42,4 +50,31 @@ fun CommonButton(
             style = TextStyle(fontSize = FontSize.loginScreenLoginButtonTextSize)
         )
     }
+}
+
+/**
+ * 去除了点击黑框特效的IconButton
+ */
+@Composable
+fun MyIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable () -> Unit
+) {
+    // 这也是源码的一部分
+    val iconButtonSizeModifier = Modifier.size(40.dp)
+    Box(
+        modifier = modifier
+            .clickable(
+                onClick = onClick,
+                enabled = enabled,
+                role = Role.Button,
+                interactionSource = interactionSource,
+                indication = null
+            )
+            .then(iconButtonSizeModifier),
+        contentAlignment = Alignment.Center
+    ) { content() }
 }

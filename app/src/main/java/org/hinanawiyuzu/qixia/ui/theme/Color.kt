@@ -1,4 +1,5 @@
 package org.hinanawiyuzu.qixia.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF006D44)
@@ -17,7 +18,7 @@ val md_theme_light_error = Color(0xFFBA1A1A)
 val md_theme_light_errorContainer = Color(0xFFFFDAD6)
 val md_theme_light_onError = Color(0xFFFFFFFF)
 val md_theme_light_onErrorContainer = Color(0xFF410002)
-val md_theme_light_background = Color(0xFFF4FFF7)
+val md_theme_light_background = Color(0xFFFFFFFF) //还是改成白色吧
 val md_theme_light_onBackground = Color(0xFF002116)
 val md_theme_light_surface = Color(0xFFF4FFF7)
 val md_theme_light_onSurface = Color(0xFF002116)

@@ -1,14 +1,17 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import org.hinanawiyuzu.qixia.ui.state.ForgetPasswordUiState
 
-class ForgetPasswordViewModel: ViewModel() {
-    var accountPhone by mutableStateOf("")
-        private set
+class ForgetPasswordViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(ForgetPasswordUiState())
+    val uiState = _uiState.asStateFlow()
     fun onAccountPhoneChanged(value: String) {
-        accountPhone = value
+        _uiState.update { currentState ->
+            currentState.copy(accountPhone = value)
+        }
     }
 }

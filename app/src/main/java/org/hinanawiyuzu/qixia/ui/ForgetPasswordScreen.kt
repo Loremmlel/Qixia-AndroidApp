@@ -13,10 +13,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,6 +34,7 @@ import org.hinanawiyuzu.qixia.components.CommonInputField
 import org.hinanawiyuzu.qixia.data.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.ForgetPasswordViewModel
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 @Composable
@@ -39,6 +43,7 @@ fun ForgetPasswordScreen(
     forgetPasswordViewModel: ForgetPasswordViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
+    val forgetPasswordUiState by forgetPasswordViewModel.uiState.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -48,15 +53,18 @@ fun ForgetPasswordScreen(
             modifier = modifier.weight(0.33f)
         )
         PhoneInputArea(
-            modifier = modifier.weight(0.4f),
-            accountPhone = forgetPasswordViewModel.accountPhone,
+            modifier = modifier.weight(0.2f),
+            accountPhone = forgetPasswordUiState.accountPhone,
             onAccountPhoneChanged = { forgetPasswordViewModel.onAccountPhoneChanged(it) }
         )
         SubmitButton(
             modifier = modifier
                 .weight(0.4f)
                 .fillMaxWidth(0.8f),
-            onSubmitButtonClicked = {}
+            onSubmitButtonClicked = {
+                //TODO: 检查账户是否存在的逻辑
+                navController.navigate(route = LoginRoute.ResetPasswordScreen.name)
+            }
         )
     }
 }
@@ -87,12 +95,12 @@ private fun PhoneInputArea(
             .fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         Text(
             modifier = Modifier.align(Alignment.Start),
-            text = "忘记密码?",
+            text = stringResource(R.string.forget_password_screen_isForget),
             style = TextStyle(
                 fontSize = FontSize.loginScreenLoginSize
             )

@@ -1,5 +1,8 @@
 package org.hinanawiyuzu.qixia.ui
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,10 +49,15 @@ import org.hinanawiyuzu.qixia.data.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.light_background
 import org.hinanawiyuzu.qixia.ui.viewmodel.LoginViewModel
+import org.hinanawiyuzu.qixia.utils.AppRoute
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 /**
  * 登录界面主函数。
+ *
+ * 同时兼管了登录、注册、验证码等页面的导航控制。
+ * 因此可能会显得代码有些冗长。但是我目前还没想到优化的方法。
  * @param modifier 修饰符
  * @param loginViewModel 传入LoginViewModel类。默认值为初始化的LoginViewModel
  * @param navController 导航控制，默认为rememberNavController类型。一般无需传参
@@ -58,25 +69,47 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+    val loginUiState by loginViewModel.uiState.collectAsState()
     NavHost(navController = navController, startDestination = "LoginScreen") {
-        composable(route = "LoginScreen") {
+        composable(
+            route = LoginRoute.LoginScreen.name,
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+            },
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+            },
+            // pop可以控制用户按返回键的动画，即NavigateUp,同Navigate区分开来。
+            popEnterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
+            }
+        ) {
             Column {
                 LoginPicture(
                     modifier
                         .align(Alignment.CenterHorizontally)
+                        .padding(20.dp)
                         .weight(0.33f)
                 )
                 LoginArea(
                     modifier = Modifier.weight(0.4f),
-                    accountPhone = loginViewModel.accountPhone,
-                    accountPassword = loginViewModel.accountPassword,
-                    hidePassword = loginViewModel.hidePassword,
+                    accountPhone = loginUiState.accountPhone,
+                    accountPassword = loginUiState.accountPassword,
+                    hidePassword = loginUiState.hidePassword,
                     onAccountPhoneChanged = { loginViewModel.onAccountPhoneChanged(it) },
                     onAccountPasswordChanged = { loginViewModel.onAccountPasswordChanged(it) },
                     onHidePasswordClicked = { loginViewModel.onHidePasswordClicked() },
-                    onForgetPasswordClicked = { navController.navigate("ForgetPasswordScreen") },
+                    onForgetPasswordClicked = {
+                        navController.navigate(LoginRoute.ForgetPasswordScreen.name)
+                    },
                     // TODO:应该加登录验证的逻辑。因为可能涉及到数据层，所以暂时不写。
-                    onLoginButtonClicked = { navController.navigate("MainScreen") },
+                    onLoginButtonClicked = {
+                        navController.navigate(AppRoute.AppScreen.name) {
+                            navController.popBackStack(
+                                route = LoginRoute.LoginScreen.name, inclusive = true
+                            )
+                        }
+                    },
                 )
                 ThirdPartyLogin(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -88,18 +121,108 @@ fun LoginScreen(
                         .padding(start = 15.dp, end = 15.dp)
                         .align(Alignment.CenterHorizontally)
                 ) {
-                    RegisterArea(onRegisterClicked = { navController.navigate("RegisterScreen") })
+                    RegisterArea(
+                        onRegisterClicked = { navController.navigate(LoginRoute.RegisterScreen.name) }
+                    )
                 }
             }
         }
-        composable(route = "ForgetPasswordScreen") {
-
+        composable(
+            route = LoginRoute.RegisterScreen.name,
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+            },
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+            },
+            popEnterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
+            },
+            popExitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
+            }
+        ) {
+            // 如果要传导航控制器，那么在被传的组件中，不能出现新的NavHost。否则会报异常。
+            RegisterScreen(navController = navController)
         }
-        composable(route = "RegisterScreen") {
-            RegisterScreen()
+        composable(
+            route = LoginRoute.VerificationCodeScreen.name,
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+            },
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+            },
+            popEnterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
+            },
+            popExitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
+            }
+        ) {
+            VerificationCodeScreen(navController = navController)
         }
-        composable(route = "MainScreen") {
-
+        composable(
+            route = LoginRoute.FillPersonalInformationScreen.name,
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+            },
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+            },
+            popEnterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
+            },
+            popExitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
+            }
+        ) {
+            FillPersonalInformationScreen(navController = navController)
+        }
+        composable(
+            route = LoginRoute.ForgetPasswordScreen.name,
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+            },
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+            },
+            popEnterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
+            },
+            popExitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
+            }
+        ) {
+            ForgetPasswordScreen(navController = navController)
+        }
+        composable(
+            route = LoginRoute.ResetPasswordScreen.name,
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+            },
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+            },
+            popEnterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
+            },
+            popExitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
+            }
+        ) {
+            ResetPasswordScreen(navController = navController)
+        }
+        composable(
+            route = AppRoute.AppScreen.name,
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+            },
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+            }
+        ) {
+            AppScreen()
         }
     }
 }
@@ -163,7 +286,7 @@ private fun LoginArea(
             modifier = Modifier.align(Alignment.Start),
             text = stringResource(R.string.login_screen_login),
             style = TextStyle(
-                fontSize = FontSize.loginScreenLoginSize
+                fontSize = FontSize.extraLargeSize
             )
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
@@ -218,17 +341,21 @@ private fun LoginArea(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
+                modifier = Modifier.weight(0.5f),
                 painter = painterResource(id = R.drawable.transverse_line),
                 contentDescription = null
             )
             Text(
+                modifier = Modifier.weight(0.2f),
                 text = stringResource(R.string.login_screen_or),
                 style = TextStyle(
                     color = Color.Gray,
                     fontSize = FontSize.loginScreenOrSize
-                )
+                ),
+                textAlign = TextAlign.Center
             )
             Image(
+                modifier = Modifier.weight(0.5f),
                 painter = painterResource(id = R.drawable.transverse_line),
                 contentDescription = null
             )

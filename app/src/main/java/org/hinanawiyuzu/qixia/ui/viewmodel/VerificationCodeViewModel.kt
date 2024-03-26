@@ -1,23 +1,16 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 
 
 class VerificationCodeViewModel() : ViewModel() {
-    // 输入框个数。本来打算这个做动态的，但是想了想，一个应用的验证码位数还能变不成？我又不是造轮子。
+    // 这种涉及到List的，好像我还不会放到UiState里……😭
     private val inputFieldNum = 4
-    var focusRequesters = List(inputFieldNum) { FocusRequester() }
-    var deviceWidth by mutableIntStateOf(0)
-
-    // 存储验证码。其实用Char会更好，但是为什么''不行而""可以。
-    // 新：同理这里也硬编码了四位
     var verificationCodes = mutableStateListOf("", "", "", "")
         private set
+    val focusRequesters = List(4) { FocusRequester() }
 
     /**
      * 适用于inputFieldNum个输入框的输入处理函数。
@@ -62,7 +55,7 @@ class VerificationCodeViewModel() : ViewModel() {
             focusRequesters[target].requestFocus()
         else {
             for (i in 0..<inputFieldNum) {
-                if (verificationCodes[i].isEmpty()){
+                if (verificationCodes[i].isEmpty()) {
                     focusRequesters[i].requestFocus()
                     break
                 }

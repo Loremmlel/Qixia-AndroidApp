@@ -2,10 +2,19 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="FillPersonalInformationScreenPreview">
+      <entry key="AnimatedBottomAppBarPreview">
         <State />
       </entry>
-      <entry key="ForgetPasswordScreenPreview">
+      <entry key="LoginScreenPreview">
+        <State />
+      </entry>
+      <entry key="MainScreenPreview">
+        <State />
+      </entry>
+      <entry key="ResetPasswordScreenPreview">
+        <State />
+      </entry>
+      <entry key="VerificationCodeScreenPreview">
         <State />
       </entry>
       <entry key="app">

@@ -32,7 +32,6 @@ fun WelcomeScreen(
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(
-        modifier = modifier,
         navController = navController,
         startDestination = "WelcomeScreen"
     ) {
@@ -48,7 +47,12 @@ fun WelcomeScreen(
             }
             LaunchedEffect(Unit) {
                 delay(1000) //暂停1s
-                navController.navigate("LoginScreen")
+                navController.navigate("LoginScreen") {
+                    // 弹出堆栈中的欢迎页面，防止用户按返回键再回到该页面。
+                    popUpTo("WelcomeScreen") {
+                        inclusive = true
+                    }
+                }
             }
         }
         composable(route = "LoginScreen") {
@@ -79,7 +83,8 @@ private fun Logo(
                 )
                 .clip(shape = RoundedCornerShape(50.dp)),
             painter = painterResource(id = R.drawable.welcome_screen_logo_bottom_rec),
-            contentDescription = null)
+            contentDescription = null
+        )
         Image(
             modifier = Modifier
                 .advancedShadow(
@@ -90,15 +95,18 @@ private fun Logo(
                 )
                 .clip(shape = RoundedCornerShape(15.dp)),
             painter = painterResource(id = R.drawable.welcome_screen_logo_middle_rec),
-            contentDescription = null)
+            contentDescription = null
+        )
         Image(
             painter = painterResource(id = R.drawable.welcome_screen_logo_cross),
-            contentDescription = null)
+            contentDescription = null
+        )
         Image(
             modifier = Modifier
                 .graphicsLayer(rotationZ = 90f),
             painter = painterResource(id = R.drawable.welcome_screen_logo_cross),
-            contentDescription = null)
+            contentDescription = null
+        )
     }
 }
 

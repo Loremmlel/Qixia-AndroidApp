@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -30,6 +32,7 @@ import org.hinanawiyuzu.qixia.components.PasswordInputField
 import org.hinanawiyuzu.qixia.data.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.ResetPasswordViewModel
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 @Composable
@@ -38,20 +41,23 @@ fun ResetPasswordScreen(
     resetPasswordViewModel: ResetPasswordViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
+    val resetPasswordUiState by resetPasswordViewModel.uiState.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Picture(
-            modifier = modifier.weight(0.33f)
+            modifier = modifier
+                .weight(0.33f)
+                .padding(20.dp)
         )
         InputArea(
             modifier = modifier.weight(0.4f),
-            newPassword = resetPasswordViewModel.newPassword,
-            confirmNewPassword = resetPasswordViewModel.confirmNewPassword,
-            hideNewPassword = resetPasswordViewModel.hideNewPassword,
-            hideConfirmNewPassword = resetPasswordViewModel.hideConfirmNewPassword,
+            newPassword = resetPasswordUiState.newPassword,
+            confirmNewPassword = resetPasswordUiState.confirmNewPassword,
+            hideNewPassword = resetPasswordUiState.hideNewPassword,
+            hideConfirmNewPassword = resetPasswordUiState.hideConfirmNewPassword,
             onNewPasswordChanged = { resetPasswordViewModel.onNewPasswordChanged(it) },
             onConfirmNewPasswordChanged = { resetPasswordViewModel.onConfirmNewPasswordChanged(it) },
             onHideNewPasswordClicked = { resetPasswordViewModel.onHideNewPasswordClicked() },
@@ -61,7 +67,14 @@ fun ResetPasswordScreen(
             modifier = modifier
                 .fillMaxWidth(0.8f)
                 .weight(0.3f),
-            onSubmitButtonClicked = {}
+            onSubmitButtonClicked = {
+                navController.navigate(route = LoginRoute.LoginScreen.name) {
+                    popUpTo(LoginRoute.LoginScreen.name) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
         )
     }
 }
@@ -105,7 +118,7 @@ private fun InputArea(
             modifier = Modifier.align(Alignment.Start),
             text = stringResource(R.string.reset_password_screen_reset_password),
             style = TextStyle(
-                fontSize = FontSize.loginScreenLoginSize
+                fontSize = FontSize.extraLargeSize
             )
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))

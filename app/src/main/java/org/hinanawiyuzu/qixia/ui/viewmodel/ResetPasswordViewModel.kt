@@ -1,29 +1,43 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import org.hinanawiyuzu.qixia.ui.state.ResetPasswordUiState
 
-class ResetPasswordViewModel: ViewModel() {
-    var newPassword by mutableStateOf("")
-        private set
-    var confirmNewPassword by mutableStateOf("")
-        private set
-    var hideNewPassword by mutableStateOf(true)
-        private set
-    var hideConfirmNewPassword by mutableStateOf(true)
-        private set
+class ResetPasswordViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(ResetPasswordUiState())
+    val uiState = _uiState.asStateFlow()
     fun onNewPasswordChanged(value: String) {
-        newPassword = value
+        _uiState.update { currentState ->
+            currentState.copy(
+                newPassword = value
+            )
+        }
     }
+
     fun onConfirmNewPasswordChanged(value: String) {
-        confirmNewPassword = value
+        _uiState.update { currentState ->
+            currentState.copy(
+                confirmNewPassword = value
+            )
+        }
     }
+
     fun onHideNewPasswordClicked() {
-        hideNewPassword = hideNewPassword == false
+        _uiState.update { currentState ->
+            currentState.copy(
+                hideNewPassword = currentState.hideNewPassword.not()
+            )
+        }
     }
+
     fun onHideConfirmNewPasswordClicked() {
-        hideConfirmNewPassword = hideConfirmNewPassword == false
+        _uiState.update { currentState ->
+            currentState.copy(
+                hideConfirmNewPassword = currentState.hideConfirmNewPassword.not()
+            )
+        }
     }
 }

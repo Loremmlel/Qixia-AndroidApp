@@ -23,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -52,6 +51,7 @@ import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.neutral_color
 import org.hinanawiyuzu.qixia.ui.theme.verification_input_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.VerificationCodeViewModel
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 
@@ -61,9 +61,7 @@ fun VerificationCodeScreen(
     verificationCodeViewModel: VerificationCodeViewModel = VerificationCodeViewModel(),
     navController: NavController = rememberNavController()
 ) {
-    // 如果没有获取过设备宽度值，则获取并存储到ViewModel中。
-    if (verificationCodeViewModel.deviceWidth == 0)
-        verificationCodeViewModel.deviceWidth = LocalConfiguration.current.screenWidthDp
+    val deviceWidth = LocalConfiguration.current.screenWidthDp
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -78,7 +76,7 @@ fun VerificationCodeScreen(
             modifier = Modifier.weight(0.15f),
             verificationCodeLength = 4,
             focusRequesters = verificationCodeViewModel.focusRequesters,
-            screenWidth = verificationCodeViewModel.deviceWidth,
+            screenWidth = deviceWidth,
             verificationCodes = verificationCodeViewModel.verificationCodes,
             onValueChanged = { verificationCodeViewModel.onTextFieldsInput(it) },
             onBackSpaceClicked = { verificationCodeViewModel.onBackspaceClicked(it) }
@@ -97,7 +95,8 @@ fun VerificationCodeScreen(
                 .fillMaxWidth(0.8f)
                 .weight(0.8f),
             onConfirmButtonClicked = {
-                //TODO 跳转到相应的界面。
+                // TODO: 这里应该有检测验证码是否正确的逻辑
+                navController.navigate(route = LoginRoute.FillPersonalInformationScreen.name)
             }
         )
     }
@@ -128,13 +127,23 @@ private fun TopText(
     }
 }
 
+/**
+ * 用户验证码输入区域
+ * @param modifier 修饰符
+ * @param verificationCodeLength 验证码长度，本来想要设计为可变的，最后还是固定值4好了。但是保留了变量和参数。
+ * @param focusRequesters 每个验证码输入框对应的焦点请求器列表。
+ * @param screenWidth 屏幕宽度dp值。按理来说完全不需要当参数传递。
+ * @param verificationCodes 显示的验证码列表。
+ * @param onValueChanged 验证码改变的回调函数
+ * @param onBackSpaceClicked 用户点击回退键的回调函数
+ */
 @Composable
 private fun InputArea(
     modifier: Modifier = Modifier,
     verificationCodeLength: Int,
     focusRequesters: List<FocusRequester>,
     screenWidth: Int,
-    verificationCodes: SnapshotStateList<String>,
+    verificationCodes: List<String>,
     onValueChanged: (String) -> Unit,
     onBackSpaceClicked: (Int) -> Unit
 ) {
@@ -254,7 +263,7 @@ private fun ConfirmButton(
         modifier = modifier
             .requiredHeight(dimensionResource(id = R.dimen.login_screen_login_button_height))
             .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
-        buttonTextRes = R.string.verification_screen_confirm_button,
+        buttonTextRes = R.string.confirm_button_text,
         onButtonClicked = onConfirmButtonClicked
     )
 }

@@ -28,7 +28,7 @@
     <string name="verification_screen_please_input">请输入验证码</string>
     <string name="verification_screen_already_send">四位验证码已发送至手机</string>
     <string name="verification_screen_send_again">没收到？再次发送</string>
-    <string name="verification_screen_confirm_button">确认</string>
+    <string name="confirm_button_text">确认</string>
     <string name="reset_password_screen_reset_password">重设密码?</string>
     <string name="reset_password_screen_input_new_password_placeholder">请输入新密码</string>
     <string name="reset_password_screen_input_confirm_new_password_placeholder">请再次输入新密码</string>
@@ -37,4 +37,9 @@
     <string name="back">返回</string>
     <string name="fill_personal_information_screen_age">年龄</string>
     <string name="fill_personal_information_serial_number">智能药箱序列码(选填)</string>
+    <string name="forget_password_screen_isForget">忘记密码?</string>
+    <string name="bottom_bar_main_icon">主界面</string>
+    <string name="bottom_bar_profile_icon">\'个人\'界面</string>
+    <string name="register_screen_already_join_us">加入过我们吗？</string>
+    <string name="register_screen_login">登录</string>
 </resources>
