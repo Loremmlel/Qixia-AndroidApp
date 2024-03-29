@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.hinanawiyuzu.qixia.ui.state.LoginUiState
 
 class LoginViewModel : ViewModel() {
 
@@ -37,3 +36,14 @@ class LoginViewModel : ViewModel() {
         //TODO: 支付宝登录，应当要调用第三方API
     }
 }
+
+/**
+ * @param accountPhone 账户电话号码
+ * @param accountPassword 账户密码
+ * @param hidePassword 是否隐藏密码
+ */
+data class LoginUiState(
+    val accountPhone: String = "",
+    val accountPassword: String = "",
+    val hidePassword: Boolean = true
+)

@@ -45,7 +45,7 @@ import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
 import org.hinanawiyuzu.qixia.components.CommonInputField
 import org.hinanawiyuzu.qixia.components.PasswordInputField
-import org.hinanawiyuzu.qixia.data.FontSize
+import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.light_background
 import org.hinanawiyuzu.qixia.ui.viewmodel.LoginViewModel
@@ -70,7 +70,7 @@ fun LoginScreen(
     navController: NavHostController = rememberNavController()
 ) {
     val loginUiState by loginViewModel.uiState.collectAsState()
-    NavHost(navController = navController, startDestination = "LoginScreen") {
+    NavHost(navController = navController, startDestination = LoginRoute.LoginScreen.name) {
         composable(
             route = LoginRoute.LoginScreen.name,
             exitTransition = {

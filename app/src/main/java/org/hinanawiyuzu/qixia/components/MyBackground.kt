@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.data.MyColor
+import org.hinanawiyuzu.qixia.ui.theme.MyColor
+import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 
 /**
  * 默认的背景样式。即横向渐变色+两个alpha值为0.3的白色圆圈。
@@ -55,5 +59,38 @@ fun CommonBackground(
             )
         }
         content(screenHeight)
+    }
+}
+
+
+/**
+ * 使用模糊效果的背景。
+ */
+@Composable
+fun BlurredBackground(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            modifier = Modifier
+                .fillMaxSize(),
+            // 2的饱和度更高，颜色更鲜艳
+            painter = painterResource(id = R.drawable.blurred_background2),
+            contentDescription = null,
+            contentScale = ContentScale.FillWidth
+        )
+    }
+}
+
+@Preview
+@Composable
+fun BackgroundPreview() {
+    QixiaTheme {
+        BlurredBackground()
     }
 }

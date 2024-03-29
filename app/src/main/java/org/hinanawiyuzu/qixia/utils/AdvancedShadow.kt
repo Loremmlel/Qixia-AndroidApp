@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 
 
 /**
- * 增强的阴影扩展函数。相比于原函数增加了透明度控制。
+ * 增强的阴影扩展函数。相比于原函数增加了透明度控制和阴影偏移。
  * @param color 阴影最深颜色，默认为黑色
  * @param alpha 阴影透明度
  * @param cornersRadius 阴影为圆角矩形。控制圆角弧度

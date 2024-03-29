@@ -47,13 +47,13 @@ import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
 import org.hinanawiyuzu.qixia.components.CommonInputFieldWithoutLeadingIcon
-import org.hinanawiyuzu.qixia.data.FontSize
-import org.hinanawiyuzu.qixia.data.MyColor.themeHorizontalGradient
+import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicalHistory
+import org.hinanawiyuzu.qixia.ui.theme.FontSize
+import org.hinanawiyuzu.qixia.ui.theme.MyColor.themeHorizontalGradient
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.neutral_color
 import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.FillPersonalInformationViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.Illness
 import org.hinanawiyuzu.qixia.utils.AppRoute
 import org.hinanawiyuzu.qixia.utils.LoginRoute
 
@@ -264,7 +264,7 @@ private fun MedicalHistory(
                     state = rememberScrollState()
                 )
         ) {
-            val size = Illness.illnesses.size
+            val size = fakeMedicalHistory.size
             repeat(size / 3) {
                 Row(
                     modifier = Modifier
@@ -276,19 +276,19 @@ private fun MedicalHistory(
                         id = it * 3,
                         isClicked = isIllnessCardClicked[it * 3],
                         onCardClicked = onIllnessCardClicked,
-                        illness = Illness.illnesses[it * 3]
+                        illness = fakeMedicalHistory[it * 3]
                     )
                     IllnessCard(
                         id = it * 3 + 1,
                         isClicked = isIllnessCardClicked[it * 3 + 1],
                         onCardClicked = onIllnessCardClicked,
-                        illness = Illness.illnesses[it * 3 + 1]
+                        illness = fakeMedicalHistory[it * 3 + 1]
                     )
                     IllnessCard(
                         id = it * 3 + 2,
                         isClicked = isIllnessCardClicked[it * 3 + 2],
                         onCardClicked = onIllnessCardClicked,
-                        illness = Illness.illnesses[it * 3 + 2]
+                        illness = fakeMedicalHistory[it * 3 + 2]
                     )
                 }
             }
@@ -303,13 +303,13 @@ private fun MedicalHistory(
                         id = (size - 2) * 3,
                         isClicked = isIllnessCardClicked[(size - 2) * 3],
                         onCardClicked = onIllnessCardClicked,
-                        illness = Illness.illnesses[size - 2]
+                        illness = fakeMedicalHistory[size - 2]
                     )
                     IllnessCard(
                         id = (size - 1) * 3,
                         isClicked = isIllnessCardClicked[(size - 1) * 3],
                         onCardClicked = onIllnessCardClicked,
-                        illness = Illness.illnesses[size - 1]
+                        illness = fakeMedicalHistory[size - 1]
                     )
                 }
             }

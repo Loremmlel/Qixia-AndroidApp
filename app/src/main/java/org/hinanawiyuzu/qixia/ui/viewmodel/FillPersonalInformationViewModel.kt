@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.hinanawiyuzu.qixia.ui.state.FillPersonalInformationUiState
+import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicalHistory
 
 class FillPersonalInformationViewModel : ViewModel() {
-    private val illnessSize = Illness.illnesses.size
+    private val illnessSize = fakeMedicalHistory.size
     private val _uiState = MutableStateFlow(FillPersonalInformationUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -73,22 +73,9 @@ class FillPersonalInformationViewModel : ViewModel() {
     }
 }
 
-// 因为还没学到数据层，所以暂时硬编码一下。
-// 还可以为以后做参考不是么。
-// 是时候掏出我的《内科学》了，以前想学医买来的书居然也算是起到作用了。
-// 我个人感觉还是慢性病才会用到这个，而慢性病多是内科病。
-object Illness {
-    val illnesses: List<String> = listOf(
-        "恶性肿瘤", "慢性肺、气管病", "结核病",
-        "心力衰竭", "高血压", "冠心病", "心律失常",
-        "胃炎", "消化性溃疡", "克罗恩病", "病毒性肝炎", "肝硬化",
-        "慢性肾炎", "慢性肾衰竭", "尿路感染",
-        "偏头痛", "脑梗死", "脑出血", "癫痫", "阿尔兹海默症",
-        "精神分裂症", "抑郁障碍", "焦虑障碍", "双相情感障碍", "强迫障碍", "睡眠障碍",
-        "贫血", "血友病",
-        "甲亢", "甲减", "尿崩症", "库欣综合征", "糖尿病", "肥胖症",
-        "干眼病", "青光眼",
-        "类风湿关节炎", "系统性红斑狼疮", "干燥综合征", "痛风",
-        "其它", "无"
-    )
-}
+data class FillPersonalInformationUiState(
+    val maleSelected: Boolean = true,
+    val femaleSelected: Boolean = false,
+    val age: String = "",
+    val serialNumber: String = ""
+)

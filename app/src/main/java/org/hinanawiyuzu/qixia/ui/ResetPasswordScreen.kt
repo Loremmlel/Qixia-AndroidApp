@@ -29,7 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
 import org.hinanawiyuzu.qixia.components.PasswordInputField
-import org.hinanawiyuzu.qixia.data.FontSize
+import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.ResetPasswordViewModel
 import org.hinanawiyuzu.qixia.utils.LoginRoute
@@ -58,10 +58,11 @@ fun ResetPasswordScreen(
             confirmNewPassword = resetPasswordUiState.confirmNewPassword,
             hideNewPassword = resetPasswordUiState.hideNewPassword,
             hideConfirmNewPassword = resetPasswordUiState.hideConfirmNewPassword,
-            onNewPasswordChanged = { resetPasswordViewModel.onNewPasswordChanged(it) },
-            onConfirmNewPasswordChanged = { resetPasswordViewModel.onConfirmNewPasswordChanged(it) },
-            onHideNewPasswordClicked = { resetPasswordViewModel.onHideNewPasswordClicked() },
-            onHideConfirmNewPasswordClicked = { resetPasswordViewModel.onHideConfirmNewPasswordClicked() }
+            onNewPasswordChanged = resetPasswordViewModel::onNewPasswordChanged,
+            onConfirmNewPasswordChanged = resetPasswordViewModel::onConfirmNewPasswordChanged,
+            onHideNewPasswordClicked = resetPasswordViewModel::onHideNewPasswordClicked,
+            onHideConfirmNewPasswordClicked =
+            resetPasswordViewModel::onHideConfirmNewPasswordClicked
         )
         SubmitButton(
             modifier = modifier

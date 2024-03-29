@@ -83,3 +83,4 @@ val neutral_color = Color(0xFFB8E3CD)
 
 val light_background = Color(0xFFF1F6F7)
 val verification_input_color = Color(0xFFF0F3F6)
+val font_deep_green = Color(0xFF053B20)

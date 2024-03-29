@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.data.FontSize
+import org.hinanawiyuzu.qixia.ui.theme.FontSize
 
 /**
  * 通用组件之密码输入框

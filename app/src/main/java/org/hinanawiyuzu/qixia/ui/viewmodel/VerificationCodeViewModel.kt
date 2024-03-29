@@ -5,7 +5,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 
 
-class VerificationCodeViewModel() : ViewModel() {
+class VerificationCodeViewModel : ViewModel() {
     // 这种涉及到List的，好像我还不会放到UiState里……😭
     private val inputFieldNum = 4
     var verificationCodes = mutableStateListOf("", "", "", "")

@@ -5,13 +5,13 @@
       <entry key="AnimatedBottomAppBarPreview">
         <State />
       </entry>
-      <entry key="LoginScreenPreview">
+      <entry key="AppScreenPreview">
         <State />
       </entry>
       <entry key="MainScreenPreview">
         <State />
       </entry>
-      <entry key="ResetPasswordScreenPreview">
+      <entry key="RemindScreenPreview">
         <State />
       </entry>
       <entry key="VerificationCodeScreenPreview">

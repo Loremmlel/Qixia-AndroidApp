@@ -35,7 +35,7 @@ fun WelcomeScreen(
         navController = navController,
         startDestination = "WelcomeScreen"
     ) {
-        // TODO: 这里应当加验证是否登录的逻辑。如果登录，直接跳转到MainScreen。
+        //TODO: 这里应当加验证是否登录的逻辑。如果已登录，直接跳转到MainScreen。
         composable(route = "WelcomeScreen") {
             Column(
                 modifier = modifier.fillMaxSize(),

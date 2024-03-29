@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.hinanawiyuzu.qixia.ui.state.RegisterUiState
 
 class RegisterViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterUiState())
@@ -29,3 +28,8 @@ class RegisterViewModel : ViewModel() {
         //TODO: 当隐私政策被点击时，进入隐私政策浏览界面
     }
 }
+
+data class RegisterUiState(
+    val accountName: String = "",
+    val accountPhone: String = "",
+)

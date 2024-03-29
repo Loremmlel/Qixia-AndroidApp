@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.hinanawiyuzu.qixia.ui.state.ResetPasswordUiState
 
 class ResetPasswordViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ResetPasswordUiState())
@@ -41,3 +40,10 @@ class ResetPasswordViewModel : ViewModel() {
         }
     }
 }
+
+data class ResetPasswordUiState(
+    val newPassword: String = "",
+    val confirmNewPassword: String = "",
+    val hideNewPassword: Boolean = true,
+    val hideConfirmNewPassword: Boolean = true
+)

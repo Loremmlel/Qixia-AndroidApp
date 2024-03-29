@@ -11,7 +11,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +20,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,25 +34,21 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.hinanawiyuzu.qixia.R
+import org.hinanawiyuzu.qixia.components.BlurredBackground
 import org.hinanawiyuzu.qixia.components.MyIconButton
-import org.hinanawiyuzu.qixia.data.MyColor.bottomAnimatedCircleGradient
+import org.hinanawiyuzu.qixia.ui.theme.MyColor.bottomAnimatedCircleGradient
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
-import org.hinanawiyuzu.qixia.ui.theme.primary_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.AppViewModel
 import org.hinanawiyuzu.qixia.utils.AppScreenState
-import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 // 底部导航栏动画持续时间(ms)
 const val animationTime: Int = 300
@@ -68,153 +58,42 @@ fun AppScreen(
     modifier: Modifier = Modifier,
     appViewModel: AppViewModel = viewModel()
 ) {
-    when (appViewModel.appScreenState) {
-        AppScreenState.Main -> {
-            MainScreen(
-                modifier = modifier,
-                bottomBar = {
-                    BottomAppBar(
-                        onBottomBarItemClicked = { appViewModel.onBottomBarItemClicked(it) },
-                        barIconSelectedStatements = appViewModel.appScreenState
-                    )
-                }
-            )
-        }
-
-        AppScreenState.Box -> {
-            Scaffold(
-                bottomBar = {
-                    BottomAppBar(
-                        onBottomBarItemClicked = { appViewModel.onBottomBarItemClicked(it) },
-                        barIconSelectedStatements = appViewModel.appScreenState
-                    )
-                }
-            ) { innerPadding ->
-                Column(
-                    modifier.padding(innerPadding)
-                ) {
-
-                }
-            }
-        }
-
-        AppScreenState.Remind -> {
-            Scaffold(
-                bottomBar = {
-                    BottomAppBar(
-                        onBottomBarItemClicked = { appViewModel.onBottomBarItemClicked(it) },
-                        barIconSelectedStatements = appViewModel.appScreenState
-                    )
-                }
-            ) { innerPadding ->
-                Column(
-                    modifier.padding(innerPadding)
-                ) {
-
-                }
-            }
-        }
-
-        AppScreenState.Record -> {
-
-        }
-
-        AppScreenState.Profile -> {
-            ProfileScreen(
-                modifier = modifier,
-                bottomBar = {
-                    BottomAppBar(
-                        onBottomBarItemClicked = { appViewModel.onBottomBarItemClicked(it) },
-                        barIconSelectedStatements = appViewModel.appScreenState
-                    )
-                }
-            )
-        }
-    }
-}
-
-@Composable
-fun BottomAppBar(
-    modifier: Modifier = Modifier,
-    onBottomBarItemClicked: (Int) -> Unit,
-    barIconSelectedStatements: AppScreenState
-) {
-    NavigationBar(
-        modifier = modifier
-            .advancedShadow(
-                alpha = 0.4f,
-                shadowBlurRadius = 6.dp,
-                offsetY = (-4).dp
-            )
+    val screenHeightDp = LocalConfiguration.current.screenHeightDp
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            NavigationBarItem(
-                selected = barIconSelectedStatements == AppScreenState.Main,
-                onClick = { onBottomBarItemClicked(0) },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bottom_app_bar_home),
-                        contentDescription = stringResource(R.string.bottom_bar_main_icon),
-                        tint = primary_color
-                    )
-                },
-                interactionSource = MutableInteractionSource()
-            )
-            NavigationBarItem(
-                selected = barIconSelectedStatements == AppScreenState.Box,
-                onClick = { onBottomBarItemClicked(1) },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bottom_app_bar_search),
-                        contentDescription = "", //TODO: 这个应用要搜索干嘛？
-                        tint = primary_color
-                    )
-                }
-            )
-            NavigationBarItem(
-                selected = barIconSelectedStatements == AppScreenState.Remind,
-                onClick = { onBottomBarItemClicked(2) },
-                icon = {
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.bottom_app_bar_pill_back),
-                            contentDescription = "", //TODO: 这个💊是干嘛的？
-                            tint = primary_color
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.bottom_app_bar_pill_front),
-                            contentDescription = "",
-                            tint = Color.White
-                        )
-                    }
-                }
-            )
-            NavigationBarItem(
-                selected = barIconSelectedStatements == AppScreenState.Profile,
-                onClick = { onBottomBarItemClicked(3) },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bottom_app_bar_profile),
-                        contentDescription = stringResource(R.string.bottom_bar_profile_icon),
-                        tint = primary_color
-                    )
-                }
-            )
+        BlurredBackground()
+        when (appViewModel.appScreenState) {
+            AppScreenState.Main -> {}
+            AppScreenState.Box -> {}
+            AppScreenState.Remind -> {
+                RemindScreen(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        // 正好覆盖到下方导航栏
+                        // 按比例布局的好处（不是）
+                        // 唉卧槽，那我干什么整screenWidthDp,直接fillMaxHeight,fillMaxWidth + 比例不就好了吗
+                        // 唉，我真傻，真的。
+                        .fillMaxHeight(0.9167f)
+                )
+            }
+
+            AppScreenState.Record -> {}
+            AppScreenState.Profile -> {}
         }
+        AnimatedBottomAppBar(
+            onBottomBarItemClicked = appViewModel::onBottomBarItemClicked,
+            appScreenState = appViewModel.appScreenState
+        )
     }
 }
 
 @Composable
 private fun AnimatedBottomAppBar(
     modifier: Modifier = Modifier,
-    appScreenState: AppScreenState = AppScreenState.Main,
+    appScreenState: AppScreenState,
     onBottomBarItemClicked: (Int) -> Unit
 ) {
     val screenWidthPx = Resources.getSystem().displayMetrics.widthPixels
@@ -246,7 +125,7 @@ private fun AnimatedBottomAppBar(
                     .height((screenHeightDp / 12).dp),
                 painter = painterResource(id = it),
                 contentDescription = null,
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillHeight
             )
         }
         AnimatedCircle(
@@ -349,8 +228,7 @@ private fun BottomIconButtonItem(
     MyIconButton(
         modifier = modifier
             .fillMaxHeight()
-            .offset(y = 5.dp)
-            .zIndex(3f),
+            .offset(y = 5.dp),
         onClick = { onBottomBarItemClicked(id) },
     ) {
         Column(
@@ -384,7 +262,7 @@ private fun BottomIconButtonItem(
                                 .blur(5.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
                             painter = painterResource(id = shadowIconRes),
                             contentDescription = null,
-                            alpha = 0.4f
+                            alpha = 0.6f
                         )
                     }
                 }
@@ -460,17 +338,8 @@ fun AnimatedCircle(
 
 @Preview
 @Composable
-fun AnimatedBottomAppBarPreview() {
+fun AppScreenPreview() {
     QixiaTheme {
-        val appViewModel: AppViewModel = viewModel()
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            AnimatedBottomAppBar(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                appScreenState = appViewModel.appScreenState,
-                onBottomBarItemClicked = appViewModel::onBottomBarItemClicked
-            )
-        }
+        AppScreen()
     }
 }

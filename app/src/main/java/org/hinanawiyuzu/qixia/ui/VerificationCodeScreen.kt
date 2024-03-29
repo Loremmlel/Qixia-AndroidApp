@@ -42,11 +42,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
-import org.hinanawiyuzu.qixia.data.FontSize
+import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.neutral_color
 import org.hinanawiyuzu.qixia.ui.theme.verification_input_color
@@ -58,7 +59,7 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
 @Composable
 fun VerificationCodeScreen(
     modifier: Modifier = Modifier,
-    verificationCodeViewModel: VerificationCodeViewModel = VerificationCodeViewModel(),
+    verificationCodeViewModel: VerificationCodeViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
     val deviceWidth = LocalConfiguration.current.screenWidthDp
@@ -78,8 +79,8 @@ fun VerificationCodeScreen(
             focusRequesters = verificationCodeViewModel.focusRequesters,
             screenWidth = deviceWidth,
             verificationCodes = verificationCodeViewModel.verificationCodes,
-            onValueChanged = { verificationCodeViewModel.onTextFieldsInput(it) },
-            onBackSpaceClicked = { verificationCodeViewModel.onBackspaceClicked(it) }
+            onValueChanged = verificationCodeViewModel::onTextFieldsInput,
+            onBackSpaceClicked = verificationCodeViewModel::onBackspaceClicked
         )
         SendAgainText(
             modifier = Modifier
