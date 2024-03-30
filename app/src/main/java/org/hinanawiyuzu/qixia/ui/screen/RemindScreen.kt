@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -66,7 +66,7 @@ import java.time.LocalDateTime
 @Composable
 fun RemindScreen(
     modifier: Modifier = Modifier,
-    remindViewModel: RemindViewModel = viewModel()
+    viewModel: RemindViewModel = viewModel()
 ) {
     val currentDateTime = LocalDateTime.now()
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -86,7 +86,7 @@ fun RemindScreen(
                 .requiredWidth(screenWidth.dp)
                 .height(1.dp)
                 .background(Color.LightGray)
-        ){}
+        ) {}
         Calendar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -118,6 +118,13 @@ fun RemindScreen(
     }
 }
 
+/**
+ * 顶部导航栏
+ * @param modifier 修饰符
+ * @param onMenuClicked 左侧的菜单按钮点击事件
+ * @param onAddClicked 右上角有个加号，不知道干嘛的
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
@@ -152,6 +159,13 @@ private fun TopBar(
     }
 }
 
+/**
+ * 显示日期的部分。
+ *
+ * 其实还没有完工，例如切换日期看昨天的情况。但是这涉及到数据层，我要怎么操作目前还没头绪 2024-3-30.
+ * @param currentDateTime 当前时间
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun Calendar(
     modifier: Modifier = Modifier,
@@ -192,6 +206,12 @@ private fun Calendar(
     }
 }
 
+/**
+ * 单个日期卡片。
+ * @param isSelected 是否被选择
+ * @param dateTime 该卡片显示的时间
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun CalendarItem(
     modifier: Modifier = Modifier,
@@ -241,6 +261,15 @@ private fun CalendarItem(
     }
 }
 
+/**
+ * 本页面主体部分，提醒用户吃药的卡片。
+ * @param modifier 修饰符
+ * @param medicinesInfo 药物信息列表。其类型为自定义的模型类 -> [MedicineRemindInfo]
+ * @param medicinesImg 药物图片。虽然目前还是用Drawable但是之后肯定是用本地的资源。
+ * @param onDetailClicked 有个绿色箭头，不知道干什么用的。
+ * @param onTakeMedicineClicked 卡片的右边有个框框，点击表示自己吃了药。
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun TakeMedicineRemind(
     modifier: Modifier = Modifier,
@@ -282,6 +311,12 @@ private fun TakeMedicineRemind(
     }
 }
 
+/**
+ * 这就是上面提到的绿色箭头。下面还会有两个模块要用到这玩意儿。
+ * @param modifier 修饰符
+ * @param onClicked 点击事件
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun GreenArrow(
     modifier: Modifier = Modifier,
@@ -314,6 +349,15 @@ private fun GreenArrow(
     }
 }
 
+/**
+ * 单个提醒卡片。
+ *
+ * BYD这个函数嵌套真多啊。
+ * @param modifier 修饰符。
+ * @param medicineRemindInfo 该卡片要显示的药物提醒信息 -> [MedicineRemindInfo]
+ * @param medicineImg 该卡片要显示的图片
+ * @param onTakeMedicineClicked 右边按钮点击的事件。
+ */
 @Composable
 private fun RemindCard(
     modifier: Modifier = Modifier,
@@ -378,7 +422,7 @@ private fun RemindCard(
                         .padding(end = 35.dp)
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceEvenly
-                ){
+                ) {
                     Row {
                         Text(
                             text = medicineRemindInfo.name,
@@ -441,7 +485,7 @@ private fun RemindCard(
                                 .clickable(
                                     interactionSource = MutableInteractionSource(),
                                     indication = null
-                                ){onTakeMedicineClicked()}
+                                ) { onTakeMedicineClicked() }
                                 .align(Alignment.End)
                                 .padding(end = 10.dp),
                             painter = painterResource(id = R.drawable.green_circle),
@@ -455,6 +499,12 @@ private fun RemindCard(
     }
 }
 
+/**
+ * 提醒用户有没有药物过期的部分。
+ * @param modifier 修饰符
+ * @param medicinesRepoInfo 药物仓储信息列表 -> [MedicineRepoInfo]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun MedicinesLeft(
     modifier: Modifier = Modifier,
@@ -499,6 +549,12 @@ private fun MedicinesLeft(
     }
 }
 
+/**
+ * 单个显示药物库存信息的卡片。
+ * @param modifier 修饰符
+ * @param medicineRepoInfo 该卡片的药物仓储信息 -> [MedicineRepoInfo]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun MedicineLeftCard(
     modifier: Modifier = Modifier,
@@ -537,6 +593,13 @@ private fun MedicineLeftCard(
     }
 }
 
+/**
+ * 显示药物有无过期的部分。
+ * @param modifier 修饰符
+ * @param currentDate 当前日期
+ * @param medicinesRepoInfo 药物仓储信息列表 -> [MedicineRepoInfo]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun MedicinesExpiry(
     modifier: Modifier = Modifier,
@@ -580,6 +643,12 @@ private fun MedicinesExpiry(
     }
 }
 
+/**
+ *显示药物过期信息的卡片
+ * @param modifier 修饰符
+ * @param medicineRepoInfo 该卡片的药物仓储信息 -> [MedicineRepoInfo]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun MedicineExpiryCard(
     modifier: Modifier = Modifier,

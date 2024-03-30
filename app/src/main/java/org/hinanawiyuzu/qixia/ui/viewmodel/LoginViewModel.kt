@@ -1,11 +1,20 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.hinanawiyuzu.qixia.data.repo.UserInfoRepository
+import org.hinanawiyuzu.qixia.utils.AppRoute
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val userInfoRepository: UserInfoRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
@@ -28,6 +37,33 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    fun onLoginButtonClicked(navController: NavController) {
+        viewModelScope.launch {
+            val queryResult =
+                userInfoRepository.getUserInfoStreamByPhone(_uiState.value.accountPhone)
+                    .firstOrNull()
+            if (queryResult == null) {
+                _uiState.update {
+                    it.copy(isError = true)
+                }
+            } else {
+                if (queryResult.password != _uiState.value.accountPassword || queryResult.loginState) {
+                    _uiState.update {
+                        it.copy(isError = true)
+                    }
+                } else {
+                    navController.navigate( route = AppRoute.AppScreen.name) {
+                        navController.popBackStack(
+                            route = LoginRoute.LoginScreen.name,
+                            inclusive = true
+                        )
+                    }
+                }
+            }
+            return@launch
+        }
+    }
+
     fun onWechatLoginClicked() {
         //TODO: 微信登录，应当要调用第三方API
     }
@@ -45,5 +81,6 @@ class LoginViewModel : ViewModel() {
 data class LoginUiState(
     val accountPhone: String = "",
     val accountPassword: String = "",
-    val hidePassword: Boolean = true
+    val hidePassword: Boolean = true,
+    val isError: Boolean = false,
 )

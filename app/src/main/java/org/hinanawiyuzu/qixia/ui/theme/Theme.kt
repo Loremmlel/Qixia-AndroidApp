@@ -77,11 +77,10 @@ fun QixiaTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
-    val colors = if (!useDarkTheme) {
-        LightColors
-    } else {
-        DarkColors
-    }
+    // 暂时禁用黑夜模式！！
+    //TODO: 要不要加黑夜模式？
+    val colors = LightColors
+
 
     MaterialTheme(
         colorScheme = colors,

@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,12 +43,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
 import org.hinanawiyuzu.qixia.components.CommonInputFieldWithoutLeadingIcon
 import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicalHistory
+import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.themeHorizontalGradient
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
@@ -60,13 +65,21 @@ import org.hinanawiyuzu.qixia.utils.LoginRoute
 @Composable
 fun FillPersonalInformationScreen(
     modifier: Modifier = Modifier,
-    fillPersonalInformationViewModel: FillPersonalInformationViewModel = viewModel(),
-    navController: NavController = rememberNavController()
+    viewModel: FillPersonalInformationViewModel =
+        viewModel(factory = AppViewModelProvider.factory),
+    navController: NavController = rememberNavController(),
+    backStackEntry: NavBackStackEntry
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val screenHeight = LocalConfiguration.current.screenHeightDp
-    val fillPersonalInformationUiState by fillPersonalInformationViewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val circleOffsetX = (-20).dp
     val circleOffsetY = 50.dp
+    val accountPassword: String? = backStackEntry.arguments?.getString("accountPassword")
+    val accountPhone: String? = backStackEntry.arguments?.getString("accountPhone")
+    // 能到这个页面的肯定是新注册，而不是找回密码。所以这两个值必定不为空。
+    viewModel.accountPassword = accountPassword!!
+    viewModel.accountPhone = accountPhone!!
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -113,35 +126,33 @@ fun FillPersonalInformationScreen(
             }
             InputArea(
                 modifier = Modifier.weight(0.2f),
-                maleSelected = fillPersonalInformationUiState.maleSelected,
-                femaleSelected = fillPersonalInformationUiState.femaleSelected,
-                age = fillPersonalInformationUiState.age,
-                serialNumber = fillPersonalInformationUiState.serialNumber,
-                onMaleClicked = { fillPersonalInformationViewModel.onMaleSelected() },
-                onFemaleClicked = { fillPersonalInformationViewModel.onFemaleSelected() },
-                onAgeChanged = { fillPersonalInformationViewModel.onAgeChanged(it) },
-                onSerialNumberChanged = { fillPersonalInformationViewModel.onSerialNumberChanged(it) }
+                maleSelected = uiState.maleSelected,
+                femaleSelected = uiState.femaleSelected,
+                age = uiState.age,
+                isAgeError = uiState.isAgeError,
+                serialNumber = uiState.serialNumber,
+                onMaleClicked = { viewModel.onMaleSelected() },
+                onFemaleClicked = { viewModel.onFemaleSelected() },
+                onAgeChanged = { viewModel.onAgeChanged(it) },
+                onSerialNumberChanged = { viewModel.onSerialNumberChanged(it) }
             )
             MedicalHistory(
                 modifier = Modifier
                     .weight(0.25f)
                     .padding(bottom = 30.dp),
-                isIllnessCardClicked = fillPersonalInformationViewModel.illnessCardsClicked,
-                onIllnessCardClicked = { fillPersonalInformationViewModel.onIllnessCardClicked(it) }
+                isIllnessCardClicked = viewModel.illnessCardsClicked,
+                onIllnessCardClicked = { viewModel.onIllnessCardClicked(it) }
             )
             ConfirmButton(
                 modifier = Modifier
                     .weight(0.05f)
-                    .fillMaxWidth(0.8f)
-            ) {
-                navController.navigate(AppRoute.AppScreen.name) {
-                    // 清空所有到LoginScreen的路线。inclusive为true表示包括LoginScreen
-                    navController.popBackStack(
-                        route = LoginRoute.LoginScreen.name,
-                        inclusive = true
-                    )
+                    .fillMaxWidth(0.8f),
+                onButtonClicked = {
+                    coroutineScope.launch {
+                        viewModel.onConfirmButtonClicked(navController)
+                    }
                 }
-            }
+            )
         }
     }
 }
@@ -188,6 +199,7 @@ private fun InputArea(
     femaleSelected: Boolean,
     age: String,
     serialNumber: String,
+    isAgeError: Boolean,
     onMaleClicked: () -> Unit,
     onFemaleClicked: () -> Unit,
     onAgeChanged: (String) -> Unit,
@@ -219,6 +231,8 @@ private fun InputArea(
             modifier = Modifier.fillMaxWidth(),
             value = age,
             placeholderTextRes = R.string.fill_personal_information_screen_age,
+            isError = isAgeError,
+            errorMessage = "请输入正确的年龄",
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             onValueChanged = { onAgeChanged(it) }
         )
@@ -374,6 +388,6 @@ private fun ConfirmButton(
 @Composable
 private fun FillPersonalInformationScreenPreview() {
     QixiaTheme {
-        FillPersonalInformationScreen()
+
     }
 }

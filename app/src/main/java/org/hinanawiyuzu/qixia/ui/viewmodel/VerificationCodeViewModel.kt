@@ -3,6 +3,8 @@ package org.hinanawiyuzu.qixia.ui.viewmodel
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 
 
 class VerificationCodeViewModel : ViewModel() {
@@ -11,6 +13,9 @@ class VerificationCodeViewModel : ViewModel() {
     var verificationCodes = mutableStateListOf("", "", "", "")
         private set
     val focusRequesters = List(4) { FocusRequester() }
+
+    var accountPhone: String = ""
+    var accountPassword: String? = null
 
     /**
      * 适用于inputFieldNum个输入框的输入处理函数。
@@ -70,6 +75,15 @@ class VerificationCodeViewModel : ViewModel() {
             requestFocusOfNoInput(id - 1)
         } else
             return
+    }
+
+    fun onConfirmButtonClicked(navController: NavController) {
+        // 密码不为空说明是由注册界面转入的。
+        if(accountPassword != null/*TODO: 检查验证码是否正确*/) {
+            navController.navigate(
+                route = "${LoginRoute.FillPersonalInformationScreen.name}/$accountPhone/$accountPassword"
+            )
+        }
     }
 
 }

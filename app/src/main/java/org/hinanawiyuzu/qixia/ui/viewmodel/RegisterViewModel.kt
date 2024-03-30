@@ -1,22 +1,56 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 
 class RegisterViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState = _uiState.asStateFlow()
-    fun onAccountNameChanged(value: String) {
-        _uiState.update { currentState ->
-            currentState.copy(accountName = value)
+    fun onAccountPasswordChanged(value: String) {
+        _uiState.update {
+            it.copy(
+                accountPassword = value,
+                isPasswordError = !(value.matches(Regex("[a-zA-Z0-9.]+"))
+                        && value.length in (6..18))
+            )
         }
     }
 
     fun onAccountPhoneChanged(value: String) {
-        _uiState.update { currentState ->
-            currentState.copy(accountPhone = value)
+        _uiState.update {
+            it.copy(
+                accountPhone = value,
+                // 电话号码显然应该是11位吧。反正不可能出海的。
+                isPhoneError = !(value.length == 11 && value.matches(Regex("[0-9]+")))
+            )
+        }
+    }
+
+    fun onHidePasswordClicked() {
+        _uiState.update {
+            it.copy(hidePassword = !it.hidePassword)
+        }
+    }
+
+    fun onNextButtonClicked(navController: NavController) {
+        if (!_uiState.value.isPhoneError && !_uiState.value.isPasswordError
+            && _uiState.value.accountPhone.isNotEmpty() && _uiState.value.accountPhone.isNotEmpty()
+        ) {
+            navController.navigate(
+                route = "${LoginRoute.VerificationCodeScreen.name}/${_uiState.value
+                    .accountPhone}/${_uiState.value.accountPassword}"
+            )
+        } else {
+            _uiState.update {
+                it.copy(
+                    isPhoneError = true,
+                    isPasswordError = true
+                )
+            }
         }
     }
 
@@ -30,6 +64,9 @@ class RegisterViewModel : ViewModel() {
 }
 
 data class RegisterUiState(
-    val accountName: String = "",
+    val accountPassword: String = "",
     val accountPhone: String = "",
+    val hidePassword: Boolean = true,
+    val isPhoneError: Boolean = false,
+    val isPasswordError: Boolean = false
 )

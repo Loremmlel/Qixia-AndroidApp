@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import android.content.res.Resources
 import androidx.annotation.DrawableRes
@@ -56,7 +56,7 @@ const val animationTime: Int = 300
 @Composable
 fun AppScreen(
     modifier: Modifier = Modifier,
-    appViewModel: AppViewModel = viewModel()
+    viewModel: AppViewModel = viewModel()
 ) {
     val screenHeightDp = LocalConfiguration.current.screenHeightDp
     val screenWidthDp = LocalConfiguration.current.screenWidthDp
@@ -65,7 +65,7 @@ fun AppScreen(
         contentAlignment = Alignment.BottomCenter
     ) {
         BlurredBackground()
-        when (appViewModel.appScreenState) {
+        when (viewModel.appScreenState) {
             AppScreenState.Main -> {}
             AppScreenState.Box -> {}
             AppScreenState.Remind -> {
@@ -84,8 +84,8 @@ fun AppScreen(
             AppScreenState.Profile -> {}
         }
         AnimatedBottomAppBar(
-            onBottomBarItemClicked = appViewModel::onBottomBarItemClicked,
-            appScreenState = appViewModel.appScreenState
+            onBottomBarItemClicked = viewModel::onBottomBarItemClicked,
+            appScreenState = viewModel.appScreenState
         )
     }
 }

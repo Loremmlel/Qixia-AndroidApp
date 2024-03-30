@@ -1,7 +1,6 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class RemindViewModel : ViewModel() {

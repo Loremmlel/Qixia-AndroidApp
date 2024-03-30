@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

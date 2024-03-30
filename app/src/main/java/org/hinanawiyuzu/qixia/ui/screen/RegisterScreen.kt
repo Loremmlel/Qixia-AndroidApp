@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
 import org.hinanawiyuzu.qixia.components.CommonInputField
+import org.hinanawiyuzu.qixia.components.PasswordInputField
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.RegisterViewModel
@@ -43,37 +44,39 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
 /**
  * 注册界面主函数
  * @param modifier 修饰符
- * @param registerViewModel 该界面的ViewModel。
+ * @param viewModel 该界面的ViewModel。
  * @param navController 默认为rememberNavController，一般无需传参
  * @author HinanawiYuzu
  */
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
-    registerViewModel: RegisterViewModel = viewModel(),
+    viewModel: RegisterViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    val registerUiState by registerViewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RegisterPicture(modifier = Modifier
-            .weight(0.33f)
-            .padding(20.dp))
+        RegisterPicture(
+            modifier = Modifier
+                .weight(0.33f)
+                .padding(20.dp)
+        )
         RegisterArea(
             modifier = Modifier.weight(0.4f),
-            accountName = registerUiState.accountName,
-            accountPhone = registerUiState.accountPhone,
-            onAccountNameChanged = { registerViewModel.onAccountNameChanged(it) },
-            onAccountPhoneChanged = { registerViewModel.onAccountPhoneChanged(it) },
-            onNextButtonClicked = {
-                navController.navigate(
-                    route = LoginRoute.VerificationCodeScreen.name
-                )
-            },
-            onClauseClicked = { registerViewModel.onClauseClicked() },
-            onPrivacyPolicyClicked = { registerViewModel.onPrivacyPolicyClicked() }
+            accountPassword = uiState.accountPassword,
+            accountPhone = uiState.accountPhone,
+            hidePassword = uiState.hidePassword,
+            isPhoneError = uiState.isPhoneError,
+            isPasswordError = uiState.isPasswordError,
+            onAccountPasswordChanged = viewModel::onAccountPasswordChanged,
+            onAccountPhoneChanged = viewModel::onAccountPhoneChanged,
+            onHidePasswordClicked = viewModel::onHidePasswordClicked,
+            onNextButtonClicked = {viewModel.onNextButtonClicked(navController)},
+            onClauseClicked = viewModel::onClauseClicked,
+            onPrivacyPolicyClicked = viewModel::onPrivacyPolicyClicked
         )
         ReturnToLogin(
             onReturnToLoginClicked = {
@@ -89,9 +92,12 @@ fun RegisterScreen(
 /**
  * 输入框和继续按钮、条款条件和隐私政策区域。
  * @param modifier 修饰符
- * @param accountName 用户输入的账户名，应当传入ViewModel中的属性
+ * @param accountPassword 用户输入的密码，应当传入ViewModel中的属性
  * @param accountPhone 用户输入的电话号码，应当传入ViewModel中的属性
- * @param onAccountNameChanged 用户输入账户名的处理事件，应当传入ViewModel中的方法
+ * @param hidePassword 是否隐藏密码
+ * @param isPasswordError 密码输入是否符合格式要求
+ * @param isPhoneError 电话输入是否符合格式要求
+ * @param onAccountPasswordChanged 用户输入账户名的处理事件，应当传入ViewModel中的方法
  * @param onAccountPhoneChanged 用户输入账户电话号码的处理事件，应当传入ViewModel中的方法
  * @param onNextButtonClicked 用户点击继续的处理事件。
  * @param onClauseClicked 用户点击条款和条件的处理事件，应当跳转到对应的页面。
@@ -101,10 +107,14 @@ fun RegisterScreen(
 @Composable
 private fun RegisterArea(
     modifier: Modifier = Modifier,
-    accountName: String,
     accountPhone: String,
-    onAccountNameChanged: (String) -> Unit,
+    accountPassword: String,
+    hidePassword: Boolean,
+    isPhoneError: Boolean,
+    isPasswordError: Boolean,
     onAccountPhoneChanged: (String) -> Unit,
+    onAccountPasswordChanged: (String) -> Unit,
+    onHidePasswordClicked: () -> Unit,
     onNextButtonClicked: () -> Unit,
     onClauseClicked: () -> Unit,
     onPrivacyPolicyClicked: () -> Unit
@@ -124,15 +134,6 @@ private fun RegisterArea(
             )
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        // 姓名输入
-        CommonInputField(
-            modifier = Modifier.fillMaxWidth(),
-            leadingIconRes = R.drawable.register_screen_name,
-            placeholderTextRes = R.string.register_screen_name_input_placeholder,
-            value = accountName,
-            onValueChanged = onAccountNameChanged
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         // 电话号码输入
         CommonInputField(
             modifier = Modifier.fillMaxWidth(),
@@ -142,8 +143,21 @@ private fun RegisterArea(
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
             ),
+            isError = isPhoneError,
+            errorMessage = "请输入正确的电话号码!",
             value = accountPhone,
             onValueChanged = { onAccountPhoneChanged(it) },
+        )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+        PasswordInputField(
+            modifier = Modifier.fillMaxWidth(),
+            password = accountPassword,
+            hidePassword = hidePassword,
+            isError = isPasswordError,
+            errorMessage = "密码少于18位,大于6位;且只能包括大小写字母、数字和.",
+            onPasswordChanged = onAccountPasswordChanged,
+            onHidePasswordClicked = onHidePasswordClicked,
+            placeholderTextRes = R.string.login_screen_account_password_input_placeholder
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))

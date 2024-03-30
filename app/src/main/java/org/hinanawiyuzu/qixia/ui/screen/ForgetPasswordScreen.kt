@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -40,10 +40,10 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
 @Composable
 fun ForgetPasswordScreen(
     modifier: Modifier = Modifier,
-    forgetPasswordViewModel: ForgetPasswordViewModel = viewModel(),
+    viewModel: ForgetPasswordViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
-    val forgetPasswordUiState by forgetPasswordViewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -54,8 +54,8 @@ fun ForgetPasswordScreen(
         )
         PhoneInputArea(
             modifier = modifier.weight(0.2f),
-            accountPhone = forgetPasswordUiState.accountPhone,
-            onAccountPhoneChanged = { forgetPasswordViewModel.onAccountPhoneChanged(it) }
+            accountPhone = uiState.accountPhone,
+            onAccountPhoneChanged = { viewModel.onAccountPhoneChanged(it) }
         )
         SubmitButton(
             modifier = modifier

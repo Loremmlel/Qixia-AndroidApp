@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -38,10 +38,10 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
 @Composable
 fun ResetPasswordScreen(
     modifier: Modifier = Modifier,
-    resetPasswordViewModel: ResetPasswordViewModel = viewModel(),
+    viewModel: ResetPasswordViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
-    val resetPasswordUiState by resetPasswordViewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -54,15 +54,15 @@ fun ResetPasswordScreen(
         )
         InputArea(
             modifier = modifier.weight(0.4f),
-            newPassword = resetPasswordUiState.newPassword,
-            confirmNewPassword = resetPasswordUiState.confirmNewPassword,
-            hideNewPassword = resetPasswordUiState.hideNewPassword,
-            hideConfirmNewPassword = resetPasswordUiState.hideConfirmNewPassword,
-            onNewPasswordChanged = resetPasswordViewModel::onNewPasswordChanged,
-            onConfirmNewPasswordChanged = resetPasswordViewModel::onConfirmNewPasswordChanged,
-            onHideNewPasswordClicked = resetPasswordViewModel::onHideNewPasswordClicked,
+            newPassword = uiState.newPassword,
+            confirmNewPassword = uiState.confirmNewPassword,
+            hideNewPassword = uiState.hideNewPassword,
+            hideConfirmNewPassword = uiState.hideConfirmNewPassword,
+            onNewPasswordChanged = viewModel::onNewPasswordChanged,
+            onConfirmNewPasswordChanged = viewModel::onConfirmNewPasswordChanged,
+            onHideNewPasswordClicked = viewModel::onHideNewPasswordClicked,
             onHideConfirmNewPasswordClicked =
-            resetPasswordViewModel::onHideConfirmNewPasswordClicked
+            viewModel::onHideConfirmNewPasswordClicked
         )
         SubmitButton(
             modifier = modifier

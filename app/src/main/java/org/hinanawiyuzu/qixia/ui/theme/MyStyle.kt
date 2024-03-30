@@ -1,14 +1,8 @@
 package org.hinanawiyuzu.qixia.ui.theme
 
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.sp
-import org.hinanawiyuzu.qixia.ui.theme.neutral_color
-import org.hinanawiyuzu.qixia.ui.theme.primary_color
-import org.hinanawiyuzu.qixia.ui.theme.secondary_color
-import org.hinanawiyuzu.qixia.ui.theme.tertiary_color
 
 object FontSize {
     val tinySize = 12.sp

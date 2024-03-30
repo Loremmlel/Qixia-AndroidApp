@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -38,13 +38,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
 import org.hinanawiyuzu.qixia.components.CommonInputField
 import org.hinanawiyuzu.qixia.components.PasswordInputField
+import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.light_background
@@ -52,6 +55,7 @@ import org.hinanawiyuzu.qixia.ui.viewmodel.LoginViewModel
 import org.hinanawiyuzu.qixia.utils.AppRoute
 import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
+import org.hinanawiyuzu.qixia.utils.slideComposable
 
 /**
  * 登录界面主函数。
@@ -59,17 +63,17 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
  * 同时兼管了登录、注册、验证码等页面的导航控制。
  * 因此可能会显得代码有些冗长。但是我目前还没想到优化的方法。
  * @param modifier 修饰符
- * @param loginViewModel 传入LoginViewModel类。默认值为初始化的LoginViewModel
+ * @param viewModel 传入LoginViewModel类。默认值为初始化的LoginViewModel
  * @param navController 导航控制，默认为rememberNavController类型。一般无需传参
  * @author HinanawiYuzu
  */
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    loginViewModel: LoginViewModel = viewModel(),
+    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.factory),
     navController: NavHostController = rememberNavController()
 ) {
-    val loginUiState by loginViewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     NavHost(navController = navController, startDestination = LoginRoute.LoginScreen.name) {
         composable(
             route = LoginRoute.LoginScreen.name,
@@ -93,28 +97,23 @@ fun LoginScreen(
                 )
                 LoginArea(
                     modifier = Modifier.weight(0.4f),
-                    accountPhone = loginUiState.accountPhone,
-                    accountPassword = loginUiState.accountPassword,
-                    hidePassword = loginUiState.hidePassword,
-                    onAccountPhoneChanged = { loginViewModel.onAccountPhoneChanged(it) },
-                    onAccountPasswordChanged = { loginViewModel.onAccountPasswordChanged(it) },
-                    onHidePasswordClicked = { loginViewModel.onHidePasswordClicked() },
+                    accountPhone = uiState.accountPhone,
+                    accountPassword = uiState.accountPassword,
+                    hidePassword = uiState.hidePassword,
+                    onAccountPhoneChanged = viewModel::onAccountPhoneChanged,
+                    onAccountPasswordChanged = viewModel::onAccountPasswordChanged,
+                    onHidePasswordClicked = viewModel::onHidePasswordClicked,
                     onForgetPasswordClicked = {
                         navController.navigate(LoginRoute.ForgetPasswordScreen.name)
                     },
+                    isError = uiState.isError,
                     // TODO:应该加登录验证的逻辑。因为可能涉及到数据层，所以暂时不写。
-                    onLoginButtonClicked = {
-                        navController.navigate(AppRoute.AppScreen.name) {
-                            navController.popBackStack(
-                                route = LoginRoute.LoginScreen.name, inclusive = true
-                            )
-                        }
-                    },
+                    onLoginButtonClicked = { viewModel.onLoginButtonClicked(navController) },
                 )
                 ThirdPartyLogin(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onWechatLoginClicked = { loginViewModel.onWechatLoginClicked() },
-                    onAlipayLoginClicked = { loginViewModel.onAlipayLoginClicked() }
+                    onWechatLoginClicked = viewModel::onWechatLoginClicked,
+                    onAlipayLoginClicked = viewModel::onAlipayLoginClicked
                 )
                 Column(
                     modifier = Modifier
@@ -127,89 +126,44 @@ fun LoginScreen(
                 }
             }
         }
-        composable(
+        slideComposable(
             route = LoginRoute.RegisterScreen.name,
-            exitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
-            },
-            enterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
-            },
-            popEnterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
-            },
-            popExitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
-            }
         ) {
             // 如果要传导航控制器，那么在被传的组件中，不能出现新的NavHost。否则会报异常。
             RegisterScreen(navController = navController)
         }
-        composable(
-            route = LoginRoute.VerificationCodeScreen.name,
-            exitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
-            },
-            enterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
-            },
-            popEnterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
-            },
-            popExitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
-            }
+        slideComposable(
+            route = "${LoginRoute.VerificationCodeScreen.name}/{accountPhone}/{accountPassword}",
+            arguments = listOf(
+                navArgument("accountPhone") { type = NavType.StringType },
+                navArgument("accountPassword") {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            ),
         ) {
-            VerificationCodeScreen(navController = navController)
+            VerificationCodeScreen(navController = navController, navBackStackEntry = it)
         }
-        composable(
-            route = LoginRoute.FillPersonalInformationScreen.name,
-            exitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
-            },
-            enterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
-            },
-            popEnterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
-            },
-            popExitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
-            }
+        slideComposable(
+            route = "${LoginRoute.FillPersonalInformationScreen
+                .name}/{accountPhone}/{accountPassword}",
+            arguments = listOf(
+                navArgument("accountPhone") { type = NavType.StringType },
+                navArgument("accountPassword") {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            ),
         ) {
-            FillPersonalInformationScreen(navController = navController)
+            FillPersonalInformationScreen(navController = navController, backStackEntry = it)
         }
-        composable(
+        slideComposable(
             route = LoginRoute.ForgetPasswordScreen.name,
-            exitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
-            },
-            enterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
-            },
-            popEnterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
-            },
-            popExitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
-            }
         ) {
             ForgetPasswordScreen(navController = navController)
         }
-        composable(
+        slideComposable(
             route = LoginRoute.ResetPasswordScreen.name,
-            exitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
-            },
-            enterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
-            },
-            popEnterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
-            },
-            popExitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
-            }
         ) {
             ResetPasswordScreen(navController = navController)
         }
@@ -268,6 +222,7 @@ private fun LoginArea(
     accountPhone: String,
     accountPassword: String,
     hidePassword: Boolean,
+    isError: Boolean,
     onAccountPhoneChanged: (String) -> Unit,
     onAccountPasswordChanged: (String) -> Unit,
     onHidePasswordClicked: () -> Unit,
@@ -299,6 +254,7 @@ private fun LoginArea(
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
             ),
+            isError = isError,
             value = accountPhone,
             onValueChanged = { onAccountPhoneChanged(it) },
         )
@@ -308,6 +264,7 @@ private fun LoginArea(
             modifier = Modifier.fillMaxWidth(),
             password = accountPassword,
             hidePassword = hidePassword,
+            isError = isError,
             onPasswordChanged = onAccountPasswordChanged,
             onHidePasswordClicked = onHidePasswordClicked,
             placeholderTextRes = R.string.login_screen_account_password_input_placeholder

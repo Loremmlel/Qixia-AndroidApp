@@ -28,6 +28,8 @@ import org.hinanawiyuzu.qixia.ui.theme.FontSize
  * @param modifier 修饰符
  * @param password 要传递的密码字符串，一般是ViewModel中的属性
  * @param hidePassword 是否隐藏该输入框密码，一般是ViewModel中的属性
+ * @param isError 输入框的错误标识。
+ * @param errorMessage 显示在输入框下方的错误消息
  * @param onPasswordChanged 输入框的回调函数，一般是ViewModel中的方法
  * @param onHidePasswordClicked 隐藏密码的按钮，一般是ViewModel中的方法
  * @param placeholderTextRes 占位文本的资源ID值
@@ -39,6 +41,8 @@ fun PasswordInputField(
     modifier: Modifier = Modifier,
     password: String,
     hidePassword: Boolean,
+    isError: Boolean = false,
+    errorMessage: String = "账户或密码输入错误",
     onPasswordChanged: (String) -> Unit,
     onHidePasswordClicked: () -> Unit,
     @StringRes placeholderTextRes: Int,
@@ -73,6 +77,17 @@ fun PasswordInputField(
                 )
             }
         },
+        supportingText = {
+            if (isError) {
+                Text(
+                    text = errorMessage,
+                    style = TextStyle(
+                        color = Color.Red,
+                        fontSize = FontSize.tinySize
+                    )
+                )
+            }
+        },
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Password,
             imeAction = imeAction
@@ -84,6 +99,7 @@ fun PasswordInputField(
         if (hidePassword) PasswordVisualTransformation()
         else VisualTransformation.None,
         value = password,
+        isError = isError,
         onValueChange = { onPasswordChanged(it) }
     )
 }
@@ -97,6 +113,8 @@ fun PasswordInputField(
  * @param leadingIconRes 图标的资源id
  * @param placeholderTextRes 提示文字的资源id
  * @param colors 输入框的颜色设置。请使用TextFieldDefaults.colors(..自定义颜色..)
+ * @param isError 是否错误，建议传入ViewModel的数据。
+ * @param errorMessage 显示在输入框下方的错误信息
  * @param keyboardOptions 输入框的键盘设置。请使用KeyboardOptions.Default.copy(..自定义设置..)
  * @param onValueChanged 输入框的回调函数，一般是ViewModel中的方法
  * @author HinanawiYuzu
@@ -110,6 +128,8 @@ fun CommonInputField(
     colors: TextFieldColors = TextFieldDefaults.colors(
         unfocusedContainerColor = Color.White
     ),
+    isError: Boolean = false,
+    errorMessage: String = "账户或密码输入错误",
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChanged: (String) -> Unit
 ) {
@@ -128,6 +148,18 @@ fun CommonInputField(
                 style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
             )
         },
+        supportingText = {
+            if (isError) {
+                Text(
+                    text = errorMessage,
+                    style = TextStyle(
+                        color = Color.Red,
+                        fontSize = FontSize.tinySize
+                    )
+                )
+            }
+        },
+        isError = isError,
         colors = colors,
         keyboardOptions = keyboardOptions,
         value = value,
@@ -143,6 +175,8 @@ fun CommonInputFieldWithoutLeadingIcon(
     colors: TextFieldColors = TextFieldDefaults.colors(
         unfocusedContainerColor = Color.White
     ),
+    isError: Boolean = false,
+    errorMessage: String = "账户或密码输入错误",
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChanged: (String) -> Unit
 ) {
@@ -154,6 +188,18 @@ fun CommonInputFieldWithoutLeadingIcon(
                 text = stringResource(id = placeholderTextRes),
                 style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
             )
+        },
+        isError = isError,
+        supportingText = {
+            if (isError) {
+                Text(
+                    text = errorMessage,
+                    style = TextStyle(
+                        color = Color.Red,
+                        fontSize = FontSize.tinySize
+                    )
+                )
+            }
         },
         colors = colors,
         keyboardOptions = keyboardOptions,

@@ -1,4 +1,4 @@
-package org.hinanawiyuzu.qixia.ui
+package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
@@ -43,7 +43,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
@@ -59,10 +61,17 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
 @Composable
 fun VerificationCodeScreen(
     modifier: Modifier = Modifier,
-    verificationCodeViewModel: VerificationCodeViewModel = viewModel(),
-    navController: NavController = rememberNavController()
+    viewModel: VerificationCodeViewModel = viewModel(),
+    navController: NavController = rememberNavController(),
+    navBackStackEntry: NavBackStackEntry
 ) {
+    // 不能使用 val navBackStackEntry by navController.currentBackStackEntryAsState()
+    // 会有内部错误产生，原因未知。还是得传参。
+    val accountPassword: String? = navBackStackEntry.arguments?.getString("accountPassword")
+    val accountPhone: String? = navBackStackEntry.arguments?.getString("accountPhone")
     val deviceWidth = LocalConfiguration.current.screenWidthDp
+    viewModel.accountPhone = accountPhone!!
+    viewModel.accountPassword = accountPassword
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -76,11 +85,11 @@ fun VerificationCodeScreen(
         InputArea(
             modifier = Modifier.weight(0.15f),
             verificationCodeLength = 4,
-            focusRequesters = verificationCodeViewModel.focusRequesters,
+            focusRequesters = viewModel.focusRequesters,
             screenWidth = deviceWidth,
-            verificationCodes = verificationCodeViewModel.verificationCodes,
-            onValueChanged = verificationCodeViewModel::onTextFieldsInput,
-            onBackSpaceClicked = verificationCodeViewModel::onBackspaceClicked
+            verificationCodes = viewModel.verificationCodes,
+            onValueChanged = viewModel::onTextFieldsInput,
+            onBackSpaceClicked = viewModel::onBackspaceClicked
         )
         SendAgainText(
             modifier = Modifier
@@ -95,10 +104,7 @@ fun VerificationCodeScreen(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .weight(0.8f),
-            onConfirmButtonClicked = {
-                // TODO: 这里应该有检测验证码是否正确的逻辑
-                navController.navigate(route = LoginRoute.FillPersonalInformationScreen.name)
-            }
+            onConfirmButtonClicked = {viewModel.onConfirmButtonClicked(navController)}
         )
     }
 }
@@ -274,7 +280,7 @@ private fun ConfirmButton(
 fun VerificationCodeScreenPreview() {
     QixiaTheme {
         Column {
-            VerificationCodeScreen()
+
         }
     }
 }
