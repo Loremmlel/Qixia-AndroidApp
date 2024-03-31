@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.CommonButton
@@ -54,7 +53,6 @@ import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.neutral_color
 import org.hinanawiyuzu.qixia.ui.theme.verification_input_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.VerificationCodeViewModel
-import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 
@@ -104,7 +102,7 @@ fun VerificationCodeScreen(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .weight(0.8f),
-            onConfirmButtonClicked = {viewModel.onConfirmButtonClicked(navController)}
+            onConfirmButtonClicked = { viewModel.onConfirmButtonClicked(navController) }
         )
     }
 }

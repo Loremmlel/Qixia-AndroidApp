@@ -2,36 +2,20 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AnimatedBottomAppBarPreview">
-        <State />
-      </entry>
       <entry key="AppScreenPreview">
         <State />
       </entry>
-      <entry key="MainScreenPreview">
+      <entry key="QixiaDatabaseTest">
         <State />
       </entry>
       <entry key="RemindScreenPreview">
         <State />
       </entry>
-      <entry key="VerificationCodeScreenPreview">
+      <entry key="UserInfoDaoTest">
         <State />
       </entry>
       <entry key="app">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="VCH6SKQCIZLVORVW" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-30T12:26:14.900431700Z" />
-        </State>
+        <State />
       </entry>
     </value>
   </component>

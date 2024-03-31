@@ -2,12 +2,10 @@ package org.hinanawiyuzu.qixia.ui.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import org.hinanawiyuzu.qixia.data.entity.UserInfo
 import org.hinanawiyuzu.qixia.data.repo.UserInfoRepository
 import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicalHistory
@@ -57,19 +55,13 @@ class FillPersonalInformationViewModel(
 
     fun onAgeChanged(value: String) {
         // 虽然已经设置了键盘为数字，但是还是保险一点吧。
-        if (value.matches(Regex("[0-9]+"))){
-            _uiState.update { currentState ->
-                currentState.copy(
-                    age = value,
-                    isAgeError = value.toInt() !in (0..120)
-                )
-            }
-        } else {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    isAgeError = true
-                )
-            }
+        // 原本这里有判断输入是否是数字的逻辑，但是我发现键盘设置为数字后，其它字符是无法输入的。
+        // 没想到这方面系统都做了处理。
+        _uiState.update { currentState ->
+            currentState.copy(
+                age = value,
+                isAgeError = value.toInt() !in (0..120)
+            )
         }
     }
 
@@ -96,10 +88,10 @@ class FillPersonalInformationViewModel(
     suspend fun onConfirmButtonClicked(navController: NavController) {
         if (!_uiState.value.isAgeError) {
             val medicalHistory: MutableList<Int> = mutableListOf()
-            illnessCardsClicked.mapIndexed{ index, b ->
+            illnessCardsClicked.mapIndexed { index, b ->
                 if (b) medicalHistory.add(index)
             }
-            val userInfo: UserInfo = UserInfo(
+            val userInfo = UserInfo(
                 phone = accountPhone,
                 password = accountPassword,
                 loginState = true,

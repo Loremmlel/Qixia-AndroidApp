@@ -13,5 +13,7 @@ class OfflineUserInfoRepository(private val userInfoDao: UserInfoDao) : UserInfo
     override fun getUserInfoStreamByPhone(phone: String): Flow<UserInfo> =
         userInfoDao.queryByPhone(phone)
 
+    override fun getUserInfoStreamById(id: Int): Flow<UserInfo> = userInfoDao.queryById(id)
+
     override fun getAllUserInfoStream(): Flow<List<UserInfo>> = userInfoDao.queryAll()
 }

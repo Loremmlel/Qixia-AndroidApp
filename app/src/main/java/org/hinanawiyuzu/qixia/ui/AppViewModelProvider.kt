@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import org.hinanawiyuzu.qixia.QixiaApplication
 import org.hinanawiyuzu.qixia.ui.viewmodel.FillPersonalInformationViewModel
 import org.hinanawiyuzu.qixia.ui.viewmodel.LoginViewModel
+import org.hinanawiyuzu.qixia.ui.viewmodel.WelcomeViewModel
 
 /**
  * 工厂-用于创建App的所有ViewModel。
@@ -18,6 +19,12 @@ object AppViewModelProvider {
         }
         initializer {
             FillPersonalInformationViewModel(qixiaApplication().container.userInfoRepository)
+        }
+        initializer {
+            WelcomeViewModel(
+                application = qixiaApplication(),
+                userInfoRepository =  qixiaApplication().container.userInfoRepository,
+            )
         }
     }
 }

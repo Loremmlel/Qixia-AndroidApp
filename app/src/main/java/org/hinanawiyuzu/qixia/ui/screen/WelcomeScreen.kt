@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,20 +19,27 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.delay
 import org.hinanawiyuzu.qixia.R
+import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
+import org.hinanawiyuzu.qixia.ui.viewmodel.WelcomeViewModel
+import org.hinanawiyuzu.qixia.utils.AppRoute
+import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
+    viewModel: WelcomeViewModel = viewModel(factory = AppViewModelProvider.factory),
     navController: NavHostController = rememberNavController()
 ) {
+    // 收集!
+    val allUsers by viewModel.allUsers.collectAsState()
     NavHost(
         navController = navController,
         startDestination = "WelcomeScreen"
@@ -45,21 +54,19 @@ fun WelcomeScreen(
                 Logo(modifier = modifier.weight(3.5f))
                 Title(modifier = modifier.weight(2f))
             }
-            LaunchedEffect(Unit) {
-                delay(1000) //暂停1s
-                navController.navigate("LoginScreen") {
-                    // 弹出堆栈中的欢迎页面，防止用户按返回键再回到该页面。
-                    popUpTo("WelcomeScreen") {
-                        inclusive = true
-                    }
-                }
+            LaunchedEffect(allUsers) {
+                // 为什么把delay放到这里就可以
+                // 而把viewModel.navigateScreen设置为suspend然后调用delay就不行呢。
+                // 更新：把allUsers设置为key，让LaunchedEffect根据allUsers的变化来判断是否要执行就可以了。
+                // 传参！
+                viewModel.navigateScreen(navController, allUsers)
             }
         }
-        composable(route = "LoginScreen") {
+        composable(route = LoginRoute.LoginScreen.name) {
             LoginScreen()
         }
-        composable(route = "MainScreen") {
-
+        composable(route = AppRoute.AppScreen.name) {
+            AppScreen()
         }
     }
 }

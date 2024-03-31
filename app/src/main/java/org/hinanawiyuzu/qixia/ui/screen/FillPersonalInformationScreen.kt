@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import org.hinanawiyuzu.qixia.R
@@ -59,8 +58,6 @@ import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.neutral_color
 import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.FillPersonalInformationViewModel
-import org.hinanawiyuzu.qixia.utils.AppRoute
-import org.hinanawiyuzu.qixia.utils.LoginRoute
 
 @Composable
 fun FillPersonalInformationScreen(

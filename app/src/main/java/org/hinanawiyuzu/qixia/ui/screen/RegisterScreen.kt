@@ -74,7 +74,7 @@ fun RegisterScreen(
             onAccountPasswordChanged = viewModel::onAccountPasswordChanged,
             onAccountPhoneChanged = viewModel::onAccountPhoneChanged,
             onHidePasswordClicked = viewModel::onHidePasswordClicked,
-            onNextButtonClicked = {viewModel.onNextButtonClicked(navController)},
+            onNextButtonClicked = { viewModel.onNextButtonClicked(navController) },
             onClauseClicked = viewModel::onClauseClicked,
             onPrivacyPolicyClicked = viewModel::onPrivacyPolicyClicked
         )

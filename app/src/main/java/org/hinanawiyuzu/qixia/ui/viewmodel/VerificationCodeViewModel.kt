@@ -79,7 +79,7 @@ class VerificationCodeViewModel : ViewModel() {
 
     fun onConfirmButtonClicked(navController: NavController) {
         // 密码不为空说明是由注册界面转入的。
-        if(accountPassword != null/*TODO: 检查验证码是否正确*/) {
+        if (accountPassword != null/*TODO: 检查验证码是否正确*/) {
             navController.navigate(
                 route = "${LoginRoute.FillPersonalInformationScreen.name}/$accountPhone/$accountPassword"
             )

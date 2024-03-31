@@ -52,7 +52,7 @@ class LoginViewModel(
                         it.copy(isError = true)
                     }
                 } else {
-                    navController.navigate( route = AppRoute.AppScreen.name) {
+                    navController.navigate(route = AppRoute.AppScreen.name) {
                         navController.popBackStack(
                             route = LoginRoute.LoginScreen.name,
                             inclusive = true

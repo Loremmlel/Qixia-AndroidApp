@@ -41,8 +41,10 @@ class RegisterViewModel : ViewModel() {
             && _uiState.value.accountPhone.isNotEmpty() && _uiState.value.accountPhone.isNotEmpty()
         ) {
             navController.navigate(
-                route = "${LoginRoute.VerificationCodeScreen.name}/${_uiState.value
-                    .accountPhone}/${_uiState.value.accountPassword}"
+                route = "${LoginRoute.VerificationCodeScreen.name}/${
+                    _uiState.value
+                        .accountPhone
+                }/${_uiState.value.accountPassword}"
             )
         } else {
             _uiState.update {

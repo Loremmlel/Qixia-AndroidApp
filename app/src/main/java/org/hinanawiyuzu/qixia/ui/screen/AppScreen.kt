@@ -58,8 +58,6 @@ fun AppScreen(
     modifier: Modifier = Modifier,
     viewModel: AppViewModel = viewModel()
 ) {
-    val screenHeightDp = LocalConfiguration.current.screenHeightDp
-    val screenWidthDp = LocalConfiguration.current.screenWidthDp
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter

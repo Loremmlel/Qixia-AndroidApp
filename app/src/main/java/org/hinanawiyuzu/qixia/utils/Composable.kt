@@ -17,7 +17,7 @@ import androidx.navigation.compose.composable
 /**
  * 自己封装的NavGraphBuilder扩展函数。
  *
- * 主要封装了动画效果，默认为滑入滑出的动画。
+ * 主要封装了动画效果，默认为滑入滑出的动画。适合非栈底的界面使用。
  * @see composable
  */
 fun NavGraphBuilder.slideComposable(

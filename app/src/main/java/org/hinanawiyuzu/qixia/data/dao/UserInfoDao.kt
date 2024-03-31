@@ -23,6 +23,9 @@ interface UserInfoDao {
     @Query("select * from userInfo where phone = :phone")
     fun queryByPhone(phone: String): Flow<UserInfo>
 
+    @Query("select * from userInfo where id = :id")
+    fun queryById(id: Int): Flow<UserInfo>
+
     @Query("select * from userInfo")
     fun queryAll(): Flow<List<UserInfo>>
 }

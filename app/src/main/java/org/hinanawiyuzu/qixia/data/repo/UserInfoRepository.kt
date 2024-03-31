@@ -11,5 +11,6 @@ interface UserInfoRepository {
     suspend fun updateUserInfo(userInfo: UserInfo)
     suspend fun deleteUserInfo(userInfo: UserInfo)
     fun getUserInfoStreamByPhone(phone: String): Flow<UserInfo>
+    fun getUserInfoStreamById(id: Int): Flow<UserInfo>
     fun getAllUserInfoStream(): Flow<List<UserInfo>>
 }
