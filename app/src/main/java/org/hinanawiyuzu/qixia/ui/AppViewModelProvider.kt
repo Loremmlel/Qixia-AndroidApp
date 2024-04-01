@@ -15,15 +15,15 @@ import org.hinanawiyuzu.qixia.ui.viewmodel.WelcomeViewModel
 object AppViewModelProvider {
     val factory = viewModelFactory {
         initializer {
-            LoginViewModel(qixiaApplication().container.userInfoRepository)
+            LoginViewModel(qixiaApplication().container.userRepository)
         }
         initializer {
-            FillPersonalInformationViewModel(qixiaApplication().container.userInfoRepository)
+            FillPersonalInformationViewModel(qixiaApplication().container.userRepository)
         }
         initializer {
             WelcomeViewModel(
                 application = qixiaApplication(),
-                userInfoRepository =  qixiaApplication().container.userInfoRepository,
+                userRepository =  qixiaApplication().container.userRepository,
             )
         }
     }

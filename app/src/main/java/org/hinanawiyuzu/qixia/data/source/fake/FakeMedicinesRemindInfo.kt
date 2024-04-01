@@ -1,10 +1,10 @@
 package org.hinanawiyuzu.qixia.data.source.fake
 
-import org.hinanawiyuzu.qixia.model.MedicineRemindInfo
-import org.hinanawiyuzu.qixia.model.TakeMethod
+import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
+import org.hinanawiyuzu.qixia.data.entity.TakeMethod
 
-val fakeMedicinesRemindInfo: List<MedicineRemindInfo> = listOf(
-    MedicineRemindInfo(
+val fakeMedicinesRemindInfo: List<MedicineRemind> = listOf(
+    MedicineRemind(
         time = "7:  00",
         name = "泮托拉唑钠肠溶片",
         dose = "40mg",
@@ -12,7 +12,7 @@ val fakeMedicinesRemindInfo: List<MedicineRemindInfo> = listOf(
         method = TakeMethod.BeforeMeal,
         isTaken = true
     ),
-    MedicineRemindInfo(
+    MedicineRemind(
         time = "8:  00",
         name = "硫酸氢氯吡咯雷片",
         dose = "75mg",
@@ -20,7 +20,7 @@ val fakeMedicinesRemindInfo: List<MedicineRemindInfo> = listOf(
         method = TakeMethod.AfterMeal,
         isTaken = true
     ),
-    MedicineRemindInfo(
+    MedicineRemind(
         time = "9:  00",
         name = "布洛芬缓释胶囊",
         dose = "200mg",
@@ -28,7 +28,7 @@ val fakeMedicinesRemindInfo: List<MedicineRemindInfo> = listOf(
         method = TakeMethod.AfterMeal,
         isTaken = true
     ),
-    MedicineRemindInfo(
+    MedicineRemind(
         time = "10:30",
         name = "布地奈德",
         dose = "50μg",
@@ -36,7 +36,7 @@ val fakeMedicinesRemindInfo: List<MedicineRemindInfo> = listOf(
         method = TakeMethod.NotMatter,
         isTaken = false
     ),
-    MedicineRemindInfo(
+    MedicineRemind(
         time = "12:  00",
         name = "阿莫西林胶囊",
         dose = "500mg",
@@ -44,7 +44,7 @@ val fakeMedicinesRemindInfo: List<MedicineRemindInfo> = listOf(
         method = TakeMethod.AtMeal,
         isTaken = false
     ),
-    MedicineRemindInfo(
+    MedicineRemind(
         time = "18:00",
         name = "氨磺必利",
         dose = "50mg",
@@ -52,7 +52,7 @@ val fakeMedicinesRemindInfo: List<MedicineRemindInfo> = listOf(
         method = TakeMethod.BeforeMeal,
         isTaken = false
     ),
-    MedicineRemindInfo(
+    MedicineRemind(
         time = "20:30",
         name = "甲钴胺",
         dose = "500μg",

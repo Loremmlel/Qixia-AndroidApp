@@ -3,7 +3,7 @@ package org.hinanawiyuzu.qixia.data.database
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import org.hinanawiyuzu.qixia.data.dao.UserInfoDao
+import org.hinanawiyuzu.qixia.data.dao.UserDao
 import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -11,7 +11,7 @@ import org.junit.Test
 
 class QixiaDatabaseTest {
     private lateinit var db: QixiaDatabase
-    private lateinit var dao: UserInfoDao
+    private lateinit var dao: UserDao
 
     @Before
     fun createDb() {

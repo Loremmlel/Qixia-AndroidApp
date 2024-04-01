@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.hinanawiyuzu.qixia.data.repo.UserInfoRepository
+import org.hinanawiyuzu.qixia.data.repo.UserRepository
 import org.hinanawiyuzu.qixia.utils.AppRoute
 import org.hinanawiyuzu.qixia.utils.LoginRoute
 
 class LoginViewModel(
-    private val userInfoRepository: UserInfoRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -40,7 +40,7 @@ class LoginViewModel(
     fun onLoginButtonClicked(navController: NavController) {
         viewModelScope.launch {
             val queryResult =
-                userInfoRepository.getUserInfoStreamByPhone(_uiState.value.accountPhone)
+                userRepository.getUserStreamByPhone(_uiState.value.accountPhone)
                     .firstOrNull()
             if (queryResult == null) {
                 _uiState.update {

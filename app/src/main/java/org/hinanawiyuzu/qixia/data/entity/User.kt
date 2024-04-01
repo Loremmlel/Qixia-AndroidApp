@@ -18,8 +18,8 @@ import androidx.room.TypeConverters
  * @param serialNumber 用户的智能药箱序列码
  * @param medicalHistory 用户病史列表。目前来说是硬编码的病史字符串组的下标。
  */
-@Entity(tableName = "userInfo")
-data class UserInfo(
+@Entity(tableName = "user")
+data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val phone: String,

@@ -6,14 +6,14 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.hinanawiyuzu.qixia.data.entity.UserInfo
-import org.hinanawiyuzu.qixia.data.repo.UserInfoRepository
+import org.hinanawiyuzu.qixia.data.entity.User
+import org.hinanawiyuzu.qixia.data.repo.UserRepository
 import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicalHistory
 import org.hinanawiyuzu.qixia.utils.AppRoute
 import org.hinanawiyuzu.qixia.utils.LoginRoute
 
 class FillPersonalInformationViewModel(
-    private val userInfoRepository: UserInfoRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val illnessSize = fakeMedicalHistory.size
     private val _uiState = MutableStateFlow(FillPersonalInformationUiState())
@@ -91,7 +91,7 @@ class FillPersonalInformationViewModel(
             illnessCardsClicked.mapIndexed { index, b ->
                 if (b) medicalHistory.add(index)
             }
-            val userInfo = UserInfo(
+            val user = User(
                 phone = accountPhone,
                 password = accountPassword,
                 loginState = true,
@@ -100,7 +100,7 @@ class FillPersonalInformationViewModel(
                 serialNumber = _uiState.value.serialNumber,
                 medicalHistory = medicalHistory.toList()
             )
-            userInfoRepository.insertUserInfo(userInfo)
+            userRepository.insertUser(user)
             navController.navigate(AppRoute.AppScreen.name) {
                 // 清空所有到LoginScreen的路线。inclusive为true表示包括LoginScreen
                 navController.popBackStack(

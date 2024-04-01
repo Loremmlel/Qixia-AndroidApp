@@ -9,20 +9,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.hinanawiyuzu.qixia.QixiaApplication
-import org.hinanawiyuzu.qixia.data.entity.UserInfo
-import org.hinanawiyuzu.qixia.data.repo.UserInfoRepository
+import org.hinanawiyuzu.qixia.data.entity.User
+import org.hinanawiyuzu.qixia.data.repo.UserRepository
 import org.hinanawiyuzu.qixia.utils.AppRoute
 import org.hinanawiyuzu.qixia.utils.LoginRoute
 
 class WelcomeViewModel(
     private val application: QixiaApplication,
-    userInfoRepository: UserInfoRepository
+    userRepository: UserRepository
 ) : ViewModel() {
     // 这里收集完毕后，一定要在@Composable函数里收集为StateFlow然后再传参使用。
     // 否则会出现什么都收集不到的情况。
     // 我想和协程、Flow的机制有关系。但是我现在完全搞不懂呢。
     val allUsers: StateFlow<AllUsers> =
-        userInfoRepository.getAllUserInfoStream().map { AllUsers(it) }
+        userRepository.getAllUsersStream().map { AllUsers(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000L),
@@ -62,4 +62,4 @@ class WelcomeViewModel(
     }
 }
 
-data class AllUsers(val userList: List<UserInfo> = listOf())
+data class AllUsers(val userList: List<User> = listOf())
