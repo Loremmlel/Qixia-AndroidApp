@@ -44,7 +44,8 @@ android {
     composeOptions {
         // 原来是1.4.7,和kotlin的1.9版本不兼容。那我以前是怎么构建成功的？明明以前用的kotlin版本也是1.9.
         // 鉴定为room异变。
-        kotlinCompilerExtensionVersion = "1.5.0"
+        // 又改成1.5.6来适配1.9.21版本的kotlin。
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
     packaging {
         resources {

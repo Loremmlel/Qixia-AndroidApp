@@ -8,12 +8,35 @@ import androidx.room.TypeConverters
 import org.hinanawiyuzu.qixia.data.dao.MedicineRemindDao
 import org.hinanawiyuzu.qixia.data.dao.MedicineRepoDao
 import org.hinanawiyuzu.qixia.data.dao.UserDao
+import org.hinanawiyuzu.qixia.data.entity.AttentionMatterConverter
+import org.hinanawiyuzu.qixia.data.entity.LocalDateConverter
+import org.hinanawiyuzu.qixia.data.entity.LocalTimeConverter
 import org.hinanawiyuzu.qixia.data.entity.MedicalHistoryConverter
 import org.hinanawiyuzu.qixia.data.entity.MedicineFrequencyConverter
+import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
+import org.hinanawiyuzu.qixia.data.entity.TakeMethodConverter
+import org.hinanawiyuzu.qixia.data.entity.UriConverter
 import org.hinanawiyuzu.qixia.data.entity.User
 
-@Database(entities = [User::class, MedicineRepo::class], version = 1, exportSchema = false)
+@Database(
+    entities = [
+        User::class,
+        MedicineRepo::class,
+        MedicineRemind::class
+               ],
+    version = 1,
+    exportSchema = false
+)
+@TypeConverters(
+    MedicalHistoryConverter::class,
+    MedicineFrequencyConverter::class,
+    TakeMethodConverter::class,
+    AttentionMatterConverter::class,
+    LocalDateConverter::class,
+    LocalTimeConverter::class,
+    UriConverter::class
+)
 abstract class QixiaDatabase : RoomDatabase() {
     abstract fun userInfoDao(): UserDao
     abstract fun medicineRepoDao(): MedicineRepoDao

@@ -2,7 +2,6 @@ package org.hinanawiyuzu.qixia.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 
 
@@ -31,15 +30,3 @@ data class User(
     @TypeConverters(MedicalHistoryConverter::class)
     val medicalHistory: List<Int>?
 )
-
-class MedicalHistoryConverter {
-    @TypeConverter
-    fun fromList(list: List<Int>?): String? {
-        return list?.joinToString(",")
-    }
-
-    @TypeConverter
-    fun toList(data: String?): List<Int>? {
-        return data?.split(",")?.map { it.toInt() }
-    }
-}

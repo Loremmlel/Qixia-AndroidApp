@@ -2,13 +2,16 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AppScreenPreview">
+      <entry key="DataTimePicker">
+        <State />
+      </entry>
+      <entry key="MedicineRepoScreenPreview">
+        <State />
+      </entry>
+      <entry key="NewRemindScreenPreview">
         <State />
       </entry>
       <entry key="QixiaDatabaseTest">
-        <State />
-      </entry>
-      <entry key="RemindScreenPreview">
         <State />
       </entry>
       <entry key="UserInfoDaoTest">

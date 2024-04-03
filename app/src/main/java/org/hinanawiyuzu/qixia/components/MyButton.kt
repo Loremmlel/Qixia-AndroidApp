@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -28,7 +29,7 @@ import org.hinanawiyuzu.qixia.ui.theme.secondary_color
  * @param buttonTextRes 按钮文本资源id
  * @param onButtonClicked 按钮点击回调函数
  * @param shape 按钮形状，默认是圆角矩形
- * @param colors 按钮颜色，默认是secondary_color。
+ * @param buttonColors 按钮颜色，默认是secondary_color。
  * @author HinanawiYuzu
  */
 @Composable
@@ -37,17 +38,23 @@ fun CommonButton(
     @StringRes buttonTextRes: Int,
     onButtonClicked: () -> Unit,
     shape: Shape = RoundedCornerShape(percent = 15),
-    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = secondary_color)
+    buttonColors: ButtonColors = ButtonDefaults.buttonColors(containerColor = secondary_color),
+    fontColors: Color = Color.White,
+    enabled: Boolean = true
 ) {
     Button(
         modifier = modifier,
         shape = shape,
-        colors = colors,
+        colors = buttonColors,
+        enabled = enabled,
         onClick = onButtonClicked
     ) {
         Text(
             text = stringResource(id = buttonTextRes),
-            style = TextStyle(fontSize = FontSize.loginScreenLoginButtonTextSize)
+            style = TextStyle(
+                fontSize = FontSize.loginScreenLoginButtonTextSize,
+                color = fontColors
+            )
         )
     }
 }

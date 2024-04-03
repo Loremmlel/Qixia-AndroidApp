@@ -66,5 +66,14 @@ object MyColor {
     val vipBrush: Brush = Brush.linearGradient(
         colors = listOf(Color(0xFFFECE98), Color(0xFFF59A19))
     )
+
+    val deepGreenButtonGradient: Brush = Brush.radialGradient(
+        colors = listOf(Color(0xFFFFFFFF), Color(0xFFB4E3CC), Color(0xFF5BC28F))
+    )
+
+    val transparentButtonBorderGradient: Brush = Brush.linearGradient(
+        colors = listOf(Color(0xFFFFFFFF), Color(0x00FFFFFF))
+    )
+
     val font_deep_blue: Color = Color(0xFF333E63)
 }

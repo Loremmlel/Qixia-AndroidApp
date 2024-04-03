@@ -1,8 +1,8 @@
 package org.hinanawiyuzu.qixia.data.entity
 
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import java.time.LocalDate
 
@@ -20,12 +20,16 @@ data class MedicineRepo(
     val id: Int = 0,
     val name: String,
     val remainAmount: String,
+    @TypeConverters(UriConverter::class)
+    val imageUri: Uri,
+    @TypeConverters(LocalDateConverter::class)
     val expiryDate: LocalDate,
     @TypeConverters(MedicineFrequencyConverter::class)
     val frequency: MedicineFrequency,
     @TypeConverters(AttentionMatterConverter::class)
-    val attentionMatter: AttentionMatter
+    val attentionMatter: AttentionMatter?
 )
+
 
 /**
  * 服药频率枚举类
@@ -46,7 +50,6 @@ enum class MedicineFrequency {
     OnceTwoWeeks, //两周一次
     OnceThreeWeeks, //三周一次
     OnceAMonth; //一月一次
-
     fun convertToString(): String {
         return when (this) {
             OnceDaily -> "一日一次"
@@ -67,36 +70,27 @@ enum class MedicineFrequency {
         }
     }
 }
-
-class MedicineFrequencyConverter {
-    @TypeConverter
-    fun fromMedicineFrequency(medicineFrequency: MedicineFrequency): String {
-        return medicineFrequency.convertToString()
-    }
-
-    @TypeConverter
-    fun toMedicineFrequency(string: String): MedicineFrequency {
-        return when (string) {
-            "一日一次" -> MedicineFrequency.OnceDaily
-            "一日两次" -> MedicineFrequency.TwiceDaily
-            "一日三次" -> MedicineFrequency.ThreeTimesDaily
-            "一日四次" -> MedicineFrequency.FourTimesDaily
-            "一日五次" -> MedicineFrequency.FiveTimesDaily
-            "一日六次" -> MedicineFrequency.SixTimesDaily
-            "两日一次" -> MedicineFrequency.OnceTwoDays
-            "三日一次" -> MedicineFrequency.OnceThreeDays
-            "四日一次" -> MedicineFrequency.OnceFourDays
-            "五日一次" -> MedicineFrequency.OnceFiveDays
-            "六日一次" -> MedicineFrequency.OnceSixDays
-            "一周一次" -> MedicineFrequency.OnceAWeek
-            "两周一次" -> MedicineFrequency.OnceTwoWeeks
-            "三周一次" -> MedicineFrequency.OnceThreeWeeks
-            "一月一次" -> MedicineFrequency.OnceAMonth
-            else -> MedicineFrequency.OnceDaily
-        }
+// 扩展函数太香了！！！
+fun String.toMedicineFrequency(): MedicineFrequency {
+    return when (this) {
+        "一日一次" -> MedicineFrequency.OnceDaily
+        "一日两次" -> MedicineFrequency.TwiceDaily
+        "一日三次" -> MedicineFrequency.ThreeTimesDaily
+        "一日四次" -> MedicineFrequency.FourTimesDaily
+        "一日五次" -> MedicineFrequency.FiveTimesDaily
+        "一日六次" -> MedicineFrequency.SixTimesDaily
+        "两日一次" -> MedicineFrequency.OnceTwoDays
+        "三日一次" -> MedicineFrequency.OnceThreeDays
+        "四日一次" -> MedicineFrequency.OnceFourDays
+        "五日一次" -> MedicineFrequency.OnceFiveDays
+        "六日一次" -> MedicineFrequency.OnceSixDays
+        "一周一次" -> MedicineFrequency.OnceAWeek
+        "两周一次" -> MedicineFrequency.OnceTwoWeeks
+        "三周一次" -> MedicineFrequency.OnceThreeWeeks
+        "一月一次" -> MedicineFrequency.OnceAMonth
+        else -> MedicineFrequency.OnceDaily
     }
 }
-
 /**
  * 服药注意事项枚举类
  */
@@ -116,20 +110,3 @@ enum class AttentionMatter {
     }
 }
 
-class AttentionMatterConverter {
-    @TypeConverter
-    fun fromAttentionMatter(attentionMatter: AttentionMatter): String {
-        return attentionMatter.convertToString()
-    }
-
-    @TypeConverter
-    fun toAttentionMatter(string: String): AttentionMatter {
-        return when (string) {
-            "无" -> AttentionMatter.None
-            "空腹" -> AttentionMatter.EmptyStomach
-            "避光" -> AttentionMatter.KeepInDarkPlace
-            "干燥" -> AttentionMatter.Desiccation
-            else -> AttentionMatter.None
-        }
-    }
-}

@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -45,11 +44,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
+import org.hinanawiyuzu.qixia.components.GrayLine
 import org.hinanawiyuzu.qixia.components.MyIconButton
-import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicinesRemindInfo
-import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicinesRepoInfo
+import org.hinanawiyuzu.qixia.data.entity.LocalTimeConverter
 import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
+import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicinesRemindInfo
+import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicinesRepoInfo
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.MyColor
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.greenCardGradient
@@ -70,10 +71,9 @@ fun RemindScreen(
     viewModel: RemindViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
     Column(
         modifier = modifier
-            .verticalScroll(state = rememberScrollState())
             .padding(5.dp)
     ) {
         TopBar(
@@ -82,39 +82,39 @@ fun RemindScreen(
             onMenuClicked = { /*TODO*/ },
             onAddClicked = {/*TODO*/ }
         )
-        Column(
-            modifier = Modifier
-                .requiredWidth(screenWidth.dp)
-                .height(1.dp)
-                .background(Color.LightGray)
-        ) {}
+        GrayLine(screenWidthDp = screenWidthDp)
         Calendar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 5.dp),
             currentDateTime = viewModel.currentTime
         )
-        TakeMedicineRemind(
+        Column(
             modifier = Modifier
-                .padding(5.dp),
-            medicineReminds = fakeMedicinesRemindInfo,
-            medicineImgs = listOf(R.drawable.white_pill, R.drawable.pink_pill),
-            onDetailClicked = { /*TODO*/ },
-            onTakeMedicineClicked = {/*TODO*/ }
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .verticalScroll(state = rememberScrollState())
         ) {
-            MedicinesLeft(
-                modifier = Modifier,
-                medicineRepos = fakeMedicinesRepoInfo
+            TakeMedicineRemind(
+                modifier = Modifier
+                    .padding(5.dp),
+                medicineReminds = fakeMedicinesRemindInfo,
+                medicineImgs = listOf(R.drawable.white_pill, R.drawable.pink_pill),
+                onDetailClicked = { /*TODO*/ },
+                onTakeMedicineClicked = {/*TODO*/ }
             )
-            MedicinesExpiry(
-                currentDate = viewModel.currentTime.toLocalDate(),
-                medicinesRepoInfo = fakeMedicinesRepoInfo
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                MedicinesLeft(
+                    modifier = Modifier,
+                    medicineRepos = fakeMedicinesRepoInfo
+                )
+                MedicinesExpiry(
+                    currentDate = viewModel.currentTime.toLocalDate(),
+                    medicinesRepoInfo = fakeMedicinesRepoInfo
+                )
+            }
         }
     }
 }
@@ -147,7 +147,7 @@ private fun TopBar(
         Text(
             text = "提醒",
             style = TextStyle(
-                fontSize = FontSize.veryLargeSize,
+                fontSize = FontSize.mediumLargeSize,
             )
         )
         MyIconButton(onClick = onAddClicked) {
@@ -385,7 +385,7 @@ private fun RemindCard(
             Spacer(modifier = Modifier.size(5.dp))
             Text(
                 textAlign = TextAlign.Center,
-                text = medicineRemind.time,
+                text = LocalTimeConverter.toDisplayString(medicineRemind.remindTime),
                 style = TextStyle(
                     color = MyColor.font_deep_blue,
                     fontSize = FontSize.largeSize,
@@ -471,7 +471,7 @@ private fun RemindCard(
                                 .align(Alignment.End)
                                 .padding(end = 10.dp),
                             painter = painterResource(id = R.drawable.check_circle),
-                            contentDescription = "您已于" + medicineRemind.time + "服用" + medicineRemind.name,
+                            contentDescription = "您已于" + medicineRemind.remindTime + "服用" + medicineRemind.name,
                             tint = secondary_color
                         )
                     } else {

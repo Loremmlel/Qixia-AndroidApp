@@ -3,8 +3,13 @@ package org.hinanawiyuzu.qixia.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,13 +85,27 @@ fun BlurredBackground(
             modifier = Modifier
                 .fillMaxSize(),
             // 2的饱和度更高，颜色更鲜艳
-            painter = painterResource(id = R.drawable.blurred_background2),
+            painter = painterResource(id = R.drawable.blurred_background40),
             contentDescription = null,
             contentScale = ContentScale.FillWidth
         )
     }
 }
 
+
+@Composable
+fun GrayLine(
+    modifier: Modifier = Modifier,
+    screenWidthDp: Dp,
+) {
+    Spacer(modifier = Modifier.size(5.dp))
+    Column(
+        modifier = Modifier
+            .requiredWidth(screenWidthDp)
+            .height(1.dp)
+            .background(Color.LightGray)
+    ) {}
+}
 @Preview
 @Composable
 fun BackgroundPreview() {

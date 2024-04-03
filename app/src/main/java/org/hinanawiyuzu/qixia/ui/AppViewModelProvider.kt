@@ -5,8 +5,11 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import org.hinanawiyuzu.qixia.QixiaApplication
+import org.hinanawiyuzu.qixia.ui.screen.MedicineRepoScreen
 import org.hinanawiyuzu.qixia.ui.viewmodel.FillPersonalInformationViewModel
 import org.hinanawiyuzu.qixia.ui.viewmodel.LoginViewModel
+import org.hinanawiyuzu.qixia.ui.viewmodel.MedicineRepoViewModel
+import org.hinanawiyuzu.qixia.ui.viewmodel.NewRemindViewModel
 import org.hinanawiyuzu.qixia.ui.viewmodel.WelcomeViewModel
 
 /**
@@ -25,6 +28,15 @@ object AppViewModelProvider {
                 application = qixiaApplication(),
                 userRepository =  qixiaApplication().container.userRepository,
             )
+        }
+        initializer {
+            NewRemindViewModel(
+                medicineRemindRepository = qixiaApplication().container.medicineRemindRepository,
+                medicineRepoRepository = qixiaApplication().container.medicineRepoRepository
+            )
+        }
+        initializer {
+            MedicineRepoViewModel(qixiaApplication().container.medicineRepoRepository)
         }
     }
 }
