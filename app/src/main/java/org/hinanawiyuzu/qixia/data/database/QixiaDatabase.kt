@@ -19,6 +19,7 @@ import org.hinanawiyuzu.qixia.data.entity.TakeMethodConverter
 import org.hinanawiyuzu.qixia.data.entity.UriConverter
 import org.hinanawiyuzu.qixia.data.entity.User
 
+const val dbName = "qixia_database"
 @Database(
     entities = [
         User::class,
@@ -47,10 +48,29 @@ abstract class QixiaDatabase : RoomDatabase() {
         private var instance: QixiaDatabase? = null
         fun getDatabase(context: Context): QixiaDatabase {
             return instance ?: synchronized(this) {
-                Room.databaseBuilder(context, QixiaDatabase::class.java, "qixia_database")
+                val databaseFile = context.getDatabasePath(dbName)
+                if(!databaseFile.exists()) {
+                    copyPrePopulatedDatabase(context)
+                }
+                Room.databaseBuilder(context, QixiaDatabase::class.java, dbName)
                     .fallbackToDestructiveMigration()
                     .build()
                     .also { instance = it }
+            }
+        }
+
+        // 获取数据库路径的时候，给出的字符串不能加.db，否则创建的数据库名字也会加上.db。
+        // 真是奇怪。
+        private fun copyPrePopulatedDatabase(context: Context) {
+            val dbPath = context.getDatabasePath(dbName)
+            if (!dbPath.exists()) {
+                dbPath.parentFile?.mkdirs()
+                dbPath.createNewFile()
+                context.assets.open(dbName).use { inputStream ->
+                    dbPath.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package org.hinanawiyuzu.qixia.data.source.fake
 
+import android.net.Uri
 import org.hinanawiyuzu.qixia.data.entity.AttentionMatter
 import org.hinanawiyuzu.qixia.data.entity.MedicineFrequency
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
@@ -11,20 +12,23 @@ val fakeMedicinesRepoInfo: List<MedicineRepo> = listOf(
         remainAmount = "10片",
         expiryDate = LocalDate.of(2026, 6, 30),
         frequency = MedicineFrequency.OnceDaily,
-        attentionMatter = AttentionMatter.EmptyStomach
+        attentionMatter = AttentionMatter.EmptyStomach,
+        imageUri = Uri.parse(""),
     ),
     MedicineRepo(
         name = "硫酸氢氯吡咯雷片",
         remainAmount = "10片",
         expiryDate = LocalDate.of(2024, 1, 31),
         frequency = MedicineFrequency.OnceDaily,
-        attentionMatter = AttentionMatter.None
+        attentionMatter = AttentionMatter.None,
+        imageUri = Uri.parse(""),
     ),
     MedicineRepo(
         name = "草酸艾司西酞普兰片",
         remainAmount = "60片",
         expiryDate = LocalDate.of(2025, 6, 25),
         frequency = MedicineFrequency.OnceDaily,
-        attentionMatter = AttentionMatter.None
+        attentionMatter = AttentionMatter.None,
+        imageUri = Uri.parse(""),
     )
 )
