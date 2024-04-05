@@ -57,11 +57,14 @@ class FillPersonalInformationViewModel(
         // 虽然已经设置了键盘为数字，但是还是保险一点吧。
         // 原本这里有判断输入是否是数字的逻辑，但是我发现键盘设置为数字后，其它字符是无法输入的。
         // 没想到这方面系统都做了处理。
-        _uiState.update { currentState ->
-            currentState.copy(
-                age = value,
-                isAgeError = value.toInt() !in (0..120)
-            )
+        // 然后发现貌似没有？ 4.4
+        if (value.matches(Regex("""\d*""")) || value == "") {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    age = value,
+                    isAgeError = value.toInt() !in (0..120)
+                )
+            }
         }
     }
 

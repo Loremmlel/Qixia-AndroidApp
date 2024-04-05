@@ -45,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -54,7 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.BlurredBackground
@@ -66,25 +65,28 @@ import org.hinanawiyuzu.qixia.data.entity.TakeMethod
 import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.MyColor
-import org.hinanawiyuzu.qixia.ui.theme.MyColor.greenCardGradient
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.transparentButtonBorderGradient
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.NewRemindViewModel
-import org.hinanawiyuzu.qixia.utils.advancedShadow
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedBetweenMedicineRepoAndNewRemindViewModel
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZoneId
 
 @Composable
 fun NewRemindScreen(
     modifier: Modifier = Modifier,
+    sharedViewModel: SharedBetweenMedicineRepoAndNewRemindViewModel,
     viewModel: NewRemindViewModel = viewModel(factory = AppViewModelProvider.factory),
-    navController: NavController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     val selectorHeight: Dp = 35.dp
     val screenWidthDp: Dp = LocalConfiguration.current.screenWidthDp.dp
+    viewModel.medicineRepoId = sharedViewModel.medicineRepoId
+    sharedViewModel.medicineRepoId?.let {
+        viewModel.getMedicineRepo()
+    }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
@@ -98,8 +100,7 @@ fun NewRemindScreen(
         ) {
             TopBar(
                 modifier = Modifier.fillMaxWidth(),
-                navController = navController,
-                onBackClicked = {}
+                onBackClicked = {navController.popBackStack()}
             )
             GrayLine(screenWidthDp = screenWidthDp)
             Column(
@@ -120,6 +121,7 @@ fun NewRemindScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(selectorHeight),
+                        medicineName = viewModel.medicineName,
                         onSelectMedicineFromBoxClicked = {
                             viewModel.onSelectMedicineFromBoxClicked(navController)
                         }
@@ -185,7 +187,6 @@ fun NewRemindScreen(
                                 .fillMaxWidth()
                                 .height(selectorHeight),
                             startDate = viewModel.startDate,
-                            endDate = viewModel.endDate,
                             onStartDatePickerConfirmButtonClicked = viewModel::onStartDatePickerConfirmButtonClicked
                         )
                     }
@@ -224,7 +225,6 @@ fun NewRemindScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(selectorHeight),
-                        remindTime = viewModel.remindTime,
                         onRemindTimeSelected = viewModel::onRemindTimeSelected
                     )
                 }
@@ -265,7 +265,6 @@ fun NewRemindScreen(
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
-    navController: NavController,
     onBackClicked: () -> Unit
 ) {
     Row(
@@ -292,6 +291,7 @@ private fun TopBar(
 @Composable
 private fun MedicineSelector(
     modifier: Modifier = Modifier,
+    medicineName: String,
     onSelectMedicineFromBoxClicked: () -> Unit
 ) {
     Row(
@@ -306,6 +306,9 @@ private fun MedicineSelector(
                 .padding(start = 10.dp, top = 3.dp, bottom = 3.dp),
             painter = painterResource(id = R.drawable.new_remind_screen_add_medicine),
             contentDescription = "新增药品"
+        )
+        Text(
+            text = medicineName
         )
         Row(
             modifier = Modifier
@@ -440,7 +443,6 @@ private fun FrequencySelector(
 private fun StartDateSelector(
     modifier: Modifier = Modifier,
     startDate: LocalDate?,
-    endDate: LocalDate?,
     onStartDatePickerConfirmButtonClicked: (Long?) -> Unit
 ) {
     var isDatePickerDialogOpen by remember { mutableStateOf(false) }
@@ -570,7 +572,6 @@ private fun EndDateSelector(
 @Composable
 private fun RemindTimeSelector(
     modifier: Modifier = Modifier,
-    remindTime: LocalTime?,
     onRemindTimeSelected: (Int, Int) -> Unit
 ) {
     val hour = remember { mutableIntStateOf(0) }
@@ -762,13 +763,12 @@ private fun CommitButton(
         ),
         fontColors = Color.Black
     )
-
 }
 
 @Preview
 @Composable
 private fun NewRemindScreenPreview() {
     QixiaTheme {
-        NewRemindScreen()
+
     }
 }

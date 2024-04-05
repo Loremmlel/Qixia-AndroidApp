@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import org.hinanawiyuzu.qixia.data.dao.MedicineInfoDao
 import org.hinanawiyuzu.qixia.data.dao.MedicineRemindDao
 import org.hinanawiyuzu.qixia.data.dao.MedicineRepoDao
 import org.hinanawiyuzu.qixia.data.dao.UserDao
@@ -13,6 +14,7 @@ import org.hinanawiyuzu.qixia.data.entity.LocalDateConverter
 import org.hinanawiyuzu.qixia.data.entity.LocalTimeConverter
 import org.hinanawiyuzu.qixia.data.entity.MedicalHistoryConverter
 import org.hinanawiyuzu.qixia.data.entity.MedicineFrequencyConverter
+import org.hinanawiyuzu.qixia.data.entity.MedicineInfo
 import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
 import org.hinanawiyuzu.qixia.data.entity.TakeMethodConverter
@@ -20,12 +22,14 @@ import org.hinanawiyuzu.qixia.data.entity.UriConverter
 import org.hinanawiyuzu.qixia.data.entity.User
 
 const val dbName = "qixia_database"
+
 @Database(
     entities = [
         User::class,
         MedicineRepo::class,
-        MedicineRemind::class
-               ],
+        MedicineRemind::class,
+        MedicineInfo::class
+    ],
     version = 1,
     exportSchema = false
 )
@@ -43,13 +47,15 @@ abstract class QixiaDatabase : RoomDatabase() {
     abstract fun medicineRepoDao(): MedicineRepoDao
     abstract fun medicineRemindDao(): MedicineRemindDao
 
+    abstract fun medicineInfoDao(): MedicineInfoDao
+
     companion object {
         @Volatile
         private var instance: QixiaDatabase? = null
         fun getDatabase(context: Context): QixiaDatabase {
             return instance ?: synchronized(this) {
                 val databaseFile = context.getDatabasePath(dbName)
-                if(!databaseFile.exists()) {
+                if (!databaseFile.exists()) {
                     copyPrePopulatedDatabase(context)
                 }
                 Room.databaseBuilder(context, QixiaDatabase::class.java, dbName)

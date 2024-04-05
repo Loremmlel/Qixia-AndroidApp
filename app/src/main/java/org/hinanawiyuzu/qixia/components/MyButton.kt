@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.secondary_color
@@ -40,6 +41,7 @@ fun CommonButton(
     shape: Shape = RoundedCornerShape(percent = 15),
     buttonColors: ButtonColors = ButtonDefaults.buttonColors(containerColor = secondary_color),
     fontColors: Color = Color.White,
+    fontSize: TextUnit = FontSize.loginScreenLoginButtonTextSize,
     enabled: Boolean = true
 ) {
     Button(
@@ -52,7 +54,7 @@ fun CommonButton(
         Text(
             text = stringResource(id = buttonTextRes),
             style = TextStyle(
-                fontSize = FontSize.loginScreenLoginButtonTextSize,
+                fontSize = fontSize,
                 color = fontColors
             )
         )

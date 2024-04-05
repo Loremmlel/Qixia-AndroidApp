@@ -62,4 +62,4 @@ class WelcomeViewModel(
     }
 }
 
-data class AllUsers(val userList: List<User> = listOf())
+data class AllUsers(val userList: List<User> = emptyList())

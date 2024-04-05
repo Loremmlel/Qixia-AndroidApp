@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import org.hinanawiyuzu.qixia.utils.AppScreenState
+import org.hinanawiyuzu.qixia.ui.screen.AppScreenState
 
 class AppViewModel : ViewModel() {
     var appScreenState by mutableStateOf(AppScreenState.Remind)

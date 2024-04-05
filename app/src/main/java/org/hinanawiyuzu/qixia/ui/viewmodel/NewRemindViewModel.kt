@@ -4,12 +4,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import org.hinanawiyuzu.qixia.data.entity.MedicineFrequency
+import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
+import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod
 import org.hinanawiyuzu.qixia.data.entity.toMedicineFrequency
 import org.hinanawiyuzu.qixia.data.repo.MedicineRemindRepository
 import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
+import org.hinanawiyuzu.qixia.utils.RemindRoute
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -20,6 +26,8 @@ class NewRemindViewModel(
     private val medicineRepoRepository: MedicineRepoRepository
 ) : ViewModel() {
     var medicineRepoId: Int? by mutableStateOf(null)
+    private var medicineRepo: MedicineRepo? by mutableStateOf(null)
+    var medicineName: String by mutableStateOf("")
     var dose: String? by mutableStateOf(null)
     var frequency: MedicineFrequency? by mutableStateOf(null)
     var startDate: LocalDate? by mutableStateOf(null)
@@ -29,20 +37,43 @@ class NewRemindViewModel(
     var buttonEnabled: Boolean by mutableStateOf(false)
 
     fun onSelectMedicineFromBoxClicked(navController: NavController) {
-
+        navController.navigate(RemindRoute.MedicineRepoScreen.name)
     }
 
     fun onCommitButtonClicked(navController: NavController) {
-
+        val medicineRemind = MedicineRemind(
+            remindTime = remindTime!!,
+            startDate = startDate!!,
+            endDate = endDate!!,
+            name = medicineName,
+            dose = dose!!,
+            frequency = frequency!!,
+            isTaken = false,
+            medicineRepoId = medicineRepoId!!,
+            method = method!!
+        )
+        viewModelScope.launch{
+            medicineRemindRepository.insertMedicineRemind(medicineRemind)
+            navController.popBackStack()
+        }
+    }
+    fun getMedicineRepo() {
+        viewModelScope.launch {
+            medicineRepo = medicineRepoRepository.getMedicineRepoStreamById(medicineRepoId!!).firstOrNull()
+            medicineName = medicineRepo!!.name
+        }
     }
 
     fun onDoseDropDownMenuItemClicked(value: String) {
         dose = value
+        checkButtonEnabled()
     }
 
     fun onFrequencyDropDownMenuItemClicked(value: String) {
         frequency = value.toMedicineFrequency()
+        checkButtonEnabled()
     }
+
     fun onStartDatePickerConfirmButtonClicked(millis: Long?) {
         startDate = millis?.let {
             Instant
@@ -56,26 +87,36 @@ class NewRemindViewModel(
                 endDate = null
             }
         }
+        checkButtonEnabled()
     }
-    fun onEndDatePickerConfirmButtonClicked(millis: Long?){
+
+    fun onEndDatePickerConfirmButtonClicked(millis: Long?) {
         endDate = millis?.let {
             Instant
                 .ofEpochMilli(it)
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
         }
+        checkButtonEnabled()
     }
 
     fun onRemindTimeSelected(hours: Int, minutes: Int) {
         remindTime = LocalTime.of(hours, minutes)
+        checkButtonEnabled()
     }
 
     fun onSelectMethodClicked(methodId: Int) {
-        method = when(methodId) {
+        method = when (methodId) {
             0 -> TakeMethod.BeforeMeal
             1 -> TakeMethod.AtMeal
             2 -> TakeMethod.AfterMeal
             else -> null
         }
+        checkButtonEnabled()
+    }
+
+    private fun checkButtonEnabled() {
+        buttonEnabled =
+            dose != null && frequency != null && startDate != null && endDate != null && remindTime != null && method != null
     }
 }

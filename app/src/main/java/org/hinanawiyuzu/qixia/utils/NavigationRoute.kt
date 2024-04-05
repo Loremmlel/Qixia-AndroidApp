@@ -23,3 +23,9 @@ enum class LoginRoute {
 enum class AppRoute {
     AppScreen
 }
+enum class RemindRoute {
+    RemindScreen,
+    NewRemindScreen,
+    MedicineRepoScreen,
+    NewMedicineScreen
+}

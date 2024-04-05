@@ -14,6 +14,7 @@ import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
+const val animationSpec:Int = 500
 /**
  * 自己封装的NavGraphBuilder扩展函数。
  *
@@ -26,19 +27,19 @@ fun NavGraphBuilder.slideComposable(
     deepLinks: List<NavDeepLink> = emptyList(),
     enterTransition: (@JvmSuppressWildcards
     AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = {
-        slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+        slideInHorizontally(animationSpec = tween(animationSpec), initialOffsetX = { it })
     },
     exitTransition: (@JvmSuppressWildcards
     AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = {
-        slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+        slideOutHorizontally(animationSpec = tween(animationSpec), targetOffsetX = { -it })
     },
     popEnterTransition: (@JvmSuppressWildcards
     AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = {
-        slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
+        slideInHorizontally(animationSpec = tween(animationSpec), initialOffsetX = { -it })
     },
     popExitTransition: (@JvmSuppressWildcards
     AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = {
-        slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { it })
+        slideOutHorizontally(animationSpec = tween(animationSpec), targetOffsetX = { it })
     },
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
 ) = composable(

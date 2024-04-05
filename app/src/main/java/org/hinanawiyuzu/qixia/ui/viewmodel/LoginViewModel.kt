@@ -52,6 +52,7 @@ class LoginViewModel(
                         it.copy(isError = true)
                     }
                 } else {
+                    userRepository.updateUser(queryResult.copy(loginState = true))
                     navController.navigate(route = AppRoute.AppScreen.name) {
                         navController.popBackStack(
                             route = LoginRoute.LoginScreen.name,

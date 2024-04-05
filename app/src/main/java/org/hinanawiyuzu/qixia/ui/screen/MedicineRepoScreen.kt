@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.BlurredBackground
@@ -61,16 +63,19 @@ import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.neutral_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.MedicineRepoViewModel
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedBetweenMedicineRepoAndNewRemindViewModel
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 import java.time.LocalDate
 
 @Composable
 fun MedicineRepoScreen(
     modifier: Modifier = Modifier,
+    sharedViewModel: SharedBetweenMedicineRepoAndNewRemindViewModel,
     viewModel: MedicineRepoViewModel = viewModel(factory = AppViewModelProvider.factory),
-    navController: NavController = rememberNavController()
+    navController: NavHostController = rememberNavController()
 ) {
     val screenWidthDp: Dp = LocalConfiguration.current.screenWidthDp.dp
+    val allMedicineRepo by viewModel.allMedicineRepo.collectAsState()
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
@@ -85,9 +90,7 @@ fun MedicineRepoScreen(
         ) {
             TopBar(
                 modifier = Modifier.fillMaxWidth(),
-                navController = navController,
-                onBackClicked = {},
-                sortCondition = viewModel.sortCondition,
+                onBackClicked = {navController.popBackStack()},
                 onDropDownMenuItemClicked = viewModel::onSortConditionChanged
             )
             GrayLine(screenWidthDp = screenWidthDp)
@@ -101,7 +104,8 @@ fun MedicineRepoScreen(
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(10.dp),
-                medicineRepos = viewModel.fakeRepoInfo,
+                allMedicineRepo = allMedicineRepo.allMedicineRepoList,
+                medicineRepos = viewModel.displayedMedicineRepo,
                 selectedStates = viewModel.selectedStates,
                 onSelectClicked = viewModel::toggleSelection
             )
@@ -111,8 +115,13 @@ fun MedicineRepoScreen(
                 .align(Alignment.BottomCenter)
                 .offset(y = (-20).dp)
                 .fillMaxWidth(),
-            onAddClicked = { /*TODO*/ },
-            onSelectClicked = { /*TODO*/ }
+            onAddClicked = { viewModel.onAddMedicineClicked(navController) },
+            onSelectClicked = {
+                viewModel.onSelectClicked(
+                    navController,
+                    sharedViewModel::changeMedicineRepoId
+                )
+            }
         )
     }
 }
@@ -121,8 +130,6 @@ fun MedicineRepoScreen(
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    sortCondition: SortCondition?,
     onBackClicked: () -> Unit,
     onDropDownMenuItemClicked: (Int) -> Unit
 ) {
@@ -235,7 +242,8 @@ private fun SearchBox(
 @Composable
 private fun MedicineRepoCards(
     modifier: Modifier = Modifier,
-    medicineRepos: List<MedicineRepo>?,
+    allMedicineRepo: List<MedicineRepo>,
+    medicineRepos: List<MedicineRepo>,
     selectedStates: List<Boolean>,
     onSelectClicked: (Int) -> Unit,
 ) {
@@ -245,19 +253,22 @@ private fun MedicineRepoCards(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        medicineRepos?.forEach { medicineRepo ->
-            val index = medicineRepos.indexOf(medicineRepo)
+        medicineRepos.forEach { medicineRepo ->
+            val index = allMedicineRepo.indexOf(medicineRepo)
             MedicineRepoCard(
                 modifier = Modifier.fillMaxWidth(),
                 medicineRepo = medicineRepo,
                 isSelected = selectedStates[index],
                 onSelectClicked = { onSelectClicked(index) }
             )
-        } ?: Text(
-            text = "没有找到药物！",
-            fontSize = FontSize.extraLargeSize,
-            fontWeight = FontWeight.Bold
-        )
+        }
+        if (medicineRepos.isEmpty()) {
+            Text(
+                text = "没有找到药物！",
+                fontSize = FontSize.extraLargeSize,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
@@ -479,8 +490,7 @@ fun MedicineRepoCard(
                     }
                 }
                 Text(
-                    text = if (warningMode in (2..3)) "不可服用"
-                    else medicineRepo.frequency.convertToString(),
+                    text = if (warningMode in (2..3)) "不可服用" else "",
                     color = Color.Gray,
                     fontWeight = FontWeight.Medium,
                     fontSize = FontSize.smallSize
@@ -558,6 +568,5 @@ private fun BottomButtons(
 @Composable
 private fun MedicineRepoScreenPreview() {
     QixiaTheme {
-        MedicineRepoScreen()
     }
 }

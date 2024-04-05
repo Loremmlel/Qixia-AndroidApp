@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -45,28 +46,44 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.BlurredBackground
 import org.hinanawiyuzu.qixia.components.MyIconButton
+import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Box
+import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Main
+import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Profile
+import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Record
+import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Remind
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.bottomAnimatedCircleGradient
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.AppViewModel
-import org.hinanawiyuzu.qixia.utils.AppScreenState
 
 // 底部导航栏动画持续时间(ms)
 const val animationTime: Int = 300
 
+/**
+ * 主页面状态枚举类
+ * @property Main 主页
+ * @property Box 药箱页面
+ * @property Remind 提醒页面
+ * @property Record 记录页面
+ * @property Profile 我的页面
+ */
+enum class AppScreenState {
+    Main, Box, Remind, Record, Profile
+}
 @Composable
 fun AppScreen(
     modifier: Modifier = Modifier,
     viewModel: AppViewModel = viewModel()
 ) {
+    var isBottomBarVisible by remember { mutableStateOf(true) }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
         BlurredBackground()
         when (viewModel.appScreenState) {
-            AppScreenState.Main -> {}
-            AppScreenState.Box -> {}
-            AppScreenState.Remind -> {
+            Main -> {}
+            Box -> {}
+            Remind -> {
                 RemindScreen(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
@@ -74,17 +91,19 @@ fun AppScreen(
                         // 按比例布局的好处（不是）
                         // 唉卧槽，那我干什么整screenWidthDp,直接fillMaxHeight,fillMaxWidth + 比例不就好了吗
                         // 唉，我真傻，真的。
-                        .fillMaxHeight(0.9167f)
+                        .fillMaxHeight(if (isBottomBarVisible) 0.9167f else 1f),
+                    changeBottomBarVisibility = { isBottomBarVisible = it }
                 )
             }
-
-            AppScreenState.Record -> {}
-            AppScreenState.Profile -> {}
+            Record -> {}
+            Profile -> {}
         }
-        AnimatedBottomAppBar(
-            onBottomBarItemClicked = viewModel::onBottomBarItemClicked,
-            appScreenState = viewModel.appScreenState
-        )
+        if (isBottomBarVisible) {
+            AnimatedBottomAppBar(
+                onBottomBarItemClicked = viewModel::onBottomBarItemClicked,
+                appScreenState = viewModel.appScreenState
+            )
+        }
     }
 }
 
@@ -100,11 +119,11 @@ private fun AnimatedBottomAppBar(
     var itemWidthDp by remember { mutableFloatStateOf(0f) } //一个导航按钮的宽度dp值
     var spaceWidthDp by remember { mutableFloatStateOf(0f) } //导航按钮之间空格的宽度dp值
     @DrawableRes val currentImageRes = when (appScreenState) {
-        AppScreenState.Main -> R.drawable.mybottom_app_bar_status1
-        AppScreenState.Box -> R.drawable.mybottom_app_bar_status2
-        AppScreenState.Remind -> R.drawable.mybottom_app_bar_status3
-        AppScreenState.Record -> R.drawable.mybottom_app_bar_status4
-        AppScreenState.Profile -> R.drawable.mybottom_app_bar_status5
+        Main -> R.drawable.mybottom_app_bar_status1
+        Box -> R.drawable.mybottom_app_bar_status2
+        Remind -> R.drawable.mybottom_app_bar_status3
+        Record -> R.drawable.mybottom_app_bar_status4
+        Profile -> R.drawable.mybottom_app_bar_status5
     }
     Box(
         modifier = modifier
@@ -147,7 +166,7 @@ private fun AnimatedBottomAppBar(
                 shadowIconRes = R.drawable.mybottom_app_bar_home_shadow,
                 text = "主页",
                 currentAppScreenState = appScreenState,
-                thisAppScreenState = AppScreenState.Main,
+                thisAppScreenState = Main,
                 onBottomBarItemClicked = onBottomBarItemClicked
             )
             BottomIconButtonItem(
@@ -155,7 +174,7 @@ private fun AnimatedBottomAppBar(
                 shadowIconRes = R.drawable.mybottom_app_bar_box_shadow,
                 text = "药箱",
                 currentAppScreenState = appScreenState,
-                thisAppScreenState = AppScreenState.Box,
+                thisAppScreenState = Box,
                 onBottomBarItemClicked = onBottomBarItemClicked
             )
             BottomIconButtonItem(
@@ -163,7 +182,7 @@ private fun AnimatedBottomAppBar(
                 shadowIconRes = R.drawable.mybottom_app_bar_reminder_shadow,
                 text = "提醒",
                 currentAppScreenState = appScreenState,
-                thisAppScreenState = AppScreenState.Remind,
+                thisAppScreenState = Remind,
                 onBottomBarItemClicked = onBottomBarItemClicked
             )
             BottomIconButtonItem(
@@ -171,7 +190,7 @@ private fun AnimatedBottomAppBar(
                 shadowIconRes = R.drawable.mybottom_app_bar_record_shadow,
                 text = "记录",
                 currentAppScreenState = appScreenState,
-                thisAppScreenState = AppScreenState.Record,
+                thisAppScreenState = Record,
                 onBottomBarItemClicked = onBottomBarItemClicked
             )
             BottomIconButtonItem(
@@ -179,7 +198,7 @@ private fun AnimatedBottomAppBar(
                 shadowIconRes = R.drawable.mybottom_app_bar_profile_shadow,
                 text = "我的",
                 currentAppScreenState = appScreenState,
-                thisAppScreenState = AppScreenState.Profile,
+                thisAppScreenState = Profile,
                 onBottomBarItemClicked = onBottomBarItemClicked
             )
         }
@@ -217,11 +236,11 @@ private fun BottomIconButtonItem(
         label = "图标上浮动画"
     )
     val id = when (thisAppScreenState) {
-        AppScreenState.Main -> 0
-        AppScreenState.Box -> 1
-        AppScreenState.Remind -> 2
-        AppScreenState.Record -> 3
-        AppScreenState.Profile -> 4
+        Main -> 0
+        Box -> 1
+        Remind -> 2
+        Record -> 3
+        Profile -> 4
     }
     MyIconButton(
         modifier = modifier
@@ -295,27 +314,27 @@ fun AnimatedCircle(
     val animatedIntOffset by animateIntOffsetAsState(
         targetValue = when (currentAppScreenState) {
             // BYD这个Offset是px，不是dp!!!
-            AppScreenState.Main -> IntOffset(
+            Main -> IntOffset(
                 (initOffsetXDp * dp2Px).toInt(),
                 -(initOffsetYDp * dp2Px).toInt()
             )
 
-            AppScreenState.Box -> IntOffset(
+            Box -> IntOffset(
                 ((initOffsetXDp + animateOffsetDp) * dp2Px).toInt(),
                 -(initOffsetYDp * dp2Px).toInt()
             )
 
-            AppScreenState.Remind -> IntOffset(
+            Remind -> IntOffset(
                 ((initOffsetXDp + animateOffsetDp * 2) * dp2Px).toInt(),
                 -(initOffsetYDp * dp2Px).toInt()
             )
 
-            AppScreenState.Record -> IntOffset(
+            Record -> IntOffset(
                 ((initOffsetXDp + animateOffsetDp * 3) * dp2Px).toInt(),
                 -(initOffsetYDp * dp2Px).toInt()
             )
 
-            AppScreenState.Profile -> IntOffset(
+            Profile -> IntOffset(
                 ((initOffsetXDp + animateOffsetDp * 4) * dp2Px).toInt(),
                 -(initOffsetYDp * dp2Px).toInt()
             )

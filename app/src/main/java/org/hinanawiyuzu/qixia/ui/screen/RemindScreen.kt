@@ -1,6 +1,9 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +30,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +46,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.GrayLine
@@ -49,8 +56,7 @@ import org.hinanawiyuzu.qixia.components.MyIconButton
 import org.hinanawiyuzu.qixia.data.entity.LocalTimeConverter
 import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
-import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicinesRemindInfo
-import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicinesRepoInfo
+import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.MyColor
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.greenCardGradient
@@ -60,7 +66,10 @@ import org.hinanawiyuzu.qixia.ui.theme.primary_color
 import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 import org.hinanawiyuzu.qixia.ui.theme.tertiary_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.RemindViewModel
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedBetweenMedicineRepoAndNewRemindViewModel
+import org.hinanawiyuzu.qixia.utils.RemindRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
+import org.hinanawiyuzu.qixia.utils.slideComposable
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -68,53 +77,100 @@ import java.time.LocalDateTime
 @Composable
 fun RemindScreen(
     modifier: Modifier = Modifier,
-    viewModel: RemindViewModel = viewModel(),
-    navController: NavController = rememberNavController()
+    changeBottomBarVisibility: (Boolean) -> Unit,
+    // 用sharedViewModel来传递数据也是不得已而为之。因为我目前没发现popBackStack()可以传递数据。
+    sharedViewModel: SharedBetweenMedicineRepoAndNewRemindViewModel = viewModel(),
+    viewModel: RemindViewModel = viewModel(factory = AppViewModelProvider.factory),
+    navController: NavHostController = rememberNavController()
 ) {
     val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
-    Column(
-        modifier = modifier
-            .padding(5.dp)
+    val allMedicineRemind by viewModel.allMedicineRemind.collectAsState()
+    val allMedicineRepo by viewModel.allMedicineRepo.collectAsState()
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = RemindRoute.RemindScreen.name
     ) {
-        TopBar(
-            modifier = Modifier
-                .fillMaxWidth(),
-            onMenuClicked = { /*TODO*/ },
-            onAddClicked = {/*TODO*/ }
-        )
-        GrayLine(screenWidthDp = screenWidthDp)
-        Calendar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 5.dp),
-            currentDateTime = viewModel.currentTime
-        )
-        Column(
-            modifier = Modifier
-                .verticalScroll(state = rememberScrollState())
-        ) {
-            TakeMedicineRemind(
-                modifier = Modifier
-                    .padding(5.dp),
-                medicineReminds = fakeMedicinesRemindInfo,
-                medicineImgs = listOf(R.drawable.white_pill, R.drawable.pink_pill),
-                onDetailClicked = { /*TODO*/ },
-                onTakeMedicineClicked = {/*TODO*/ }
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MedicinesLeft(
-                    modifier = Modifier,
-                    medicineRepos = fakeMedicinesRepoInfo
-                )
-                MedicinesExpiry(
-                    currentDate = viewModel.currentTime.toLocalDate(),
-                    medicinesRepoInfo = fakeMedicinesRepoInfo
-                )
+        composable(
+            route = RemindRoute.RemindScreen.name,
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+            },
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+            },
+            // pop可以控制用户按返回键的动画，即NavigateUp,同Navigate区分开来。
+            popEnterTransition = {
+                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
             }
+        ) {
+            changeBottomBarVisibility(true)
+            Column(
+                modifier = Modifier
+                    .padding(5.dp)
+            ) {
+                TopBar(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    onMenuClicked = { /*TODO*/ },
+                    onAddClicked = { navController.navigate(RemindRoute.NewRemindScreen.name) }
+                )
+                GrayLine(screenWidthDp = screenWidthDp)
+                Calendar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp),
+                    currentDateTime = viewModel.currentTime
+                )
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(state = rememberScrollState())
+                ) {
+                    TakeMedicineRemind(
+                        modifier = Modifier
+                            .padding(5.dp),
+                        medicineReminds = allMedicineRemind.medicineRemindList,
+                        medicineImgs = listOf(R.drawable.white_pill, R.drawable.pink_pill),
+                        onDetailClicked = { /*TODO*/ },
+                        onTakeMedicineClicked = {/*TODO*/ }
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        MedicinesLeft(
+                            modifier = Modifier,
+                            medicineRepos = allMedicineRepo.allMedicineRepoList
+                        )
+                        MedicinesExpiry(
+                            currentDate = viewModel.currentTime.toLocalDate(),
+                            medicinesRepos = allMedicineRepo.allMedicineRepoList
+                        )
+                    }
+                }
+            }
+        }
+        slideComposable(route = RemindRoute.NewRemindScreen.name,)
+        {
+            changeBottomBarVisibility(false)
+            NewRemindScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
+        }
+        slideComposable(route = RemindRoute.MedicineRepoScreen.name) {
+            changeBottomBarVisibility(false)
+            MedicineRepoScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
+        }
+        slideComposable(route = RemindRoute.NewMedicineScreen.name) {
+            changeBottomBarVisibility(false)
+            NewMedicineScreen(
+                navController = navController
+            )
         }
     }
 }
@@ -152,6 +208,7 @@ private fun TopBar(
         )
         MyIconButton(onClick = onAddClicked) {
             Icon(
+                modifier = Modifier,
                 painter = painterResource(id = R.drawable.top_bar_add),
                 contentDescription = "新增提醒",
                 tint = tertiary_color
@@ -299,6 +356,15 @@ private fun TakeMedicineRemind(
             )
             GreenArrow(onClicked = {/*TODO*/ })
         }
+        if (medicineReminds.isEmpty()) {
+            Text(
+                text = "没有服药提醒,点击右上角+号添加",
+                style = TextStyle(
+                    color = font_deep_green
+                )
+            )
+            return
+        }
         repeat(medicineReminds.size) {
             RemindCard(
                 modifier = Modifier
@@ -428,7 +494,7 @@ private fun RemindCard(
                         )
                         Spacer(modifier = Modifier.size(10.dp))
                         Text(
-                            text = medicineRemind.amount,
+                            text = medicineRemind.dose,
                             style = TextStyle(
                                 color = primary_color,
                                 fontWeight = FontWeight.Black,
@@ -592,14 +658,14 @@ private fun MedicineLeftCard(
  * 显示药物有无过期的部分。
  * @param modifier 修饰符
  * @param currentDate 当前日期
- * @param medicinesRepoInfo 药物仓储信息列表 -> [MedicineRepo]
+ * @param medicinesRepos 药物仓储信息列表 -> [MedicineRepo]
  * @author HinanawiYuzu
  */
 @Composable
 private fun MedicinesExpiry(
     modifier: Modifier = Modifier,
     currentDate: LocalDate,
-    medicinesRepoInfo: List<MedicineRepo>
+    medicinesRepos: List<MedicineRepo>
 ) {
     // 标识是否有任何药物过期
     var isAnyMedicineOutOfDate = false
@@ -618,7 +684,7 @@ private fun MedicinesExpiry(
             )
             GreenArrow(onClicked = {})
         }
-        medicinesRepoInfo.forEach { medicineRepoInfo ->
+        medicinesRepos.forEach { medicineRepoInfo ->
             if (medicineRepoInfo.expiryDate <= currentDate) {
                 MedicineExpiryCard(
                     modifier = Modifier.padding(bottom = 10.dp),
@@ -687,6 +753,6 @@ private fun MedicineExpiryCard(
 @Composable
 private fun RemindScreenPreview() {
     QixiaTheme {
-        RemindScreen()
+
     }
 }

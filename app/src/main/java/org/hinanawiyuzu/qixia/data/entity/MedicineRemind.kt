@@ -20,11 +20,11 @@ import java.time.LocalTime
  * @param startDate 开始提醒的日期
  * @param endDate 结束提醒的日期
  * @param name 药物名称
- * @param amount 服药数量
  * @param dose 剂量
  * @param method 服药方法（饭前，饭中，饭后，无所谓） -> [TakeMethod]
  * @param isTaken 是否已服用
- * @param repoId 该提醒对应的药物仓库id
+ * @param frequency 服药频率 -> [MedicineFrequency]
+ * @param medicineRepoId 对应的药物仓库id
  */
 @Entity(
     tableName = "medicine_remind",
@@ -32,14 +32,13 @@ import java.time.LocalTime
         ForeignKey(
             entity = MedicineRepo::class,
             parentColumns = ["id"],
-            childColumns = ["repoId"],
+            childColumns = ["medicineRepoId"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
     ],
     indices = [
-        Index(value = ["id"]),
-        Index(value = ["repoId"])
+        Index(value = ["medicineRepoId"])
     ]
 )
 data class MedicineRemind(
@@ -53,11 +52,12 @@ data class MedicineRemind(
     val endDate: LocalDate,
     val name: String,
     val dose: String,
-    val amount: String,
     @TypeConverters(TakeMethodConverter::class)
     val method: TakeMethod,
     val isTaken: Boolean,
-    val repoId: Int,
+    @TypeConverters(MedicineFrequencyConverter::class)
+    val frequency: MedicineFrequency,
+    val medicineRepoId: Int
 )
 
 /**
@@ -74,6 +74,7 @@ enum class TakeMethod {
     AfterMeal,
     NotMatter,
     BeforeSleep;
+
     fun convertToString(): String {
         return when (this) {
             BeforeMeal -> "饭前"
@@ -85,3 +86,66 @@ enum class TakeMethod {
     }
 }
 
+
+/**
+ * 服药频率枚举类
+ */
+enum class MedicineFrequency {
+    OnceDaily, //一日一次
+    TwiceDaily, //一日两次
+    ThreeTimesDaily, //一日三次
+    FourTimesDaily, // 一日四次
+    FiveTimesDaily, // 一日五次
+    SixTimesDaily, // 一日六次
+    OnceTwoDays, // 两日一次
+    OnceThreeDays, // 三日一次
+    OnceFourDays, // 四日一次
+    OnceFiveDays, //五日一次
+    OnceSixDays, //六日一次
+    OnceAWeek, //一周一次
+    OnceTwoWeeks, //两周一次
+    OnceThreeWeeks, //三周一次
+    OnceAMonth; //一月一次
+
+    fun convertToString(): String {
+        return when (this) {
+            OnceDaily -> "一日一次"
+            TwiceDaily -> "一日两次"
+            ThreeTimesDaily -> "一日三次"
+            FourTimesDaily -> "一日四次"
+            FiveTimesDaily -> "一日五次"
+            SixTimesDaily -> "一日六次"
+            OnceTwoDays -> "两日一次"
+            OnceThreeDays -> "三日一次"
+            OnceFourDays -> "四日一次"
+            OnceFiveDays -> "五日一次"
+            OnceSixDays -> "六日一次"
+            OnceAWeek -> "一周一次"
+            OnceTwoWeeks -> "两周一次"
+            OnceThreeWeeks -> "三周一次"
+            OnceAMonth -> "一月一次"
+        }
+    }
+}
+
+// 扩展函数太香了！！！
+fun String.toMedicineFrequency(): MedicineFrequency {
+    return when (this) {
+        "一日一次" -> MedicineFrequency.OnceDaily
+        "一日两次" -> MedicineFrequency.TwiceDaily
+        "一日三次" -> MedicineFrequency.ThreeTimesDaily
+        "一日四次" -> MedicineFrequency.FourTimesDaily
+        "一日五次" -> MedicineFrequency.FiveTimesDaily
+        "一日六次" -> MedicineFrequency.SixTimesDaily
+        "两日一次" -> MedicineFrequency.OnceTwoDays
+        "三日一次" -> MedicineFrequency.OnceThreeDays
+        "四日一次" -> MedicineFrequency.OnceFourDays
+        "五日一次" -> MedicineFrequency.OnceFiveDays
+        "六日一次" -> MedicineFrequency.OnceSixDays
+        "一周一次" -> MedicineFrequency.OnceAWeek
+        "两周一次" -> MedicineFrequency.OnceTwoWeeks
+        "三周一次" -> MedicineFrequency.OnceThreeWeeks
+        "一月一次" -> MedicineFrequency.OnceAMonth
+        else -> MedicineFrequency.OnceDaily
+    }
+}
