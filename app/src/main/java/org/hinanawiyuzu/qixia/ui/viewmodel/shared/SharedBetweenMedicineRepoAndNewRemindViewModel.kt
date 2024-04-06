@@ -1,11 +1,9 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel.shared
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.*
+import androidx.lifecycle.*
 
-class SharedBetweenMedicineRepoAndNewRemindViewModel: ViewModel() {
+class SharedBetweenMedicineRepoAndNewRemindViewModel : ViewModel() {
     var medicineRepoId: Int? by mutableStateOf(null)
 
     fun changeMedicineRepoId(id: Int) {

@@ -1,81 +1,40 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.provider.MediaStore
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import android.graphics.*
+import android.net.*
+import android.provider.*
+import androidx.activity.compose.*
+import androidx.activity.result.*
+import androidx.activity.result.contract.*
+import androidx.compose.animation.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.*
+import androidx.compose.foundation.text.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.draw.*
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.input.*
+import androidx.compose.ui.tooling.preview.*
+import androidx.compose.ui.unit.*
+import androidx.lifecycle.viewmodel.compose.*
+import androidx.navigation.*
+import androidx.navigation.compose.*
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.components.BlurredBackground
-import org.hinanawiyuzu.qixia.components.CommonButton
-import org.hinanawiyuzu.qixia.components.GrayLine
-import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
-import org.hinanawiyuzu.qixia.ui.theme.FontSize
-import org.hinanawiyuzu.qixia.ui.theme.MyColor
-import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
-import org.hinanawiyuzu.qixia.ui.viewmodel.NewMedicineViewModel
-import org.hinanawiyuzu.qixia.utils.copyImageToAppDir
-import org.hinanawiyuzu.qixia.utils.createUri
-import java.io.File
-import java.time.LocalDate
+import org.hinanawiyuzu.qixia.components.*
+import org.hinanawiyuzu.qixia.ui.*
+import org.hinanawiyuzu.qixia.ui.theme.*
+import org.hinanawiyuzu.qixia.ui.viewmodel.*
+import org.hinanawiyuzu.qixia.utils.*
+import java.io.*
+import java.time.*
 
 // 用于判断用户选择的是相机还是相册
 const val ALBUM = false
@@ -102,7 +61,7 @@ fun NewMedicineScreen(
         ) {
             TopBar(
                 modifier = Modifier.fillMaxWidth(),
-                onBackClicked = {navController.popBackStack()}
+                onBackClicked = { navController.popBackStack() }
             )
             GrayLine(screenWidthDp = screenWidthDp)
             Column(
@@ -181,7 +140,7 @@ fun NewMedicineScreen(
         AnimatedVisibility(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .offset(y = (-20).dp),
+                .offset(y = (-90).dp),
             visible = viewModel.showSnackBar,
             enter = fadeIn(),
             exit = fadeOut(),

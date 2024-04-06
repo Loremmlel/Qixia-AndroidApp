@@ -1,18 +1,13 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import org.hinanawiyuzu.qixia.QixiaApplication
-import org.hinanawiyuzu.qixia.data.entity.User
-import org.hinanawiyuzu.qixia.data.repo.UserRepository
-import org.hinanawiyuzu.qixia.utils.AppRoute
-import org.hinanawiyuzu.qixia.utils.LoginRoute
+import androidx.lifecycle.*
+import androidx.navigation.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.*
+import org.hinanawiyuzu.qixia.data.entity.*
+import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.utils.*
 
 class WelcomeViewModel(
     private val application: QixiaApplication,

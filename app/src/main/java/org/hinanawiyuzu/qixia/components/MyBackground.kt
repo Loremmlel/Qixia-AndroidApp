@@ -1,27 +1,16 @@
 package org.hinanawiyuzu.qixia.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.res.*
+import androidx.compose.ui.tooling.preview.*
+import androidx.compose.ui.unit.*
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.ui.theme.MyColor
-import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
+import org.hinanawiyuzu.qixia.ui.theme.*
 
 /**
  * 默认的背景样式。即横向渐变色+两个alpha值为0.3的白色圆圈。
@@ -100,12 +89,13 @@ fun GrayLine(
 ) {
     Spacer(modifier = Modifier.size(5.dp))
     Column(
-        modifier = Modifier
+        modifier = modifier
             .requiredWidth(screenWidthDp)
             .height(1.dp)
             .background(Color.LightGray)
     ) {}
 }
+
 @Preview
 @Composable
 fun BackgroundPreview() {

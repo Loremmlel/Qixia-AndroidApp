@@ -1,8 +1,6 @@
 package org.hinanawiyuzu.qixia.data.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 /**
  * 药品信息实体类。
@@ -13,7 +11,7 @@ import androidx.room.PrimaryKey
  * @param specification 规格
  */
 @Entity(tableName = "medicine_info")
-data class MedicineInfo (
+data class MedicineInfo(
     // 为什么要都加上可空类型呢。因为我用Python的sqlite3创建数据库的时候，它给所有字段标记的默认都是可空。
     @PrimaryKey
     val id: Int?,

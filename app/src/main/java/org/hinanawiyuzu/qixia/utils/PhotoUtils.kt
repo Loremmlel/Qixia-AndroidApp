@@ -1,9 +1,8 @@
 package org.hinanawiyuzu.qixia.utils
 
-import android.content.ContentValues
-import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
+import android.content.*
+import android.os.*
+import android.provider.*
 
 /**
  * 这个函数创建一个 ContentValues 对象，表示图像文件的元数据。

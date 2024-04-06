@@ -1,10 +1,9 @@
 package org.hinanawiyuzu.qixia.data.entity
 
-import android.net.Uri
-import androidx.room.TypeConverter
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import android.net.*
+import androidx.room.*
+import java.time.*
+import java.time.format.*
 
 class TakeMethodConverter {
     @TypeConverter
@@ -128,5 +127,17 @@ class UriConverter {
     @TypeConverter
     fun toUri(string: String): Uri {
         return Uri.parse(string)
+    }
+}
+
+class BooleanListConverter {
+    @TypeConverter
+    fun fromBooleanList(list: List<Boolean>): String {
+        return list.joinToString(",")
+    }
+
+    @TypeConverter
+    fun toBooleanList(string: String): List<Boolean> {
+        return string.split(",").map { it.toBoolean() }
     }
 }

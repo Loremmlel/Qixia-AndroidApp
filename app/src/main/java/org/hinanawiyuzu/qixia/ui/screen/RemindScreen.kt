@@ -1,78 +1,48 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import android.graphics.*
+import android.net.*
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.shape.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.draw.*
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.*
+import androidx.compose.ui.unit.*
+import androidx.lifecycle.viewmodel.compose.*
+import androidx.navigation.*
+import androidx.navigation.compose.*
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.components.GrayLine
-import org.hinanawiyuzu.qixia.components.MyIconButton
-import org.hinanawiyuzu.qixia.data.entity.LocalTimeConverter
-import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
-import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
-import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
-import org.hinanawiyuzu.qixia.ui.theme.FontSize
-import org.hinanawiyuzu.qixia.ui.theme.MyColor
+import org.hinanawiyuzu.qixia.components.*
+import org.hinanawiyuzu.qixia.data.entity.*
+import org.hinanawiyuzu.qixia.ui.*
+import org.hinanawiyuzu.qixia.ui.theme.*
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.greenCardGradient
-import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
-import org.hinanawiyuzu.qixia.ui.theme.font_deep_green
-import org.hinanawiyuzu.qixia.ui.theme.primary_color
-import org.hinanawiyuzu.qixia.ui.theme.secondary_color
-import org.hinanawiyuzu.qixia.ui.theme.tertiary_color
-import org.hinanawiyuzu.qixia.ui.viewmodel.RemindViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedBetweenMedicineRepoAndNewRemindViewModel
+import org.hinanawiyuzu.qixia.ui.viewmodel.*
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
 import org.hinanawiyuzu.qixia.utils.RemindRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 import org.hinanawiyuzu.qixia.utils.slideComposable
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.*
+import java.time.temporal.*
+import kotlin.reflect.*
+
+var searchImages: KFunction1<MedicineRemind, Uri>? = null
+val currentDate: LocalDate = LocalDate.now()
 
 @Composable
 fun RemindScreen(
@@ -86,6 +56,7 @@ fun RemindScreen(
     val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
     val allMedicineRemind by viewModel.allMedicineRemind.collectAsState()
     val allMedicineRepo by viewModel.allMedicineRepo.collectAsState()
+    searchImages = viewModel::searchImageFromMedicineRepo
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -120,7 +91,8 @@ fun RemindScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp),
-                    currentDateTime = viewModel.currentTime
+                    currentSelectedDate = viewModel.currentSelectedDate,
+                    onCalendarClicked = viewModel::onCalendarClicked
                 )
                 Column(
                     modifier = Modifier
@@ -129,29 +101,29 @@ fun RemindScreen(
                     TakeMedicineRemind(
                         modifier = Modifier
                             .padding(5.dp),
+                        currentSelectedDate = viewModel.currentSelectedDate,
                         medicineReminds = allMedicineRemind.medicineRemindList,
-                        medicineImgs = listOf(R.drawable.white_pill, R.drawable.pink_pill),
                         onDetailClicked = { /*TODO*/ },
                         onTakeMedicineClicked = {/*TODO*/ }
                     )
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .fillMaxWidth()
                     ) {
                         MedicinesLeft(
-                            modifier = Modifier,
+                            modifier = Modifier.requiredWidth(screenWidthDp * 0.5f),
                             medicineRepos = allMedicineRepo.allMedicineRepoList
                         )
                         MedicinesExpiry(
-                            currentDate = viewModel.currentTime.toLocalDate(),
+                            modifier = Modifier.requiredWidth(screenWidthDp * 0.5f),
+                            currentSelectedDate = viewModel.currentSelectedDate,
                             medicinesRepos = allMedicineRepo.allMedicineRepoList
                         )
                     }
                 }
             }
         }
-        slideComposable(route = RemindRoute.NewRemindScreen.name,)
+        slideComposable(route = RemindRoute.NewRemindScreen.name)
         {
             changeBottomBarVisibility(false)
             NewRemindScreen(
@@ -221,62 +193,54 @@ private fun TopBar(
  * 显示日期的部分。
  *
  * 其实还没有完工，例如切换日期看昨天的情况。但是这涉及到数据层，我要怎么操作目前还没头绪 2024-3-30.
- * @param currentDateTime 当前时间
+ * @param currentSelectedDate 当前选择的时间
  * @author HinanawiYuzu
  */
 @Composable
 private fun Calendar(
     modifier: Modifier = Modifier,
-    currentDateTime: LocalDateTime
+    currentSelectedDate: LocalDate,
+    onCalendarClicked: (Int) -> Unit
 ) {
+    val listState = rememberLazyListState()
+    val currentDate = LocalDate.now()
     // 啊，真是奇怪呢。
     val cardWidthDp = LocalConfiguration.current.screenWidthDp * 0.1579
-    Row(
+    LaunchedEffect(key1 = true) {
+        listState.scrollToItem(13)
+    }
+    LazyRow(
         modifier = modifier,
+        state = listState,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        CalendarItem(
-            modifier = Modifier.width(cardWidthDp.dp),
-            isSelected = false,
-            dateTime = currentDateTime.minusDays(2L)
-        )
-        CalendarItem(
-            modifier = Modifier.width(cardWidthDp.dp),
-            isSelected = false,
-            dateTime = currentDateTime.minusDays(1L)
-        )
-        CalendarItem(
-            modifier = Modifier.width(cardWidthDp.dp),
-            isSelected = true,
-            dateTime = currentDateTime
-        )
-        CalendarItem(
-            modifier = Modifier.width(cardWidthDp.dp),
-            isSelected = false,
-            dateTime = currentDateTime.plusDays(1L)
-        )
-        CalendarItem(
-            modifier = Modifier.width(cardWidthDp.dp),
-            isSelected = false,
-            dateTime = currentDateTime.plusDays(2L)
-        )
+        items(30) { index ->
+            val calendarDate = currentDate.plusDays((index - 15).toLong())
+            CalendarItem(
+                modifier = Modifier.width(cardWidthDp.dp),
+                isSelected = calendarDate == currentSelectedDate,
+                date = calendarDate,
+                onClicked = { onCalendarClicked(index) }
+            )
+        }
     }
 }
 
 /**
  * 单个日期卡片。
  * @param isSelected 是否被选择
- * @param dateTime 该卡片显示的时间
+ * @param date 该卡片显示的时间
  * @author HinanawiYuzu
  */
 @Composable
 private fun CalendarItem(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
-    dateTime: LocalDateTime
+    date: LocalDate,
+    onClicked: () -> Unit
 ) {
-    val dayOfWeek = when (dateTime.dayOfWeek!!) {
+    val dayOfWeek = when (date.dayOfWeek!!) {
         DayOfWeek.MONDAY -> "周一"
         DayOfWeek.TUESDAY -> "周二"
         DayOfWeek.WEDNESDAY -> "周三"
@@ -287,6 +251,10 @@ private fun CalendarItem(
     }
     Column(
         modifier = modifier
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null
+            ) { onClicked() }
             .clip(RoundedCornerShape(percent = 40))
             .aspectRatio(0.77f)
             .border(
@@ -303,12 +271,21 @@ private fun CalendarItem(
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
-            text = dateTime.dayOfMonth.toString(),
+            text = "${date.monthValue}.${date.dayOfMonth}",
             style = TextStyle(
                 color = if (isSelected) Color.White else Color.Gray,
                 fontWeight = FontWeight.Black
             )
         )
+        if (date == currentDate) {
+            Text(
+                text = "今天",
+                style = TextStyle(
+                    color = if (isSelected) Color.White else Color.Gray,
+                    fontWeight = FontWeight.Black
+                )
+            )
+        }
         Text(
             text = dayOfWeek,
             style = TextStyle(
@@ -323,7 +300,6 @@ private fun CalendarItem(
  * 本页面主体部分，提醒用户吃药的卡片。
  * @param modifier 修饰符
  * @param medicineReminds 药物信息列表。其类型为自定义的模型类 -> [MedicineRemind]
- * @param medicineImgs 药物图片。虽然目前还是用Drawable但是之后肯定是用本地的资源。
  * @param onDetailClicked 有个绿色箭头，不知道干什么用的。
  * @param onTakeMedicineClicked 卡片的右边有个框框，点击表示自己吃了药。
  * @author HinanawiYuzu
@@ -331,12 +307,21 @@ private fun CalendarItem(
 @Composable
 private fun TakeMedicineRemind(
     modifier: Modifier = Modifier,
+    currentSelectedDate: LocalDate,
     medicineReminds: List<MedicineRemind>,
-    //TODO: 应当从本地数据库里拉取图片。目前暂时用drawable。
-    @DrawableRes medicineImgs: List<Int>,
     onDetailClicked: () -> Unit,
     onTakeMedicineClicked: () -> Unit
 ) {
+    val context = LocalContext.current
+    val displayedMedicineReminds = medicineReminds.filter {
+        it.startDate <= currentSelectedDate && it.endDate >= currentSelectedDate
+    }
+    val displayedImagesUri = displayedMedicineReminds.map { searchImages!!.invoke(it) }
+    val displayedImages = displayedImagesUri.map {
+        it.let { uri ->
+            BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
+        }
+    }
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -356,7 +341,7 @@ private fun TakeMedicineRemind(
             )
             GreenArrow(onClicked = {/*TODO*/ })
         }
-        if (medicineReminds.isEmpty()) {
+        if (displayedMedicineReminds.isEmpty()) {
             Text(
                 text = "没有服药提醒,点击右上角+号添加",
                 style = TextStyle(
@@ -365,13 +350,13 @@ private fun TakeMedicineRemind(
             )
             return
         }
-        repeat(medicineReminds.size) {
+        repeat(displayedMedicineReminds.size) {
             RemindCard(
                 modifier = Modifier
                     .padding(start = 25.dp, end = 15.dp),
-                medicineRemind = medicineReminds[it],
-                // 没注意到，引起了越界……
-                medicineImg = medicineImgs[it % 2],
+                currentSelectedDate = currentSelectedDate,
+                medicineRemind = displayedMedicineReminds[it],
+                medicineImg = displayedImages[it],
                 onTakeMedicineClicked = onTakeMedicineClicked
             )
         }
@@ -428,8 +413,9 @@ private fun GreenArrow(
 @Composable
 private fun RemindCard(
     modifier: Modifier = Modifier,
+    currentSelectedDate: LocalDate,
     medicineRemind: MedicineRemind,
-    @DrawableRes medicineImg: Int,
+    medicineImg: Bitmap,
     onTakeMedicineClicked: () -> Unit
 ) {
     val remindCardHeightDp = LocalConfiguration.current.screenHeightDp * 0.0751
@@ -443,7 +429,10 @@ private fun RemindCard(
         ) {
             Image(
                 painter = painterResource(
-                    id = if (medicineRemind.isTaken) R.drawable.remind_screen_already_taken
+                    id = if (
+                        medicineRemind.isTaken[ChronoUnit.DAYS.between(medicineRemind.startDate, currentSelectedDate)
+                            .toInt()]
+                    ) R.drawable.remind_screen_already_taken
                     else R.drawable.remind_screen_not_taken
                 ),
                 contentDescription = null
@@ -470,13 +459,14 @@ private fun RemindCard(
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // 药物的图片
                 Image(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(5.dp),
-                    painter = painterResource(id = medicineImg),
+                    bitmap = medicineImg.asImageBitmap(),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Inside
                 )
                 Column(
                     modifier = Modifier
@@ -484,7 +474,8 @@ private fun RemindCard(
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        // 药物的名字和剂量
                         Text(
                             text = medicineRemind.name,
                             style = TextStyle(
@@ -494,14 +485,15 @@ private fun RemindCard(
                         )
                         Spacer(modifier = Modifier.size(10.dp))
                         Text(
-                            text = medicineRemind.dose,
+                            text = "剂量:${medicineRemind.dose}",
                             style = TextStyle(
                                 color = primary_color,
                                 fontWeight = FontWeight.Black,
-                                fontSize = FontSize.normalSize
+                                fontSize = FontSize.smallSize
                             )
                         )
                     }
+                    // 药物的服用方式、注意事项
                     Card(
                         modifier = Modifier,
                         colors = CardDefaults.cardColors(
@@ -531,7 +523,9 @@ private fun RemindCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     // 如果已经服用，那么则显示✔。否则显示按钮，用户点击后则变为已服用。
-                    if (medicineRemind.isTaken) {
+                    if (medicineRemind.isTaken[ChronoUnit.DAYS.between(medicineRemind.startDate, currentSelectedDate)
+                            .toInt()]
+                    ) {
                         Icon(
                             modifier = Modifier
                                 .align(Alignment.End)
@@ -657,14 +651,14 @@ private fun MedicineLeftCard(
 /**
  * 显示药物有无过期的部分。
  * @param modifier 修饰符
- * @param currentDate 当前日期
+ * @param currentSelectedDate 当前日期
  * @param medicinesRepos 药物仓储信息列表 -> [MedicineRepo]
  * @author HinanawiYuzu
  */
 @Composable
 private fun MedicinesExpiry(
     modifier: Modifier = Modifier,
-    currentDate: LocalDate,
+    currentSelectedDate: LocalDate,
     medicinesRepos: List<MedicineRepo>
 ) {
     // 标识是否有任何药物过期
@@ -685,7 +679,7 @@ private fun MedicinesExpiry(
             GreenArrow(onClicked = {})
         }
         medicinesRepos.forEach { medicineRepoInfo ->
-            if (medicineRepoInfo.expiryDate <= currentDate) {
+            if (medicineRepoInfo.expiryDate <= currentSelectedDate) {
                 MedicineExpiryCard(
                     modifier = Modifier.padding(bottom = 10.dp),
                     medicineRepo = medicineRepoInfo

@@ -1,20 +1,13 @@
 package org.hinanawiyuzu.qixia.utils
 
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.runtime.Composable
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDeepLink
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.runtime.*
+import androidx.navigation.*
+import androidx.navigation.compose.*
 
-const val animationSpec:Int = 500
+const val animationSpec: Int = 500
+
 /**
  * 自己封装的NavGraphBuilder扩展函数。
  *

@@ -1,8 +1,8 @@
 package org.hinanawiyuzu.qixia.data.repo
 
-import kotlinx.coroutines.flow.Flow
-import org.hinanawiyuzu.qixia.data.dao.MedicineInfoDao
-import org.hinanawiyuzu.qixia.data.entity.MedicineInfo
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.data.dao.*
+import org.hinanawiyuzu.qixia.data.entity.*
 
 interface MedicineInfoRepository {
     fun queryByRegistrationCertificateNumber(registrationCertificateNumber: String): Flow<MedicineInfo>
@@ -11,8 +11,7 @@ interface MedicineInfoRepository {
 
 class OfflineMedicineInfoRepository(
     private val medicineInfoDao: MedicineInfoDao
-): MedicineInfoRepository {
+) : MedicineInfoRepository {
     override fun queryByRegistrationCertificateNumber(registrationCertificateNumber: String):
-            Flow<MedicineInfo>
-     = medicineInfoDao.queryByRegistrationCertificateNumber(registrationCertificateNumber)
+            Flow<MedicineInfo> = medicineInfoDao.queryByRegistrationCertificateNumber(registrationCertificateNumber)
 }

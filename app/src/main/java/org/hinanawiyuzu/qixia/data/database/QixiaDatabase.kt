@@ -1,25 +1,9 @@
 package org.hinanawiyuzu.qixia.data.database
 
-import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import org.hinanawiyuzu.qixia.data.dao.MedicineInfoDao
-import org.hinanawiyuzu.qixia.data.dao.MedicineRemindDao
-import org.hinanawiyuzu.qixia.data.dao.MedicineRepoDao
-import org.hinanawiyuzu.qixia.data.dao.UserDao
-import org.hinanawiyuzu.qixia.data.entity.AttentionMatterConverter
-import org.hinanawiyuzu.qixia.data.entity.LocalDateConverter
-import org.hinanawiyuzu.qixia.data.entity.LocalTimeConverter
-import org.hinanawiyuzu.qixia.data.entity.MedicalHistoryConverter
-import org.hinanawiyuzu.qixia.data.entity.MedicineFrequencyConverter
-import org.hinanawiyuzu.qixia.data.entity.MedicineInfo
-import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
-import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
-import org.hinanawiyuzu.qixia.data.entity.TakeMethodConverter
-import org.hinanawiyuzu.qixia.data.entity.UriConverter
-import org.hinanawiyuzu.qixia.data.entity.User
+import android.content.*
+import androidx.room.*
+import org.hinanawiyuzu.qixia.data.dao.*
+import org.hinanawiyuzu.qixia.data.entity.*
 
 const val dbName = "qixia_database"
 
@@ -40,7 +24,8 @@ const val dbName = "qixia_database"
     AttentionMatterConverter::class,
     LocalDateConverter::class,
     LocalTimeConverter::class,
-    UriConverter::class
+    UriConverter::class,
+    BooleanListConverter::class
 )
 abstract class QixiaDatabase : RoomDatabase() {
     abstract fun userInfoDao(): UserDao

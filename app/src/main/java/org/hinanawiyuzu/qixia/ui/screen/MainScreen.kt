@@ -1,11 +1,11 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
-import org.hinanawiyuzu.qixia.ui.viewmodel.MainViewModel
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.tooling.preview.*
+import androidx.lifecycle.viewmodel.compose.*
+import org.hinanawiyuzu.qixia.ui.theme.*
+import org.hinanawiyuzu.qixia.ui.viewmodel.*
 
 @Composable
 fun MainScreen(

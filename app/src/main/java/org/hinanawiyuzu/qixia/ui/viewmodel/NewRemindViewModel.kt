@@ -1,25 +1,15 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
-import org.hinanawiyuzu.qixia.data.entity.MedicineFrequency
-import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
-import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
-import org.hinanawiyuzu.qixia.data.entity.TakeMethod
-import org.hinanawiyuzu.qixia.data.entity.toMedicineFrequency
-import org.hinanawiyuzu.qixia.data.repo.MedicineRemindRepository
-import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
-import org.hinanawiyuzu.qixia.utils.RemindRoute
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
+import androidx.compose.runtime.*
+import androidx.lifecycle.*
+import androidx.navigation.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.data.entity.*
+import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.utils.*
+import java.time.*
+import java.time.temporal.*
 
 class NewRemindViewModel(
     private val medicineRemindRepository: MedicineRemindRepository,
@@ -32,7 +22,7 @@ class NewRemindViewModel(
     var frequency: MedicineFrequency? by mutableStateOf(null)
     var startDate: LocalDate? by mutableStateOf(null)
     var endDate: LocalDate? by mutableStateOf(null)
-    var remindTime: LocalTime? by mutableStateOf(null)
+    private var remindTime: LocalTime? by mutableStateOf(null)
     var method: TakeMethod? by mutableStateOf(null)
     var buttonEnabled: Boolean by mutableStateOf(false)
 
@@ -48,15 +38,16 @@ class NewRemindViewModel(
             name = medicineName,
             dose = dose!!,
             frequency = frequency!!,
-            isTaken = false,
+            isTaken = List((ChronoUnit.DAYS.between(startDate!!, endDate!!) + 1).toInt()) { false },
             medicineRepoId = medicineRepoId!!,
             method = method!!
         )
-        viewModelScope.launch{
+        viewModelScope.launch {
             medicineRemindRepository.insertMedicineRemind(medicineRemind)
             navController.popBackStack()
         }
     }
+
     fun getMedicineRepo() {
         viewModelScope.launch {
             medicineRepo = medicineRepoRepository.getMedicineRepoStreamById(medicineRepoId!!).firstOrNull()

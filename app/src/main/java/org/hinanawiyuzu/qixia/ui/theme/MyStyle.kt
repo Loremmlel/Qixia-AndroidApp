@@ -1,8 +1,7 @@
 package org.hinanawiyuzu.qixia.ui.theme
 
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.unit.*
 
 object FontSize {
     val tinySize = 12.sp

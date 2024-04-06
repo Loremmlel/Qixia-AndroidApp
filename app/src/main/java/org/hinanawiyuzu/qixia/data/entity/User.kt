@@ -1,14 +1,11 @@
 package org.hinanawiyuzu.qixia.data.entity
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
 
 
 /**
  * 用户基本信息表
  * @param id 自动生成的主键
- * @param name 用户姓名
  * @param phone 用户手机
  * @param password 用户密码
  * @param loginState 用户是否处于已登录状态

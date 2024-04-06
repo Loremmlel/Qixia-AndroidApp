@@ -1,16 +1,11 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import org.hinanawiyuzu.qixia.data.repo.UserRepository
-import org.hinanawiyuzu.qixia.utils.AppRoute
-import org.hinanawiyuzu.qixia.utils.LoginRoute
+import androidx.lifecycle.*
+import androidx.navigation.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.utils.*
 
 class LoginViewModel(
     private val userRepository: UserRepository

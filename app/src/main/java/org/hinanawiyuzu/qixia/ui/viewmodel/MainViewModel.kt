@@ -1,6 +1,6 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 
 class MainViewModel : ViewModel() {
 

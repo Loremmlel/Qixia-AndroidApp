@@ -1,8 +1,8 @@
 package org.hinanawiyuzu.qixia.data.repo
 
-import kotlinx.coroutines.flow.Flow
-import org.hinanawiyuzu.qixia.data.dao.UserDao
-import org.hinanawiyuzu.qixia.data.entity.User
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.data.dao.*
+import org.hinanawiyuzu.qixia.data.entity.*
 
 /**
  * 用户信息仓库

@@ -1,78 +1,34 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.draw.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.tooling.preview.*
+import androidx.compose.ui.unit.*
+import androidx.lifecycle.viewmodel.compose.*
+import androidx.navigation.*
+import androidx.navigation.compose.*
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.components.BlurredBackground
-import org.hinanawiyuzu.qixia.components.CommonButton
-import org.hinanawiyuzu.qixia.components.GrayLine
-import org.hinanawiyuzu.qixia.components.TimePicker
-import org.hinanawiyuzu.qixia.data.entity.MedicineFrequency
-import org.hinanawiyuzu.qixia.data.entity.TakeMethod
-import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
-import org.hinanawiyuzu.qixia.ui.theme.FontSize
-import org.hinanawiyuzu.qixia.ui.theme.MyColor
+import org.hinanawiyuzu.qixia.components.*
+import org.hinanawiyuzu.qixia.data.entity.*
+import org.hinanawiyuzu.qixia.ui.*
+import org.hinanawiyuzu.qixia.ui.theme.*
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.transparentButtonBorderGradient
-import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
-import org.hinanawiyuzu.qixia.ui.theme.secondary_color
-import org.hinanawiyuzu.qixia.ui.viewmodel.NewRemindViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedBetweenMedicineRepoAndNewRemindViewModel
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
+import org.hinanawiyuzu.qixia.ui.viewmodel.*
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
+import java.time.*
 
 @Composable
 fun NewRemindScreen(
@@ -100,7 +56,7 @@ fun NewRemindScreen(
         ) {
             TopBar(
                 modifier = Modifier.fillMaxWidth(),
-                onBackClicked = {navController.popBackStack()}
+                onBackClicked = { navController.popBackStack() }
             )
             GrayLine(screenWidthDp = screenWidthDp)
             Column(

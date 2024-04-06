@@ -1,8 +1,8 @@
 package org.hinanawiyuzu.qixia.data.repo
 
-import kotlinx.coroutines.flow.Flow
-import org.hinanawiyuzu.qixia.data.dao.MedicineRemindDao
-import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.data.dao.*
+import org.hinanawiyuzu.qixia.data.entity.*
 
 interface MedicineRemindRepository {
     suspend fun insertMedicineRemind(medicineRemind: MedicineRemind)

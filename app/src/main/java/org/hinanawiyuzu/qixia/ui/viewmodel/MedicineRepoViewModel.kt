@@ -1,24 +1,17 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
-import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
-import org.hinanawiyuzu.qixia.utils.RemindRoute
+import androidx.compose.runtime.*
+import androidx.lifecycle.*
+import androidx.navigation.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.data.entity.*
+import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.utils.*
 
 class MedicineRepoViewModel(
     medicineRepoRepository: MedicineRepoRepository
-): ViewModel() {
+) : ViewModel() {
     private var sortCondition: SortCondition? by mutableStateOf(null)
     var userSearchInput: String? by mutableStateOf(null)
     lateinit var selectedStates: MutableList<Boolean>
@@ -30,17 +23,19 @@ class MedicineRepoViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = AllMedicineRepo()
         )
+
     init {
         viewModelScope.launch {
-            allMedicineRepo.collect{
+            allMedicineRepo.collect {
                 selectedStates = MutableList(it.allMedicineRepoList.size) { false }.toMutableStateList()
                 displayedMedicineRepo = it.allMedicineRepoList
             }
         }
     }
+
     fun onSortConditionChanged(index: Int) {
         sortCondition = SortCondition.entries[index]
-        displayedMedicineRepo = when(sortCondition) {
+        displayedMedicineRepo = when (sortCondition) {
             SortCondition.ByNameDESC -> displayedMedicineRepo.sortedByDescending { it.name }
             SortCondition.ByNameASC -> displayedMedicineRepo.sortedBy { it.name }
             SortCondition.ByExpiryDateDESC -> displayedMedicineRepo.sortedByDescending { it.expiryDate }
@@ -95,8 +90,9 @@ enum class SortCondition {
     ByExpiryDateASC,
     ByRemainAmountDESC,
     ByRemainAmountASC;
+
     fun convertToString(): String {
-        return when(this) {
+        return when (this) {
             ByNameDESC -> "按名称降序"
             ByNameASC -> "按名称升序"
             ByExpiryDateDESC -> "按到期时间降序"

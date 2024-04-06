@@ -1,6 +1,6 @@
 package org.hinanawiyuzu.qixia.ui.theme
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 
 val md_theme_light_primary = Color(0xFF006D44)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)

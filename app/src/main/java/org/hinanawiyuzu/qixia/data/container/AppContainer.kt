@@ -1,15 +1,8 @@
 package org.hinanawiyuzu.qixia.data.container
 
-import android.content.Context
-import org.hinanawiyuzu.qixia.data.database.QixiaDatabase
-import org.hinanawiyuzu.qixia.data.repo.MedicineInfoRepository
-import org.hinanawiyuzu.qixia.data.repo.MedicineRemindRepository
-import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
-import org.hinanawiyuzu.qixia.data.repo.OfflineMedicineInfoRepository
-import org.hinanawiyuzu.qixia.data.repo.OfflineMedicineRemindRepository
-import org.hinanawiyuzu.qixia.data.repo.OfflineMedicineRepoRepository
-import org.hinanawiyuzu.qixia.data.repo.OfflineUserRepository
-import org.hinanawiyuzu.qixia.data.repo.UserRepository
+import android.content.*
+import org.hinanawiyuzu.qixia.data.database.*
+import org.hinanawiyuzu.qixia.data.repo.*
 
 
 interface AppContainer {

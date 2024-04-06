@@ -1,59 +1,32 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import android.content.res.Resources
-import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntOffsetAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import android.content.res.*
+import androidx.annotation.*
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.draw.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
+import androidx.compose.ui.tooling.preview.*
+import androidx.compose.ui.unit.*
+import androidx.lifecycle.viewmodel.compose.*
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.components.BlurredBackground
-import org.hinanawiyuzu.qixia.components.MyIconButton
+import org.hinanawiyuzu.qixia.components.*
 import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Box
 import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Main
 import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Profile
 import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Record
 import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Remind
+import org.hinanawiyuzu.qixia.ui.theme.*
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.bottomAnimatedCircleGradient
-import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
-import org.hinanawiyuzu.qixia.ui.viewmodel.AppViewModel
+import org.hinanawiyuzu.qixia.ui.viewmodel.*
 
 // 底部导航栏动画持续时间(ms)
 const val animationTime: Int = 300
@@ -69,6 +42,7 @@ const val animationTime: Int = 300
 enum class AppScreenState {
     Main, Box, Remind, Record, Profile
 }
+
 @Composable
 fun AppScreen(
     modifier: Modifier = Modifier,
@@ -95,6 +69,7 @@ fun AppScreen(
                     changeBottomBarVisibility = { isBottomBarVisible = it }
                 )
             }
+
             Record -> {}
             Profile -> {}
         }

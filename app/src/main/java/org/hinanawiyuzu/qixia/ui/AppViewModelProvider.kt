@@ -1,17 +1,9 @@
 package org.hinanawiyuzu.qixia.ui
 
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import org.hinanawiyuzu.qixia.QixiaApplication
-import org.hinanawiyuzu.qixia.ui.viewmodel.FillPersonalInformationViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.LoginViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.MedicineRepoViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.NewMedicineViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.NewRemindViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.RemindViewModel
-import org.hinanawiyuzu.qixia.ui.viewmodel.WelcomeViewModel
+import androidx.lifecycle.viewmodel.*
+import org.hinanawiyuzu.qixia.*
+import org.hinanawiyuzu.qixia.ui.viewmodel.*
 
 /**
  * 工厂-用于创建App的所有ViewModel。
@@ -27,7 +19,7 @@ object AppViewModelProvider {
         initializer {
             WelcomeViewModel(
                 application = qixiaApplication(),
-                userRepository =  qixiaApplication().container.userRepository,
+                userRepository = qixiaApplication().container.userRepository,
             )
         }
         initializer {

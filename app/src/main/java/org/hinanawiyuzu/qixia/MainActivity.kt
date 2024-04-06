@@ -1,14 +1,13 @@
 package org.hinanawiyuzu.qixia
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import org.hinanawiyuzu.qixia.ui.screen.WelcomeScreen
-import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
+import android.os.*
+import androidx.activity.*
+import androidx.activity.compose.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.ui.*
+import org.hinanawiyuzu.qixia.ui.screen.*
+import org.hinanawiyuzu.qixia.ui.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

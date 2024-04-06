@@ -1,13 +1,8 @@
 package org.hinanawiyuzu.qixia.data.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
-import kotlinx.coroutines.flow.Flow
-import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
+import androidx.room.*
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.data.entity.*
 
 @Dao
 interface MedicineRepoDao {

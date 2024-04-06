@@ -1,18 +1,15 @@
 package org.hinanawiyuzu.qixia.components
 
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import android.graphics.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.geometry.*
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.LinearGradientShader
-import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Shader
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.drawscope.*
 
 /**
  * 实现渐变色的文本

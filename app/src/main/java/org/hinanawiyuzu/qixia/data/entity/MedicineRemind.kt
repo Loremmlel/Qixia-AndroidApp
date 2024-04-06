@@ -1,17 +1,12 @@
 package org.hinanawiyuzu.qixia.data.entity
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.AfterMeal
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.AtMeal
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.BeforeMeal
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.BeforeSleep
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.NotMatter
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.*
 
 /**
  * 服药提醒信息
@@ -54,7 +49,8 @@ data class MedicineRemind(
     val dose: String,
     @TypeConverters(TakeMethodConverter::class)
     val method: TakeMethod,
-    val isTaken: Boolean,
+    @TypeConverters(BooleanListConverter::class)
+    val isTaken: List<Boolean>,
     @TypeConverters(MedicineFrequencyConverter::class)
     val frequency: MedicineFrequency,
     val medicineRepoId: Int

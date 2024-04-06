@@ -1,21 +1,14 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import android.net.Uri
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
-import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
-import org.hinanawiyuzu.qixia.data.repo.MedicineInfoRepository
-import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
+import android.net.*
+import androidx.compose.runtime.*
+import androidx.lifecycle.*
+import androidx.navigation.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.data.entity.*
+import org.hinanawiyuzu.qixia.data.repo.*
+import java.time.*
 
 class NewMedicineViewModel(
     private val medicineInfoRepository: MedicineInfoRepository,
