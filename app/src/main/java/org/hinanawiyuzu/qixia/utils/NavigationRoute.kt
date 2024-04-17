@@ -27,5 +27,6 @@ enum class RemindRoute {
     RemindScreen,
     NewRemindScreen,
     MedicineRepoScreen,
-    NewMedicineScreen
+    NewMedicineScreen,
+    ImageDetailScreen,
 }

@@ -5,8 +5,7 @@ import androidx.compose.ui.*
 
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier,
-    bottomBar: @Composable () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
 }

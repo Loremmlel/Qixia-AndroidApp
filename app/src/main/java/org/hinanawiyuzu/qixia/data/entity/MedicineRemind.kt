@@ -17,7 +17,7 @@ import java.time.*
  * @param name 药物名称
  * @param dose 剂量
  * @param method 服药方法（饭前，饭中，饭后，无所谓） -> [TakeMethod]
- * @param isTaken 是否已服用
+ * @param isTaken 是否已服用(是一个布尔数组，长度为从开始日期到结束日期的天数差)
  * @param frequency 服药频率 -> [MedicineFrequency]
  * @param medicineRepoId 对应的药物仓库id
  */

@@ -1,5 +1,6 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
+import android.content.*
 import android.graphics.*
 import android.net.*
 import androidx.compose.animation.*
@@ -21,11 +22,11 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
-import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import kotlinx.coroutines.*
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.*
 import org.hinanawiyuzu.qixia.data.entity.*
@@ -34,9 +35,7 @@ import org.hinanawiyuzu.qixia.ui.theme.*
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.greenCardGradient
 import org.hinanawiyuzu.qixia.ui.viewmodel.*
 import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
-import org.hinanawiyuzu.qixia.utils.RemindRoute
-import org.hinanawiyuzu.qixia.utils.advancedShadow
-import org.hinanawiyuzu.qixia.utils.slideComposable
+import org.hinanawiyuzu.qixia.utils.*
 import java.time.*
 import java.time.temporal.*
 import kotlin.reflect.*
@@ -44,6 +43,18 @@ import kotlin.reflect.*
 var searchImages: KFunction1<MedicineRemind, Uri>? = null
 val currentDate: LocalDate = LocalDate.now()
 
+/**
+ * 主页之提醒页面
+ * @param modifier 修饰符
+ * @param changeBottomBarVisibility
+ * 用来改变底部导航栏的可见性。因为这个页面涉及到导航至其它页面的操作，因为我AppScreen的设计缺陷，所以需要专门的函数管理底部导航栏的可见性。
+ * @param sharedViewModel 用来传递数据的ViewModel。这个ViewModel是用来传递数据的，因为我目前没发现popBackStack()可以传递数据。
+ * @param viewModel 用来管理数据的ViewModel
+ * @param navController 用来管理导航的NavController
+ * @see RemindViewModel
+ * @see SharedBetweenMedicineRepoAndNewRemindViewModel
+ * @author HinanawiYuzu
+ */
 @Composable
 fun RemindScreen(
     modifier: Modifier = Modifier,
@@ -104,18 +115,20 @@ fun RemindScreen(
                         currentSelectedDate = viewModel.currentSelectedDate,
                         medicineReminds = allMedicineRemind.medicineRemindList,
                         onDetailClicked = { /*TODO*/ },
-                        onTakeMedicineClicked = {/*TODO*/ }
+                        onTakeMedicineClicked = viewModel::onTakeMedicineClicked,
+                        onImageClicked = { navController.navigate("${RemindRoute.ImageDetailScreen.name}/$it") }
                     )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
                         MedicinesLeft(
-                            modifier = Modifier.requiredWidth(screenWidthDp * 0.5f),
+                            modifier = Modifier.weight(1f),
                             medicineRepos = allMedicineRepo.allMedicineRepoList
                         )
+                        Spacer(modifier = Modifier.weight(0.05f))
                         MedicinesExpiry(
-                            modifier = Modifier.requiredWidth(screenWidthDp * 0.5f),
+                            modifier = Modifier.weight(1f),
                             currentSelectedDate = viewModel.currentSelectedDate,
                             medicinesRepos = allMedicineRepo.allMedicineRepoList
                         )
@@ -144,6 +157,16 @@ fun RemindScreen(
                 navController = navController
             )
         }
+        imageDetailComposable(
+            route = "${RemindRoute.ImageDetailScreen.name}/{uri}",
+            arguments = listOf(navArgument("uri") { type = NavType.StringType })
+        ) {
+            changeBottomBarVisibility(false)
+            FullScreenImageView(
+                backStackEntry = it,
+                onDismiss = { navController.popBackStack() }
+            )
+        }
     }
 }
 
@@ -151,7 +174,7 @@ fun RemindScreen(
  * 顶部导航栏
  * @param modifier 修饰符
  * @param onMenuClicked 左侧的菜单按钮点击事件
- * @param onAddClicked 右上角有个加号，不知道干嘛的
+ * @param onAddClicked 右上角有个加号,点击后进入新增提醒界面
  * @author HinanawiYuzu
  */
 @Composable
@@ -191,9 +214,9 @@ private fun TopBar(
 
 /**
  * 显示日期的部分。
- *
- * 其实还没有完工，例如切换日期看昨天的情况。但是这涉及到数据层，我要怎么操作目前还没头绪 2024-3-30.
+ * @param modifier 修饰符
  * @param currentSelectedDate 当前选择的时间
+ * @param onCalendarClicked 点击日期的事件，会更改[RemindViewModel.currentSelectedDate]
  * @author HinanawiYuzu
  */
 @Composable
@@ -229,8 +252,10 @@ private fun Calendar(
 
 /**
  * 单个日期卡片。
+ * @param modifier 修饰符
  * @param isSelected 是否被选择
  * @param date 该卡片显示的时间
+ * @param onClicked 点击事件，和[Calendar]的onCalendarClicked对应。
  * @author HinanawiYuzu
  */
 @Composable
@@ -299,9 +324,11 @@ private fun CalendarItem(
 /**
  * 本页面主体部分，提醒用户吃药的卡片。
  * @param modifier 修饰符
+ * @param currentSelectedDate 当前选择的日期
  * @param medicineReminds 药物信息列表。其类型为自定义的模型类 -> [MedicineRemind]
  * @param onDetailClicked 有个绿色箭头，不知道干什么用的。
- * @param onTakeMedicineClicked 卡片的右边有个框框，点击表示自己吃了药。
+ * @param onTakeMedicineClicked 卡片的右边有个框框，点击表示自己吃了药。使用的函数是[RemindViewModel.onTakeMedicineClicked]
+ * @param onImageClicked 点击药物图片的事件，会跳转到图片详情页面。这个函数的参数是图片的Uri。
  * @author HinanawiYuzu
  */
 @Composable
@@ -310,16 +337,27 @@ private fun TakeMedicineRemind(
     currentSelectedDate: LocalDate,
     medicineReminds: List<MedicineRemind>,
     onDetailClicked: () -> Unit,
-    onTakeMedicineClicked: () -> Unit
+    onTakeMedicineClicked: (Int, Context) -> Unit,
+    onImageClicked: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val displayedMedicineReminds = medicineReminds.filter {
-        it.startDate <= currentSelectedDate && it.endDate >= currentSelectedDate
-    }
+    val displayedMedicineReminds = medicineReminds
+        .filter { it.startDate <= currentSelectedDate && it.endDate >= currentSelectedDate }
+        .sortedBy { it.remindTime }
     val displayedImagesUri = displayedMedicineReminds.map { searchImages!!.invoke(it) }
-    val displayedImages = displayedImagesUri.map {
-        it.let { uri ->
-            BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
+    var displayedImages by remember { mutableStateOf(List<Bitmap?>(0) { null }) }
+    // 图片的解码是非常耗时的工作！
+    // 所以我用了一个协程来解决这个问题。
+    // 如果不使用，那么会造成明显的卡顿！！！
+    // 在加载完毕之前，显示的是一个大小为1*1的位图。
+    // 啊，这种感觉是多么美妙~~😋
+    LaunchedEffect(displayedImagesUri) {
+        withContext(Dispatchers.IO) {
+            displayedImages = displayedImagesUri.map {
+                it.let { uri ->
+                    BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
+                }
+            }
         }
     }
     Column(
@@ -350,14 +388,18 @@ private fun TakeMedicineRemind(
             )
             return
         }
-        repeat(displayedMedicineReminds.size) {
+        repeat(displayedMedicineReminds.size) { index ->
             RemindCard(
                 modifier = Modifier
                     .padding(start = 25.dp, end = 15.dp),
                 currentSelectedDate = currentSelectedDate,
-                medicineRemind = displayedMedicineReminds[it],
-                medicineImg = displayedImages[it],
-                onTakeMedicineClicked = onTakeMedicineClicked
+                medicineRemind = displayedMedicineReminds[index],
+                // 如果不检查下标是否溢出的话，还是会发生数组越界异常。
+                // 原因在于用户快速切换日期时显示的图片数组大小会变化，而更新又是在后台做的。
+                medicineImg = if (displayedImages.isNotEmpty() && index < displayedImages.size) displayedImages[index]
+                else null,
+                onTakeMedicineClicked = { onTakeMedicineClicked(displayedMedicineReminds[index].id, context) },
+                onImageClicked = { onImageClicked(displayedImagesUri[index].toString().replace("/", "*")) }
             )
         }
     }
@@ -406,20 +448,25 @@ private fun GreenArrow(
  *
  * BYD这个函数嵌套真多啊。
  * @param modifier 修饰符。
+ * @param currentSelectedDate 当前选择的日期
  * @param medicineRemind 该卡片要显示的药物提醒信息 -> [MedicineRemind]
  * @param medicineImg 该卡片要显示的图片
- * @param onTakeMedicineClicked 右边按钮点击的事件。
+ * @param onTakeMedicineClicked 右边按钮点击的事件。和[TakeMedicineRemind]的onTakeMedicineClicked对应。
+ * @param onImageClicked 点击药物图片的事件，会跳转到图片详情页面。这个函数的参数是图片的Uri。和[TakeMedicineRemind]的onImageClicked对应。
+ * @author HinanawiYuzu
  */
 @Composable
 private fun RemindCard(
     modifier: Modifier = Modifier,
     currentSelectedDate: LocalDate,
     medicineRemind: MedicineRemind,
-    medicineImg: Bitmap,
-    onTakeMedicineClicked: () -> Unit
+    medicineImg: Bitmap?,
+    onTakeMedicineClicked: () -> Unit,
+    onImageClicked: () -> Unit
 ) {
     val remindCardHeightDp = LocalConfiguration.current.screenHeightDp * 0.0751
     val method = medicineRemind.method.convertToString()
+    val checked = medicineRemind.isTaken[ChronoUnit.DAYS.between(medicineRemind.startDate, currentSelectedDate).toInt()]
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start
@@ -429,10 +476,7 @@ private fun RemindCard(
         ) {
             Image(
                 painter = painterResource(
-                    id = if (
-                        medicineRemind.isTaken[ChronoUnit.DAYS.between(medicineRemind.startDate, currentSelectedDate)
-                            .toInt()]
-                    ) R.drawable.remind_screen_already_taken
+                    id = if (checked) R.drawable.remind_screen_already_taken
                     else R.drawable.remind_screen_not_taken
                 ),
                 contentDescription = null
@@ -462,9 +506,13 @@ private fun RemindCard(
                 // 药物的图片
                 Image(
                     modifier = Modifier
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                        ) { onImageClicked.invoke() }
                         .fillMaxHeight()
                         .padding(5.dp),
-                    bitmap = medicineImg.asImageBitmap(),
+                    bitmap = medicineImg?.asImageBitmap() ?: ImageBitmap(1, 1),
                     contentDescription = null,
                     contentScale = ContentScale.Inside
                 )
@@ -519,32 +567,38 @@ private fun RemindCard(
                         }
                     }
                 }
-                Column(
-                    modifier = Modifier.fillMaxWidth()
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd
                 ) {
+                    val iconSize = 45.dp
                     // 如果已经服用，那么则显示✔。否则显示按钮，用户点击后则变为已服用。
-                    if (medicineRemind.isTaken[ChronoUnit.DAYS.between(medicineRemind.startDate, currentSelectedDate)
-                            .toInt()]
-                    ) {
+                    if (!checked) {
                         Icon(
                             modifier = Modifier
-                                .align(Alignment.End)
-                                .padding(end = 10.dp),
-                            painter = painterResource(id = R.drawable.check_circle),
-                            contentDescription = "您已于" + medicineRemind.remindTime + "服用" + medicineRemind.name,
+                                .padding(10.dp)
+                                .height(iconSize)
+                                .width(iconSize)
+                                .then(
+                                    if (currentSelectedDate == LocalDate.now()) {
+                                        Modifier.clickable(
+                                            interactionSource = MutableInteractionSource(),
+                                            indication = null
+                                        ) { onTakeMedicineClicked() }
+                                    } else Modifier
+                                ),
+                            painter = painterResource(id = R.drawable.green_circle),
+                            contentDescription = "您尚未服用" + medicineRemind.name,
                             tint = secondary_color
                         )
                     } else {
                         Icon(
                             modifier = Modifier
-                                .clickable(
-                                    interactionSource = MutableInteractionSource(),
-                                    indication = null
-                                ) { onTakeMedicineClicked() }
-                                .align(Alignment.End)
+                                .height(iconSize)
+                                .width(iconSize)
                                 .padding(end = 10.dp),
-                            painter = painterResource(id = R.drawable.green_circle),
-                            contentDescription = "您尚未服用" + medicineRemind.name,
+                            painter = painterResource(id = R.drawable.check_circle),
+                            contentDescription = "您已于" + medicineRemind.remindTime + "服用" + medicineRemind.name,
                             tint = secondary_color
                         )
                     }
@@ -587,7 +641,8 @@ private fun MedicinesLeft(
             if (((Regex("\\d+").find(medicineRepoInfo.remainAmount))?.value ?: "0").toInt() <= 10) {
                 MedicineLeftCard(
                     modifier = Modifier
-                        .padding(bottom = 10.dp),
+                        .padding(bottom = 10.dp)
+                        .fillMaxWidth(),
                     medicineRepo = medicineRepoInfo
                 )
                 isAnyMedicineNotEnough = true
@@ -624,8 +679,9 @@ private fun MedicineLeftCard(
         verticalArrangement = Arrangement.Center
     ) {
         Row(
+            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier.padding(start = 10.dp, end = 10.dp),
@@ -637,7 +693,7 @@ private fun MedicineLeftCard(
             )
             Text(
                 modifier = Modifier.padding(end = 15.dp),
-                text = "需补充!",
+                text = "需补充",
                 style = TextStyle(
                     color = Color(0xFFF59A19),
                     fontSize = FontSize.smallSize,
@@ -681,7 +737,9 @@ private fun MedicinesExpiry(
         medicinesRepos.forEach { medicineRepoInfo ->
             if (medicineRepoInfo.expiryDate <= currentSelectedDate) {
                 MedicineExpiryCard(
-                    modifier = Modifier.padding(bottom = 10.dp),
+                    modifier = Modifier
+                        .padding(bottom = 10.dp)
+                        .fillMaxWidth(),
                     medicineRepo = medicineRepoInfo
                 )
                 isAnyMedicineOutOfDate = true
@@ -719,7 +777,9 @@ private fun MedicineExpiryCard(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier.padding(start = 10.dp, end = 10.dp),
@@ -731,7 +791,7 @@ private fun MedicineExpiryCard(
             )
             Text(
                 modifier = Modifier.padding(end = 15.dp),
-                text = "已过期!",
+                text = "已过期",
                 style = TextStyle(
                     color = Color(0xFFF50000),
                     fontSize = FontSize.smallSize,
@@ -739,14 +799,5 @@ private fun MedicineExpiryCard(
                 )
             )
         }
-    }
-}
-
-
-@Preview
-@Composable
-private fun RemindScreenPreview() {
-    QixiaTheme {
-
     }
 }

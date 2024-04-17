@@ -45,3 +45,35 @@ fun NavGraphBuilder.slideComposable(
     popExitTransition = popExitTransition,
     content = content
 )
+
+fun NavGraphBuilder.imageDetailComposable(
+    route: String,
+    arguments: List<NamedNavArgument> = emptyList(),
+    deepLinks: List<NavDeepLink> = emptyList(),
+    enterTransition: (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = {
+        fadeIn(animationSpec = tween(animationSpec))
+    },
+    exitTransition: (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = {
+        fadeOut(animationSpec = tween(animationSpec))
+    },
+    popEnterTransition: (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = {
+        fadeIn(animationSpec = tween(animationSpec))
+    },
+    popExitTransition: (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = {
+        fadeOut(animationSpec = tween(animationSpec))
+    },
+    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+) = composable(
+    route = route,
+    arguments = arguments,
+    deepLinks = deepLinks,
+    enterTransition = enterTransition,
+    exitTransition = exitTransition,
+    popEnterTransition = popEnterTransition,
+    popExitTransition = popExitTransition,
+    content = content
+)

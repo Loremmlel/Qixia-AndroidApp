@@ -1,8 +1,12 @@
 package org.hinanawiyuzu.qixia.utils
 
-import android.content.Context
-import android.widget.Toast
+import android.content.*
+import android.widget.*
 
-fun showToast(context: Context, message: String) {
+fun showShortToast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+fun showLongToast(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }

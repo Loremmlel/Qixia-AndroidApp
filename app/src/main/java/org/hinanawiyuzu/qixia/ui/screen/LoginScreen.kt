@@ -117,10 +117,7 @@ fun LoginScreen(
             VerificationCodeScreen(navController = navController, navBackStackEntry = it)
         }
         slideComposable(
-            route = "${
-                LoginRoute.FillPersonalInformationScreen
-                    .name
-            }/{accountPhone}/{accountPassword}",
+            route = "${LoginRoute.FillPersonalInformationScreen.name}/{accountPhone}/{accountPassword}",
             arguments = listOf(
                 navArgument("accountPhone") { type = NavType.StringType },
                 navArgument("accountPassword") {

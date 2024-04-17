@@ -14,15 +14,38 @@ class NewMedicineViewModel(
     private val medicineInfoRepository: MedicineInfoRepository,
     private val medicineRepoRepository: MedicineRepoRepository
 ) : ViewModel() {
+    // 用户输入的药品名
     var medicineName: String by mutableStateOf("")
+        private set
+
+    // 用户输入的库存数量
     var inventory: String by mutableStateOf("")
+        private set
+
+    // 用户输入的注册证号
     var inputRegistrationCertificateNumber: String by mutableStateOf("")
+        private set
+
+    // 用户选择的过期日期
     var expiryDate: LocalDate? by mutableStateOf(null)
+        private set
+
+    // 用户选择的图片Uri
     private var imageUri by mutableStateOf<Uri?>(null)
+
+    // 是否显示提示信息
     var showSnackBar by mutableStateOf(false)
+        private set
+
+    // 按钮是否可用
     var buttonEnabled by mutableStateOf(false)
-    var dosageForm: String? by mutableStateOf(null)
-    var specification: String? by mutableStateOf(null)
+        private set
+
+    // 根据注册证号查到的药品剂型
+    private var dosageForm: String? by mutableStateOf(null)
+
+    // 根据注册证号查到的药品规格
+    private var specification: String? by mutableStateOf(null)
 
     fun onMedicineNameChanged(value: String) {
         medicineName = value
@@ -49,13 +72,15 @@ class NewMedicineViewModel(
     fun startSearch() {
         viewModelScope.launch {
             val result =
-                medicineInfoRepository.queryByRegistrationCertificateNumber((inputRegistrationCertificateNumber.uppercase()))
+                medicineInfoRepository
+                    .queryByRegistrationCertificateNumber(inputRegistrationCertificateNumber.uppercase())
                     .firstOrNull()
             result?.let {
                 medicineName = it.productName!!
                 dosageForm = it.dosageForm
                 specification = it.specification
             } ?: run {
+                // 如果没查到，就显示提示信息
                 showSnackBar = true
                 delay(2000)
                 showSnackBar = false

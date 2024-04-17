@@ -7,15 +7,39 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByExpiryDateASC
+import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByExpiryDateDESC
+import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByNameASC
+import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByNameDESC
+import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByRemainAmountASC
+import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByRemainAmountDESC
 import org.hinanawiyuzu.qixia.utils.*
 
 class MedicineRepoViewModel(
     medicineRepoRepository: MedicineRepoRepository
 ) : ViewModel() {
+    // 用户选择的排序方式
     private var sortCondition: SortCondition? by mutableStateOf(null)
+
+    // 用户输入的搜索内容
     var userSearchInput: String? by mutableStateOf(null)
+        private set
+
+    /**
+     * 药品的选择情况
+     */
     lateinit var selectedStates: MutableList<Boolean>
+        private set
+
+    /**
+     * 显示的药品信息。由allMedicineRepo经过排序、筛选方式得到
+     */
     var displayedMedicineRepo: List<MedicineRepo> by mutableStateOf(emptyList())
+        private set
+
+    /**
+     * 查询到的所有药品信息
+     */
     val allMedicineRepo: StateFlow<AllMedicineRepo> = medicineRepoRepository.getAllMedicineRepoStream()
         .map { AllMedicineRepo(it) }
         .stateIn(
@@ -83,6 +107,15 @@ class MedicineRepoViewModel(
     }
 }
 
+/**
+ * 排序条件
+ * @property ByNameDESC 按名称降序
+ * @property ByNameASC 按名称升序
+ * @property ByExpiryDateDESC 按到期时间降序
+ * @property ByExpiryDateASC 按到期时间升序
+ * @property ByRemainAmountDESC 按剩余数量降序
+ * @property ByRemainAmountASC 按剩余数量升序
+ */
 enum class SortCondition {
     ByNameDESC,
     ByNameASC,

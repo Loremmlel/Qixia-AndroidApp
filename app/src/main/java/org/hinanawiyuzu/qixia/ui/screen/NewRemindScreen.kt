@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
-import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.*
 import androidx.navigation.*
@@ -30,6 +29,16 @@ import org.hinanawiyuzu.qixia.ui.viewmodel.*
 import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
 import java.time.*
 
+/**
+ * 新增提醒页面
+ * @param modifier 修饰符
+ * @param sharedViewModel 用于共享数据的ViewModel
+ * @param viewModel 用于处理逻辑的ViewModel
+ * @param navController 导航控制器
+ * @see SharedBetweenMedicineRepoAndNewRemindViewModel
+ * @see NewRemindViewModel
+ * @author HinanawiYuzu
+ */
 @Composable
 fun NewRemindScreen(
     modifier: Modifier = Modifier,
@@ -62,7 +71,9 @@ fun NewRemindScreen(
             Column(
                 modifier = Modifier
                     .padding(10.dp)
-                    .verticalScroll(state = rememberScrollState()),
+                    .verticalScroll(
+                        state = rememberScrollState(),
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(30.dp)
             ) {
@@ -218,6 +229,12 @@ fun NewRemindScreen(
     }
 }
 
+/**
+ * 顶部栏
+ * @param modifier 修饰符
+ * @param onBackClicked 返回按钮点击事件
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
@@ -244,6 +261,13 @@ private fun TopBar(
     }
 }
 
+/**
+ * 选择药品名称的卡片
+ * @param modifier 修饰符
+ * @param medicineName 药品名称
+ * @param onSelectMedicineFromBoxClicked 从药箱中选择药品的点击事件, 执行的函数是[NewRemindViewModel.onSelectMedicineFromBoxClicked]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun MedicineSelector(
     modifier: Modifier = Modifier,
@@ -284,6 +308,13 @@ private fun MedicineSelector(
     }
 }
 
+/**
+ * 选择剂量的卡片
+ * @param modifier 修饰符
+ * @param onDropDownMenuItemClicked 下拉菜单中的选项点击事件, 执行的函数是[NewRemindViewModel.onDoseDropDownMenuItemClicked]
+ * @param dose 剂量, 例如"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"等等
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun DoseSelector(
     modifier: Modifier = Modifier,
@@ -342,6 +373,13 @@ private fun DoseSelector(
     }
 }
 
+/**
+ * 选择服用频率的卡片
+ * @param modifier 修饰符
+ * @param frequency 服用频率, 请参阅[MedicineFrequency]
+ * @param onDropDownMenuItemClicked 下拉菜单中的选项点击事件, 执行的函数是[NewRemindViewModel.onFrequencyDropDownMenuItemClicked]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun FrequencySelector(
     modifier: Modifier = Modifier,
@@ -394,6 +432,13 @@ private fun FrequencySelector(
     }
 }
 
+/**
+ * 选择开始日期的卡片
+ * @param modifier 修饰符
+ * @param startDate 开始日期，和[NewRemindViewModel.startDate]对应
+ * @param onStartDatePickerConfirmButtonClicked 开始日期选择器中的确定按钮点击事件, 执行的函数是[NewRemindViewModel.onStartDatePickerConfirmButtonClicked]
+ * @author HinanawiYuzu
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StartDateSelector(
@@ -456,7 +501,22 @@ private fun StartDateSelector(
     }
 }
 
-//我仔细想了下，发现还是分开来，逻辑会简单好处理一些。
+/**
+ * 选择结束日期的卡片
+ *
+ * 我仔细想了下，发现还是分开来，逻辑会简单好处理一些。
+ *
+ * 主要的逻辑是：
+ * 不能选择比开始日期更早的结束日期。
+ *
+ * 在已经选择结束日期的情况下，再选择开始日期，如果选择的开始日期大于已选择的结束日期，那么结束日期清零。
+ * 第二个逻辑位于[NewRemindViewModel.onStartDatePickerConfirmButtonClicked]中。
+ * @param modifier 修饰符
+ * @param startDate 开始日期，和[NewRemindViewModel.startDate]对应
+ * @param endDate 结束日期，和[NewRemindViewModel.endDate]对应
+ * @param onEndDatePickerConfirmButtonClicked 结束日期选择器中的确定按钮点击事件, 执行的函数是[NewRemindViewModel.onEndDatePickerConfirmButtonClicked]
+ * @author HinanawiYuzu
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EndDateSelector(
@@ -525,6 +585,13 @@ private fun EndDateSelector(
     }
 }
 
+/**
+ * 选择提醒时间的卡片
+ * @param modifier 修饰符
+ * @param onRemindTimeSelected 提醒时间选择事件，返回的是小时和分钟，执行的函数是[NewRemindViewModel.onRemindTimeSelected]
+ * @see TimePickerDialog
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun RemindTimeSelector(
     modifier: Modifier = Modifier,
@@ -571,6 +638,13 @@ private fun RemindTimeSelector(
 }
 
 // 明明之前的页面有任意的选项，但是这里却只有饭前、饭中和饭后。自相矛盾的UI设计，完全没考虑全面啊。
+/**
+ * 服药方法的选择器
+ * @param modifier 修饰符
+ * @param selectedMethod 选择的方法，请参阅[TakeMethod]
+ * @param onSelectMethodClicked 选择方法的点击事件，返回的是方法的Int值，执行的函数是[NewRemindViewModel.onSelectMethodClicked]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun MethodSelector(
     modifier: Modifier = Modifier,
@@ -679,6 +753,9 @@ private fun MethodSelector(
     }
 }
 
+/**
+ * @see TimePicker
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TimePickerDialog(
@@ -694,6 +771,14 @@ private fun TimePickerDialog(
     }
 }
 
+/**
+ * 确认按钮。
+ * @param modifier 修饰符
+ * @param enabled 按钮是否可用,对应[NewRemindViewModel.buttonEnabled]
+ * @param buttonHeight 按钮高度
+ * @param onNextClicked 点击事件，执行的函数是[NewRemindViewModel.onCommitButtonClicked]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun CommitButton(
     modifier: Modifier = Modifier,
@@ -719,12 +804,4 @@ private fun CommitButton(
         ),
         fontColors = Color.Black
     )
-}
-
-@Preview
-@Composable
-private fun NewRemindScreenPreview() {
-    QixiaTheme {
-
-    }
 }

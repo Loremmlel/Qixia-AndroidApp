@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
-import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.*
 import androidx.navigation.*
@@ -30,6 +29,16 @@ import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
 import org.hinanawiyuzu.qixia.utils.*
 import java.time.*
 
+/**
+ * 药品仓库清单界面
+ * @param modifier 修饰符
+ * @param sharedViewModel 用于新建提醒界面和药品仓库界面之间共享数据的ViewModel
+ * @param viewModel 药品仓库界面的ViewModel
+ * @param navController 导航控制器
+ * @see MedicineRepoViewModel
+ * @see SharedBetweenMedicineRepoAndNewRemindViewModel
+ * @author HinanawiYuzu
+ */
 @Composable
 fun MedicineRepoScreen(
     modifier: Modifier = Modifier,
@@ -90,6 +99,13 @@ fun MedicineRepoScreen(
 }
 
 
+/**
+ * 药品仓库清单界面的顶部栏
+ * @param modifier 修饰符
+ * @param onBackClicked 返回按钮点击事件
+ * @param onDropDownMenuItemClicked 下拉菜单点击事件,对应[MedicineRepoViewModel.onSortConditionChanged]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
@@ -158,6 +174,14 @@ private fun TopBar(
     }
 }
 
+/**
+ * 搜索框
+ * @param modifier 修饰符
+ * @param userInput 用户输入,对应[MedicineRepoViewModel.userSearchInput]
+ * @param onUserInputChanged 用户输入改变事件,对应[MedicineRepoViewModel.onUserSearchInputChanged]
+ * @param startSearch 开始搜索事件,对应[MedicineRepoViewModel.startSearch]
+ * @author HinanawiYuzu
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun SearchBox(
@@ -202,6 +226,15 @@ private fun SearchBox(
     )
 }
 
+/**
+ * 药品仓库卡片列表
+ * @param modifier 修饰符
+ * @param allMedicineRepo 所有药品仓库信息,对应[MedicineRepoViewModel.allMedicineRepo]
+ * @param medicineRepos 显示的药品仓库信息,对应[MedicineRepoViewModel.displayedMedicineRepo]
+ * @param selectedStates 选中状态,对应[MedicineRepoViewModel.selectedStates]
+ * @param onSelectClicked 选择事件,对应[MedicineRepoViewModel.toggleSelection]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun MedicineRepoCards(
     modifier: Modifier = Modifier,
@@ -235,6 +268,14 @@ private fun MedicineRepoCards(
     }
 }
 
+/**
+ * 药品仓库卡片
+ * @param modifier 修饰符
+ * @param medicineRepo 药品仓库信息
+ * @param isSelected 是否选中,对应[MedicineRepoViewModel.selectedStates]的一个元素
+ * @param onSelectClicked 选择事件,对应[MedicineRepoViewModel.toggleSelection]
+ * @author HinanawiYuzu
+ */
 @Composable
 fun MedicineRepoCard(
     modifier: Modifier = Modifier,
@@ -463,6 +504,13 @@ fun MedicineRepoCard(
     }
 }
 
+/**
+ * 底部按钮
+ * @param modifier 修饰符
+ * @param onAddClicked 新增按钮点击事件,对应[MedicineRepoViewModel.onAddMedicineClicked]
+ * @param onSelectClicked 选择按钮点击事件,对应[MedicineRepoViewModel.onSelectClicked]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun BottomButtons(
     modifier: Modifier = Modifier,
@@ -524,12 +572,5 @@ private fun BottomButtons(
                 )
             )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun MedicineRepoScreenPreview() {
-    QixiaTheme {
     }
 }

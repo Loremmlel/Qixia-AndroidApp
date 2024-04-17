@@ -40,6 +40,14 @@ import java.time.*
 const val ALBUM = false
 const val CAMERA = true
 
+/**
+ * 新增药品界面
+ * @param modifier 修饰符
+ * @param viewModel 详见[NewMedicineViewModel]
+ * @param navController 导航控制器
+ * @see NewMedicineViewModel
+ * @author HinanawiYuzu
+ */
 @Composable
 fun NewMedicineScreen(
     modifier: Modifier = Modifier,
@@ -161,6 +169,12 @@ fun NewMedicineScreen(
     }
 }
 
+/**
+ * 顶部栏
+ * @param modifier 修饰符
+ * @param onBackClicked 返回按钮点击事件
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
@@ -187,7 +201,15 @@ private fun TopBar(
     }
 }
 
-
+/**
+ * 选择药品名称
+ * @param modifier 修饰符
+ * @param userInput 用户选择的药品名称,对应[NewMedicineViewModel.medicineName]
+ * @param registrationCertificateNumber 用户输入的注册证号,对应[NewMedicineViewModel.inputRegistrationCertificateNumber]
+ * @param onUserInputChanged 用户输入药品名称时的回调,对应[NewMedicineViewModel.onMedicineNameChanged]
+ * @param onInputRegistrationCertificateNumberChanged 用户输入注册证号时的回调,对应[NewMedicineViewModel.onInputRegistrationCertificateNumberChanged]
+ * @param startSearch 点击搜索按钮时的回调,对应[NewMedicineViewModel.startSearch]
+ */
 @Composable
 private fun MedicineSelector(
     modifier: Modifier = Modifier,
@@ -266,6 +288,13 @@ private fun MedicineSelector(
     }
 }
 
+/**
+ * 选择库存
+ * @param modifier 修饰符
+ * @param userInput 用户输入的库存,对应[NewMedicineViewModel.inventory]
+ * @param onUserInputChanged 用户输入库存时的回调,对应[NewMedicineViewModel.onInventoryChanged]
+ * @author HinanawiYuzu
+ */
 @Composable
 private fun InventorySelector(
     modifier: Modifier = Modifier,
@@ -298,6 +327,13 @@ private fun InventorySelector(
     )
 }
 
+/**
+ * 选择过期时间
+ * @param modifier 修饰符
+ * @param expiryDate 用户选择的过期时间,对应[NewMedicineViewModel.expiryDate]
+ * @param onExpiryDatePickerConfirmButtonClicked 用户点击确定按钮时的回调,对应[NewMedicineViewModel.onExpiryDatePickerConfirmButtonClicked]
+ * @author HinanawiYuzu
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExpiryDateSelector(
@@ -379,6 +415,7 @@ private fun ImageSelector(
     ) { isSuccess ->
         if (isSuccess) {
             // 从相机拍照成功后，将图片显示在 Image 组件中
+            // 这里的卡顿我想应该是可以接受的
             val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(imageUri!!))
             imageState = bitmap
             pictureProperty = CAMERA
