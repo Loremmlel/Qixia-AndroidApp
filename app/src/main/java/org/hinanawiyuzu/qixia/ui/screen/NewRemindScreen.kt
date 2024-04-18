@@ -60,7 +60,7 @@ fun NewRemindScreen(
     viewModel: NewRemindViewModel = viewModel(factory = AppViewModelProvider.factory),
     navController: NavHostController = rememberNavController(),
 ) {
-    val selectorHeight: Dp = 35.dp
+    val selectorHeight: Dp = 45.dp
     val screenWidthDp: Dp = LocalConfiguration.current.screenWidthDp.dp
     val context = LocalContext.current
     viewModel.medicineRepoId = sharedViewModel.medicineRepoId
@@ -303,6 +303,7 @@ private fun MedicineSelector(
             contentDescription = "新增药品"
         )
         Text(
+            modifier = Modifier.fillMaxWidth(0.6f),
             text = medicineName
         )
         Row(

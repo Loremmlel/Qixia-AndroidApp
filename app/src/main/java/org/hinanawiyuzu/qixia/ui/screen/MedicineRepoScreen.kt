@@ -366,6 +366,7 @@ fun MedicineRepoCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
+                    modifier = Modifier.fillMaxWidth(0.5f),
                     text = medicineRepo.name,
                     style = TextStyle(
                         fontSize = FontSize.bigSize,

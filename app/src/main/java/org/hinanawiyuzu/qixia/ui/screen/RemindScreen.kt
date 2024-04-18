@@ -464,7 +464,7 @@ private fun RemindCard(
     onTakeMedicineClicked: () -> Unit,
     onImageClicked: () -> Unit
 ) {
-    val remindCardHeightDp = LocalConfiguration.current.screenHeightDp * 0.0751
+    val remindCardHeightDp = LocalConfiguration.current.screenHeightDp * 0.085
     val method = medicineRemind.method.convertToString()
     val checked = medicineRemind.isTaken[ChronoUnit.DAYS.between(medicineRemind.startDate, currentSelectedDate).toInt()]
     Column(
@@ -510,75 +510,76 @@ private fun RemindCard(
                             interactionSource = MutableInteractionSource(),
                             indication = null,
                         ) { onImageClicked.invoke() }
-                        .fillMaxHeight()
+                        .fillMaxWidth(0.15f)
+                        .fillMaxHeight(0.9f)
                         .padding(5.dp),
                     bitmap = medicineImg?.asImageBitmap() ?: ImageBitmap(1, 1),
                     contentDescription = null,
-                    contentScale = ContentScale.Inside
+                    contentScale = ContentScale.Crop
                 )
-                Column(
-                    modifier = Modifier
-                        .padding(end = 35.dp)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceEvenly
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        // 药物的名字和剂量
-                        Text(
-                            text = medicineRemind.name,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Black,
-                                fontSize = FontSize.bigSize
-                            )
-                        )
-                        Spacer(modifier = Modifier.size(10.dp))
-                        Text(
-                            text = "剂量:${medicineRemind.dose}",
-                            style = TextStyle(
-                                color = primary_color,
-                                fontWeight = FontWeight.Black,
-                                fontSize = FontSize.smallSize
-                            )
-                        )
-                    }
-                    // 药物的服用方式、注意事项
-                    Card(
-                        modifier = Modifier,
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0x264BFE68)
-                        ),
-                        shape = RoundedCornerShape(percent = 10)
+                    Column(
+                        modifier = Modifier
+                            .padding(end = 35.dp)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxHeight(0.8f)
-                                .fillMaxWidth(0.25f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            // 药物的名字和剂量
                             Text(
-                                text = method,
+                                modifier = Modifier.fillMaxWidth(0.7f),
+                                text = medicineRemind.name,
                                 style = TextStyle(
                                     fontWeight = FontWeight.Black,
+                                    fontSize = FontSize.bigSize
+                                )
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
+                            Text(
+                                text = "剂量:${medicineRemind.dose}",
+                                style = TextStyle(
                                     color = primary_color,
-                                    fontSize = FontSize.normalSize
+                                    fontWeight = FontWeight.Black,
+                                    fontSize = FontSize.smallSize
                                 )
                             )
                         }
+                        // 药物的服用方式、注意事项
+                        Card(
+                            modifier = Modifier
+                                .height(25.dp)
+                                .width(50.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0x264BFE68)
+                            ),
+                            shape = RoundedCornerShape(percent = 20)
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = method,
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Black,
+                                        color = primary_color,
+                                        fontSize = FontSize.normalSize
+                                    )
+                                )
+                            }
+                        }
                     }
-                }
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    val iconSize = 45.dp
                     // 如果已经服用，那么则显示✔。否则显示按钮，用户点击后则变为已服用。
                     if (!checked) {
                         Icon(
                             modifier = Modifier
+                                .align(Alignment.CenterEnd)
                                 .padding(10.dp)
-                                .height(iconSize)
-                                .width(iconSize)
+                                .fillMaxWidth(0.15f)
+                                .fillMaxHeight(0.7f)
                                 .then(
                                     if (currentSelectedDate == LocalDate.now()) {
                                         Modifier.clickable(
@@ -594,9 +595,10 @@ private fun RemindCard(
                     } else {
                         Icon(
                             modifier = Modifier
-                                .height(iconSize)
-                                .width(iconSize)
-                                .padding(end = 10.dp),
+                                .align(Alignment.CenterEnd)
+                                .padding(end = 10.dp)
+                                .fillMaxWidth(0.15f)
+                                .fillMaxHeight(0.7f),
                             painter = painterResource(id = R.drawable.check_circle),
                             contentDescription = "您已于" + medicineRemind.remindTime + "服用" + medicineRemind.name,
                             tint = secondary_color
