@@ -6,6 +6,11 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:name=".QixiaApplication"
         android:allowBackup="true"
@@ -20,6 +25,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Qixia">
             <intent-filter>
@@ -28,6 +34,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver
+            android:name=".notification.TakeMedicineReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.hinanawiyuzu.qixia.TAKE_MEDICINE_REMIND" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -60,6 +60,7 @@ fun CommonBackground(
 /**
  * 使用模糊效果的背景。
  */
+@Stable
 @Composable
 fun BlurredBackground(
     modifier: Modifier = Modifier

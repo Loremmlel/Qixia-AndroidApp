@@ -75,6 +75,7 @@ fun FullScreenImage(
     }
 }
 
+@Stable
 @Composable
 fun FullScreenImageView(
     modifier: Modifier = Modifier,

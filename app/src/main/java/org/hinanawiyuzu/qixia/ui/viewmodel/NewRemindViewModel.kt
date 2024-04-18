@@ -1,5 +1,8 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
+import android.content.*
+import android.os.*
+import android.provider.*
 import androidx.compose.runtime.*
 import androidx.lifecycle.*
 import androidx.navigation.*
@@ -7,6 +10,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.notification.*
 import org.hinanawiyuzu.qixia.ui.screen.*
 import org.hinanawiyuzu.qixia.utils.*
 import java.time.*
@@ -63,8 +67,13 @@ class NewRemindViewModel(
      * 提交按钮点击事件
      * 提交数据到数据库的同时返回上一个页面
      * @param navController 导航控制器,用于返回上一个页面
+     * @param hasPermission 是否有通知权限
      */
-    fun onCommitButtonClicked(navController: NavController) {
+    fun onCommitButtonClicked(
+        context: Context,
+        navController: NavController,
+        hasPermission: Boolean
+    ) {
         val medicineRemind = MedicineRemind(
             remindTime = remindTime!!,
             startDate = startDate!!,
@@ -76,8 +85,33 @@ class NewRemindViewModel(
             medicineRepoId = medicineRepoId!!,
             method = method!!
         )
+        if (!hasPermission) {
+            showLongToast(context, "不开启通知权限的话，无法正常使用提醒功能。")
+        }
         viewModelScope.launch {
             medicineRemindRepository.insertMedicineRemind(medicineRemind)
+            // TODO: 提早五分钟提醒,这个后期应当在设置中由用户自行选择。
+            // TMD被这个时区恶心了，暂时设置为+8吧，国际化个鬼
+            val startTimeMillis = startDate!!.atTime(remindTime)
+                .toInstant(ZoneOffset.ofHours(8)).toEpochMilli() - 300000
+            val days = (ChronoUnit.DAYS.between(startDate, endDate) + 1).toInt()
+            val schedule = Schedule(context)
+            try {
+                schedule.setTakeMedicineAlarm(
+                    "该服药了!请在${remindTime}之前服用${medicineName}  ${dose}片,注意${method!!.convertToString()}服用",
+                    startTimeMillis,
+                    days
+                )
+            } catch (e: SecurityException) {
+                showLongToast(context, "请开启精确闹钟权限")
+                if (Build.VERSION.SDK_INT >= 31) {
+                    val intent = Intent().apply {
+                        action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    }
+                    context.startActivity(intent)
+                }
+            }
             navController.popBackStack()
         }
     }

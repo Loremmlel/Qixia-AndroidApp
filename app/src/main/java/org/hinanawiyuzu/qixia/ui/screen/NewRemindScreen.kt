@@ -1,5 +1,11 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
+import android.app.*
+import android.content.*
+import android.os.*
+import android.provider.*
+import androidx.activity.compose.*
+import androidx.activity.result.contract.*
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -27,7 +33,15 @@ import org.hinanawiyuzu.qixia.ui.theme.*
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.transparentButtonBorderGradient
 import org.hinanawiyuzu.qixia.ui.viewmodel.*
 import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
+import org.hinanawiyuzu.qixia.utils.*
 import java.time.*
+
+private enum class LoadState {
+    Loading,
+    Success,
+    Error
+}
+
 
 /**
  * 新增提醒页面
@@ -48,6 +62,7 @@ fun NewRemindScreen(
 ) {
     val selectorHeight: Dp = 35.dp
     val screenWidthDp: Dp = LocalConfiguration.current.screenWidthDp.dp
+    val context = LocalContext.current
     viewModel.medicineRepoId = sharedViewModel.medicineRepoId
     sharedViewModel.medicineRepoId?.let {
         viewModel.getMedicineRepo()
@@ -224,7 +239,7 @@ fun NewRemindScreen(
                 .fillMaxWidth(),
             buttonHeight = 70.dp,
             enabled = viewModel.buttonEnabled,
-            onNextClicked = { viewModel.onCommitButtonClicked(navController) }
+            onNextClicked = { viewModel.onCommitButtonClicked(context, navController, it) }
         )
     }
 }
@@ -784,8 +799,14 @@ private fun CommitButton(
     modifier: Modifier = Modifier,
     enabled: Boolean,
     buttonHeight: Dp,
-    onNextClicked: () -> Unit
+    onNextClicked: (Boolean) -> Unit
 ) {
+    val context = LocalContext.current
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { hasPermission ->
+        onNextClicked(hasPermission)
+    }
     CommonButton(
         modifier = modifier
             .fillMaxWidth()
@@ -796,7 +817,23 @@ private fun CommitButton(
             )
             .height(buttonHeight),
         buttonTextRes = R.string.confirm_button_text,
-        onButtonClicked = onNextClicked,
+        onButtonClicked = {
+            if (!context.getSystemService(NotificationManager::class.java).areNotificationsEnabled()) {
+                if (Build.VERSION.SDK_INT >= 33) {
+                    notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                    return@CommonButton
+                } else {
+                    showLongToast(context, "不开启通知权限的话，无法正常使用提醒功能。")
+                    val intent = Intent().apply {
+                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    }
+                    context.startActivity(intent)
+                }
+            } else {
+                onNextClicked(true)
+            }
+        },
         enabled = enabled,
         buttonColors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFFB4E3CC),

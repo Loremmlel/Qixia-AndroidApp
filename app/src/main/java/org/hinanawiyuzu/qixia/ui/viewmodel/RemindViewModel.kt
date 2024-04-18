@@ -87,7 +87,10 @@ class RemindViewModel(
                     )
                     medicineRemindRepository.updateMedicineRemind(newRemind)
                     medicineRepoRepository.updateMedicineRepo(newRepo)
-                    showLongToast(context, "您已服用预定在${remind.remindTime}的${remind.name}")
+                    // 用withContext来切换到主线程，因为Toast只能在主线程中执行。
+                    withContext(Dispatchers.Main) {
+                        showLongToast(context, "您已服用预定在${remind.remindTime}的${remind.name}")
+                    }
                 }
             }
         } catch (e: Exception) {

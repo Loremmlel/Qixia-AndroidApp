@@ -735,7 +735,7 @@ private fun MedicinesExpiry(
             GreenArrow(onClicked = {})
         }
         medicinesRepos.forEach { medicineRepoInfo ->
-            if (medicineRepoInfo.expiryDate <= currentSelectedDate) {
+            if (medicineRepoInfo.expiryDate < currentSelectedDate) {
                 MedicineExpiryCard(
                     modifier = Modifier
                         .padding(bottom = 10.dp)
