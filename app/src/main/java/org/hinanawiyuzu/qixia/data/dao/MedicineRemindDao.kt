@@ -7,7 +7,7 @@ import org.hinanawiyuzu.qixia.data.entity.*
 @Dao
 interface MedicineRemindDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(medicineRemind: MedicineRemind)
+    suspend fun insertAndGetId(medicineRemind: MedicineRemind): Long
 
     @Update
     suspend fun update(medicineRemind: MedicineRemind)

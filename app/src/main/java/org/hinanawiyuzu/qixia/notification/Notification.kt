@@ -5,7 +5,11 @@ import android.content.*
 import android.graphics.*
 import android.util.*
 import androidx.core.app.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import org.hinanawiyuzu.qixia.*
+import org.hinanawiyuzu.qixia.data.container.*
+import java.time.*
 
 enum class NotificationType {
     TAKE_MEDICINE_REMIND;
@@ -31,7 +35,7 @@ class Notification(private val context: Context) {
      * @param content 通知正文
      * @author HinanawiYuzu
      */
-    fun createTakeMedicine(content: String) {
+    fun createTakeMedicine(content: String, remindId: Int) {
         Log.d("qixia", "createTakeMedicine: $content")
         val intent = Intent(context, MainActivity::class.java).apply {
             putExtra("targetScreen", "RemindScreen")
@@ -45,7 +49,7 @@ class Notification(private val context: Context) {
         )
         setNotificationChannel(NotificationType.TAKE_MEDICINE_REMIND)
         val builder = NotificationCompat.Builder(context, NotificationType.TAKE_MEDICINE_REMIND.name)
-            .setContentTitle(NotificationType.TAKE_MEDICINE_REMIND.name)
+            .setContentTitle(NotificationType.TAKE_MEDICINE_REMIND.convertToName())
             .setContentText(content)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
@@ -55,6 +59,15 @@ class Notification(private val context: Context) {
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
         notificationManager.notify(generateRandomId(NotificationManager.IMPORTANCE_HIGH), builder.build())
+        CoroutineScope(Dispatchers.IO).launch {
+            val container = AppOfflineDataContainer(context)
+            val repo = container.alarmDateTimeRepository
+            val alarmDateTime = repo.getStreamByRemindId(remindId).firstOrNull()
+            alarmDateTime?.let {
+                if (it.endDateTime.toLocalDate() == LocalDate.now())
+                    repo.delete(it)
+            }
+        }
     }
 
     private fun setNotificationChannel(type: NotificationType) {

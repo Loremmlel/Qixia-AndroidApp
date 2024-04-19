@@ -100,7 +100,7 @@ class FillPersonalInformationViewModel(
                 serialNumber = _uiState.value.serialNumber,
                 medicalHistory = medicalHistory.toList()
             )
-            userRepository.insertUser(user)
+            userRepository.insert(user)
             navController.navigate(AppRoute.AppScreen.name) {
                 // 清空所有到LoginScreen的路线。inclusive为true表示包括LoginScreen
                 navController.popBackStack(

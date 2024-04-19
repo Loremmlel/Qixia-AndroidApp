@@ -71,6 +71,18 @@ class LocalTimeConverter {
     }
 }
 
+class LocalDateTimeConverter {
+    @TypeConverter
+    fun fromLocalDateTime(localDateTime: LocalDateTime): String {
+        return localDateTime.toString()
+    }
+
+    @TypeConverter
+    fun toLocalDateTime(string: String): LocalDateTime {
+        return LocalDateTime.parse(string)
+    }
+}
+
 class MedicineFrequencyConverter {
     @TypeConverter
     fun fromMedicineFrequency(medicineFrequency: MedicineFrequency): String {
@@ -115,6 +127,18 @@ class AttentionMatterConverter {
             "干燥" -> AttentionMatter.Desiccation
             else -> AttentionMatter.None
         }
+    }
+}
+
+class IntListConverter {
+    @TypeConverter
+    fun fromList(list: List<Int>): String {
+        return list.joinToString(",")
+    }
+
+    @TypeConverter
+    fun toList(string: String): List<Int> {
+        return string.split(",").map { it.toInt() }
     }
 }
 

@@ -8,23 +8,23 @@ import org.hinanawiyuzu.qixia.data.entity.*
  * 用户信息仓库
  */
 interface UserRepository {
-    suspend fun insertUser(user: User)
-    suspend fun updateUser(user: User)
-    suspend fun deleteUser(user: User)
-    fun getUserStreamByPhone(phone: String): Flow<User>
-    fun getUserStreamById(id: Int): Flow<User>
-    fun getAllUsersStream(): Flow<List<User>>
+    suspend fun insert(user: User)
+    suspend fun update(user: User)
+    suspend fun delete(user: User)
+    fun getStreamByPhone(phone: String): Flow<User>
+    fun getStreamById(id: Int): Flow<User>
+    fun getAllStream(): Flow<List<User>>
 }
 
 class OfflineUserRepository(private val userDao: UserDao) : UserRepository {
-    override suspend fun insertUser(user: User) = userDao.insert(user)
+    override suspend fun insert(user: User) = userDao.insert(user)
 
-    override suspend fun updateUser(user: User) = userDao.update(user)
-    override suspend fun deleteUser(user: User) = userDao.delete(user)
+    override suspend fun update(user: User) = userDao.update(user)
+    override suspend fun delete(user: User) = userDao.delete(user)
 
-    override fun getUserStreamByPhone(phone: String): Flow<User> = userDao.queryByPhone(phone)
+    override fun getStreamByPhone(phone: String): Flow<User> = userDao.queryByPhone(phone)
 
-    override fun getUserStreamById(id: Int): Flow<User> = userDao.queryById(id)
+    override fun getStreamById(id: Int): Flow<User> = userDao.queryById(id)
 
-    override fun getAllUsersStream(): Flow<List<User>> = userDao.queryAll()
+    override fun getAllStream(): Flow<List<User>> = userDao.queryAll()
 }

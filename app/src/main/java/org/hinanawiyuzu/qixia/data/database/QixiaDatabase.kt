@@ -12,7 +12,8 @@ const val dbName = "qixia_database"
         User::class,
         MedicineRepo::class,
         MedicineRemind::class,
-        MedicineInfo::class
+        MedicineInfo::class,
+        AlarmDateTime::class
     ],
     version = 1,
     exportSchema = false
@@ -25,7 +26,9 @@ const val dbName = "qixia_database"
     LocalDateConverter::class,
     LocalTimeConverter::class,
     UriConverter::class,
-    BooleanListConverter::class
+    BooleanListConverter::class,
+    LocalDateTimeConverter::class,
+    IntListConverter::class
 )
 abstract class QixiaDatabase : RoomDatabase() {
     abstract fun userInfoDao(): UserDao
@@ -33,6 +36,8 @@ abstract class QixiaDatabase : RoomDatabase() {
     abstract fun medicineRemindDao(): MedicineRemindDao
 
     abstract fun medicineInfoDao(): MedicineInfoDao
+
+    abstract fun alarmDateTimeDao(): AlarmDateTimeDao
 
     companion object {
         @Volatile

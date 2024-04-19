@@ -352,12 +352,19 @@ private fun TakeMedicineRemind(
     // 在加载完毕之前，显示的是一个大小为1*1的位图。
     // 啊，这种感觉是多么美妙~~😋
     LaunchedEffect(displayedImagesUri) {
-        withContext(Dispatchers.IO) {
-            displayedImages = displayedImagesUri.map {
-                it.let { uri ->
+//        withContext(Dispatchers.IO) {
+//            displayedImages = displayedImagesUri.map {
+//                it.let { uri ->
+//                    BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
+//                }
+//            }
+//        }
+        displayedImages = coroutineScope {
+            displayedImagesUri.map { uri ->
+                async(Dispatchers.IO) {
                     BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
                 }
-            }
+            }.awaitAll()
         }
     }
     Column(

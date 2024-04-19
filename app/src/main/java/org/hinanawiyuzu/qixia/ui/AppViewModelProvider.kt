@@ -25,7 +25,8 @@ object AppViewModelProvider {
         initializer {
             NewRemindViewModel(
                 medicineRemindRepository = qixiaApplication().container.medicineRemindRepository,
-                medicineRepoRepository = qixiaApplication().container.medicineRepoRepository
+                medicineRepoRepository = qixiaApplication().container.medicineRepoRepository,
+                alarmDateTimeRepository = qixiaApplication().container.alarmDateTimeRepository
             )
         }
         initializer {

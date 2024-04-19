@@ -8,8 +8,10 @@ import androidx.lifecycle.*
 import androidx.navigation.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.exception.*
 import org.hinanawiyuzu.qixia.notification.*
 import org.hinanawiyuzu.qixia.ui.screen.*
 import org.hinanawiyuzu.qixia.utils.*
@@ -18,7 +20,8 @@ import java.time.temporal.*
 
 class NewRemindViewModel(
     private val medicineRemindRepository: MedicineRemindRepository,
-    private val medicineRepoRepository: MedicineRepoRepository
+    private val medicineRepoRepository: MedicineRepoRepository,
+    private val alarmDateTimeRepository: AlarmDateTimeRepository
 ) : ViewModel() {
     /**
      *对应的仓库id，从[MedicineRepoScreen]传过来
@@ -89,19 +92,27 @@ class NewRemindViewModel(
             showLongToast(context, "不开启通知权限的话，无法正常使用提醒功能。")
         }
         viewModelScope.launch {
-            medicineRemindRepository.insertMedicineRemind(medicineRemind)
+            val remindId = medicineRemindRepository.insertAndGetId(medicineRemind).toInt()
             // TODO: 提早五分钟提醒,这个后期应当在设置中由用户自行选择。
-            // TMD被这个时区恶心了，暂时设置为+8吧，国际化个鬼
-            val startTimeMillis = startDate!!.atTime(remindTime)
-                .toInstant(ZoneOffset.ofHours(8)).toEpochMilli() - 300000
+            val startTimeMillis = startDate!!.atTime(remindTime).toEpochMillis() - 300000
             val days = (ChronoUnit.DAYS.between(startDate, endDate) + 1).toInt()
             val schedule = Schedule(context)
+            // 提醒正文
+            val remindContent =
+                "该服药了!请在${remindTime}之前服用${medicineName}  ${dose}片,注意${method!!.convertToString()}服用"
+            // PendingIntent的requestCode
+            val requestCodes: List<Int> = List(days) { (0..Int.MAX_VALUE).random() }
+            val alarmDateTime = AlarmDateTime(
+                remindId = remindId,
+                type = GlobalValues.TAKE_MEDICINE_REMIND,
+                remindContent = remindContent,
+                startDateTime = startTimeMillis.toLocalDateTime(),
+                endDateTime = (startTimeMillis + (days - 1) * 86400000).toLocalDateTime(),
+                requestCode = requestCodes
+            )
             try {
-                schedule.setTakeMedicineAlarm(
-                    "该服药了!请在${remindTime}之前服用${medicineName}  ${dose}片,注意${method!!.convertToString()}服用",
-                    startTimeMillis,
-                    days
-                )
+                schedule.setTakeMedicineAlarm(remindId, remindContent, startTimeMillis, days, requestCodes)
+                alarmDateTimeRepository.insert(alarmDateTime)
             } catch (e: SecurityException) {
                 showLongToast(context, "请开启精确闹钟权限")
                 if (Build.VERSION.SDK_INT >= 31) {
@@ -111,6 +122,11 @@ class NewRemindViewModel(
                     }
                     context.startActivity(intent)
                 }
+            } catch (e: AlarmSetFailedException) {
+                showLongToast(context, "闹钟设置失败")
+            } catch (e: Exception) {
+                alarmDateTimeRepository.delete(alarmDateTime)
+                showLongToast(context, "提醒设置失败")
             }
             navController.popBackStack()
         }
@@ -121,7 +137,7 @@ class NewRemindViewModel(
      */
     fun getMedicineRepo() {
         viewModelScope.launch {
-            medicineRepo = medicineRepoRepository.getMedicineRepoStreamById(medicineRepoId!!).firstOrNull()
+            medicineRepo = medicineRepoRepository.getStreamById(medicineRepoId!!).firstOrNull()
             medicineName = medicineRepo!!.name
         }
     }
@@ -143,12 +159,7 @@ class NewRemindViewModel(
      * @author HinanawiYuzu
      */
     fun onStartDatePickerConfirmButtonClicked(millis: Long?) {
-        startDate = millis?.let {
-            Instant
-                .ofEpochMilli(it)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-        }
+        startDate = millis?.toLocalDate()
         if (endDate != null && startDate != null) {
             // 如果用户已经选择了结束日期，但是选择的开始日期又大于结束日期的话，那么将结束日期置空，让用户重新选择。
             if (startDate!! >= endDate!!) {
@@ -159,12 +170,7 @@ class NewRemindViewModel(
     }
 
     fun onEndDatePickerConfirmButtonClicked(millis: Long?) {
-        endDate = millis?.let {
-            Instant
-                .ofEpochMilli(it)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-        }
+        endDate = millis?.toLocalDate()
         checkButtonEnabled()
     }
 

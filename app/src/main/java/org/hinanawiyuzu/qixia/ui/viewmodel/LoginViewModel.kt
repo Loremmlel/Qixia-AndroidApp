@@ -35,7 +35,7 @@ class LoginViewModel(
     fun onLoginButtonClicked(navController: NavController) {
         viewModelScope.launch {
             val queryResult =
-                userRepository.getUserStreamByPhone(_uiState.value.accountPhone)
+                userRepository.getStreamByPhone(_uiState.value.accountPhone)
                     .firstOrNull()
             if (queryResult == null) {
                 _uiState.update {
@@ -47,7 +47,7 @@ class LoginViewModel(
                         it.copy(isError = true)
                     }
                 } else {
-                    userRepository.updateUser(queryResult.copy(loginState = true))
+                    userRepository.update(queryResult.copy(loginState = true))
                     navController.navigate(route = AppRoute.AppScreen.name) {
                         navController.popBackStack(
                             route = LoginRoute.LoginScreen.name,

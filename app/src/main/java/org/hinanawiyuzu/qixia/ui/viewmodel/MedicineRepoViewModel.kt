@@ -40,7 +40,7 @@ class MedicineRepoViewModel(
     /**
      * 查询到的所有药品信息
      */
-    val allMedicineRepo: StateFlow<AllMedicineRepo> = medicineRepoRepository.getAllMedicineRepoStream()
+    val allMedicineRepo: StateFlow<AllMedicineRepo> = medicineRepoRepository.getAllStream()
         .map { AllMedicineRepo(it) }
         .stateIn(
             scope = viewModelScope,

@@ -24,7 +24,7 @@ class RemindViewModel(
 
     // 一次性查出来所有的提醒信息。客户端这样做我觉得没啥问题，因为提醒信息不会很多
     val allMedicineRemind: StateFlow<AllMedicineRemind> =
-        medicineRemindRepository.getAllMedicineRemindsStream()
+        medicineRemindRepository.getAllStream()
             .map { AllMedicineRemind(it) }
             .stateIn(
                 scope = viewModelScope,
@@ -32,7 +32,7 @@ class RemindViewModel(
                 initialValue = AllMedicineRemind()
             )
     val allMedicineRepo: StateFlow<AllMedicineRepo> =
-        medicineRepoRepository.getAllMedicineRepoStream()
+        medicineRepoRepository.getAllStream()
             .map { AllMedicineRepo(it) }
             .stateIn(
                 scope = viewModelScope,
@@ -85,8 +85,8 @@ class RemindViewModel(
                     val newRepo = repo.copy(
                         remainAmount = (repo.remainAmount.toInt() - remind.dose.toInt()).toString()
                     )
-                    medicineRemindRepository.updateMedicineRemind(newRemind)
-                    medicineRepoRepository.updateMedicineRepo(newRepo)
+                    medicineRemindRepository.update(newRemind)
+                    medicineRepoRepository.update(newRepo)
                     // 用withContext来切换到主线程，因为Toast只能在主线程中执行。
                     withContext(Dispatchers.Main) {
                         showLongToast(context, "您已服用预定在${remind.remindTime}的${remind.name}")

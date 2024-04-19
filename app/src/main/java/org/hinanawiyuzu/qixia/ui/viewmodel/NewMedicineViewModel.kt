@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.utils.*
 import java.time.*
 
 class NewMedicineViewModel(
@@ -73,7 +74,7 @@ class NewMedicineViewModel(
         viewModelScope.launch {
             val result =
                 medicineInfoRepository
-                    .queryByRegistrationCertificateNumber(inputRegistrationCertificateNumber.uppercase())
+                    .getStreamByRegistrationCertificateNumber(inputRegistrationCertificateNumber.uppercase())
                     .firstOrNull()
             result?.let {
                 medicineName = it.productName!!
@@ -90,12 +91,7 @@ class NewMedicineViewModel(
     }
 
     fun onExpiryDatePickerConfirmButtonClicked(millis: Long?) {
-        expiryDate = millis?.let {
-            Instant
-                .ofEpochMilli(it)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-        }
+        expiryDate = millis?.toLocalDate()
         checkButtonEnabled()
     }
 
@@ -110,7 +106,7 @@ class NewMedicineViewModel(
             attentionMatter = null
         )
         viewModelScope.launch {
-            medicineRepoRepository.insertMedicineRepo(medicineRepo)
+            medicineRepoRepository.insert(medicineRepo)
             navController.popBackStack()
         }
     }

@@ -5,28 +5,28 @@ import org.hinanawiyuzu.qixia.data.dao.*
 import org.hinanawiyuzu.qixia.data.entity.*
 
 interface MedicineRemindRepository {
-    suspend fun insertMedicineRemind(medicineRemind: MedicineRemind)
-    suspend fun updateMedicineRemind(medicineRemind: MedicineRemind)
-    suspend fun deleteMedicineRemind(medicineRemind: MedicineRemind)
-    fun getMedicineRemindStreamById(id: Int): Flow<MedicineRemind>
-    fun getAllMedicineRemindsStream(): Flow<List<MedicineRemind>>
+    suspend fun insertAndGetId(medicineRemind: MedicineRemind): Long
+    suspend fun update(medicineRemind: MedicineRemind)
+    suspend fun delete(medicineRemind: MedicineRemind)
+    fun getStreamById(id: Int): Flow<MedicineRemind>
+    fun getAllStream(): Flow<List<MedicineRemind>>
 }
 
 class OfflineMedicineRemindRepository(
     private val medicineRemindDao: MedicineRemindDao
 ) : MedicineRemindRepository {
-    override suspend fun insertMedicineRemind(medicineRemind: MedicineRemind) =
-        medicineRemindDao.insert(medicineRemind)
+    override suspend fun insertAndGetId(medicineRemind: MedicineRemind) =
+        medicineRemindDao.insertAndGetId(medicineRemind)
 
-    override suspend fun updateMedicineRemind(medicineRemind: MedicineRemind) =
+    override suspend fun update(medicineRemind: MedicineRemind) =
         medicineRemindDao.update(medicineRemind)
 
-    override suspend fun deleteMedicineRemind(medicineRemind: MedicineRemind) =
+    override suspend fun delete(medicineRemind: MedicineRemind) =
         medicineRemindDao.delete(medicineRemind)
 
-    override fun getMedicineRemindStreamById(id: Int): Flow<MedicineRemind> =
+    override fun getStreamById(id: Int): Flow<MedicineRemind> =
         medicineRemindDao.queryById(id)
 
-    override fun getAllMedicineRemindsStream(): Flow<List<MedicineRemind>> =
+    override fun getAllStream(): Flow<List<MedicineRemind>> =
         medicineRemindDao.queryALl()
 }

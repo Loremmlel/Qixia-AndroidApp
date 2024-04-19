@@ -17,7 +17,7 @@ class WelcomeViewModel(
     // 否则会出现什么都收集不到的情况。
     // 我想和协程、Flow的机制有关系。但是我现在完全搞不懂呢。
     val allUsers: StateFlow<AllUsers> =
-        userRepository.getAllUsersStream().map { AllUsers(it) }
+        userRepository.getAllStream().map { AllUsers(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000L),
