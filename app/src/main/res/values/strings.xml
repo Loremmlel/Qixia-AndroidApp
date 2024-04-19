@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">qixia</string>
+    <string name="app_name">祺匣</string>
     <string name="login_screen_login">登录</string>
     <string name="login_screen_account_name_input_desc">电话号码输入框</string>
     <string name="login_screen_account_name_input_placeholder">电话号码</string>
