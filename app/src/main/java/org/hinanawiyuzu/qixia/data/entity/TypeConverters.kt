@@ -20,7 +20,7 @@ class TakeMethodConverter {
 
     @TypeConverter
     fun fromEnum(value: TakeMethod): String {
-        return value.convertToString()
+        return value.convertToDisplayedString()
     }
 }
 
@@ -99,13 +99,8 @@ class MedicineFrequencyConverter {
             "一日五次" -> MedicineFrequency.FiveTimesDaily
             "一日六次" -> MedicineFrequency.SixTimesDaily
             "两日一次" -> MedicineFrequency.OnceTwoDays
-            "三日一次" -> MedicineFrequency.OnceThreeDays
-            "四日一次" -> MedicineFrequency.OnceFourDays
-            "五日一次" -> MedicineFrequency.OnceFiveDays
-            "六日一次" -> MedicineFrequency.OnceSixDays
             "一周一次" -> MedicineFrequency.OnceAWeek
             "两周一次" -> MedicineFrequency.OnceTwoWeeks
-            "三周一次" -> MedicineFrequency.OnceThreeWeeks
             "一月一次" -> MedicineFrequency.OnceAMonth
             else -> MedicineFrequency.OnceDaily
         }

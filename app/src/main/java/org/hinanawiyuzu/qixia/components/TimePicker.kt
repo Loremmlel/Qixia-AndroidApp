@@ -9,8 +9,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.*
@@ -99,7 +97,7 @@ fun DatePickerColumn(
         item {
             Surface(Modifier.height(itemHeight)) {}
         }
-        itemsIndexed(items = pairList, key = { index, pair -> pair.first }) { index, pair ->
+        itemsIndexed(items = pairList, key = { _, pair -> pair.first }) { index, pair ->
             val widthModifier = itemWidth?.let { Modifier.width(itemWidth) } ?: Modifier
             Box(
                 modifier = Modifier
@@ -134,18 +132,18 @@ fun DatePickerColumn(
             //只会调用一次，相当于滚动开始
         }
         //当state处于滚动时，preScrollStartOffset会被初始化并记忆,不会再被更改
-        val preScrollStartOffset by remember { mutableIntStateOf(listState.firstVisibleItemScrollOffset) }
-        val preItemIndex by remember { mutableIntStateOf(listState.firstVisibleItemIndex) }
-        val isScrollDown = if (listState.firstVisibleItemIndex > preItemIndex) {
-            //第一个可见item的index大于开始滚动时第一个可见item的index，说明往下滚动了
-            true
-        } else if (listState.firstVisibleItemIndex < preItemIndex) {
-            //第一个可见item的index小于开始滚动时第一个可见item的index，说明往上滚动了
-            false
-        } else {
-            //第一个可见item的index等于开始滚动时第一个可见item的index,对比item offset
-            listState.firstVisibleItemScrollOffset > preScrollStartOffset
-        }
+//        val preScrollStartOffset by remember { mutableIntStateOf(listState.firstVisibleItemScrollOffset) }
+//        val preItemIndex by remember { mutableIntStateOf(listState.firstVisibleItemIndex) }
+//        val isScrollDown = if (listState.firstVisibleItemIndex > preItemIndex) {
+//            //第一个可见item的index大于开始滚动时第一个可见item的index，说明往下滚动了
+//            true
+//        } else if (listState.firstVisibleItemIndex < preItemIndex) {
+//            //第一个可见item的index小于开始滚动时第一个可见item的index，说明往上滚动了
+//            false
+//        } else {
+//            //第一个可见item的index等于开始滚动时第一个可见item的index,对比item offset
+//            listState.firstVisibleItemScrollOffset > preScrollStartOffset
+//        }
         DisposableEffect(Unit) {
             onDispose {
                 //	滑动结束时给状态赋值，并自动对齐

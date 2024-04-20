@@ -1,6 +1,8 @@
 package org.hinanawiyuzu.qixia.utils
 
+import org.hinanawiyuzu.qixia.data.entity.*
 import java.time.*
+import java.time.temporal.*
 
 
 /**
@@ -27,4 +29,18 @@ fun LocalDateTime.toEpochMillis(): Long {
 
 fun ZoneId.toZoneOffset(): ZoneOffset {
     return this.rules.getOffset(Instant.now())
+}
+
+/**
+ * 计算从指定日期到现在为止已经服药的次数。
+ */
+fun LocalDate.numberOfMedicineTakenUntilNow(frequency: MedicineFrequency): Int {
+    val internalDays = when (frequency) {
+        MedicineFrequency.OnceTwoDays -> 2
+        MedicineFrequency.OnceAWeek -> 7
+        MedicineFrequency.OnceTwoWeeks -> 14
+        MedicineFrequency.OnceAMonth -> 30
+        else -> 1
+    }
+    return ChronoUnit.DAYS.between(this, LocalDate.now()).toInt() / internalDays + 1
 }

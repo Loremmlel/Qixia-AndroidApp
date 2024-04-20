@@ -36,7 +36,7 @@ class Notification(private val context: Context) {
      * @author HinanawiYuzu
      */
     fun createTakeMedicine(content: String, remindId: Int) {
-        Log.d("qixia", "createTakeMedicine: $content")
+        Log.e("qixia", "createTakeMedicine: $content")
         val intent = Intent(context, MainActivity::class.java).apply {
             putExtra("targetScreen", "RemindScreen")
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -60,8 +60,7 @@ class Notification(private val context: Context) {
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
         notificationManager.notify(generateRandomId(NotificationManager.IMPORTANCE_HIGH), builder.build())
         CoroutineScope(Dispatchers.IO).launch {
-            val container = AppOfflineDataContainer(context)
-            val repo = container.alarmDateTimeRepository
+            val repo = AppOfflineDataContainer(context).alarmDateTimeRepository
             val alarmDateTime = repo.getStreamByRemindId(remindId).firstOrNull()
             alarmDateTime?.let {
                 if (it.endDateTime.toLocalDate() == LocalDate.now())

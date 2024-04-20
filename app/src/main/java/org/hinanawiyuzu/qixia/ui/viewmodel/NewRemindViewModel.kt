@@ -52,7 +52,7 @@ class NewRemindViewModel(
         private set
 
     // 提醒时间
-    private var remindTime: LocalTime? by mutableStateOf(null)
+    private var remindTimes: List<LocalTime?> by mutableStateOf(List(6) { null })
 
     // 服药方式(饭前、饭中、饭后等)
     var method: TakeMethod? by mutableStateOf(null)
@@ -61,6 +61,11 @@ class NewRemindViewModel(
     // 提交按钮是否可用
     var buttonEnabled: Boolean by mutableStateOf(false)
         private set
+
+    // 提醒时间有几个需要设置
+    var remindTimeSelectorAmount: Int by mutableIntStateOf(1)
+
+    var intervalDays: Int by mutableIntStateOf(1)
 
     fun onSelectMedicineFromBoxClicked(navController: NavController) {
         navController.navigate(RemindRoute.MedicineRepoScreen.name)
@@ -77,42 +82,49 @@ class NewRemindViewModel(
         navController: NavController,
         hasPermission: Boolean
     ) {
-        val medicineRemind = MedicineRemind(
-            remindTime = remindTime!!,
-            startDate = startDate!!,
-            endDate = endDate!!,
-            name = medicineName,
-            dose = dose!!,
-            frequency = frequency!!,
-            isTaken = List((ChronoUnit.DAYS.between(startDate!!, endDate!!) + 1).toInt()) { false },
-            medicineRepoId = medicineRepoId!!,
-            method = method!!
-        )
-        if (!hasPermission) {
+        if (!hasPermission)
             showLongToast(context, "不开启通知权限的话，无法正常使用提醒功能。")
+        // 计算总天数
+        val totalDays = (ChronoUnit.DAYS.between(startDate!!, endDate!!) + 1).toInt()
+        // 计算提醒次数
+        val times = (totalDays - 1) / intervalDays + 1
+        val medicineReminds = emptyList<MedicineRemind>().toMutableList()
+        val alarmDateTimes = emptyList<AlarmDateTime>().toMutableList()
+        // PendingIntent的requestCode
+        val requestCodes: List<List<Int>> =
+            List(remindTimeSelectorAmount) { List(times) { (0..Int.MAX_VALUE).random() } }
+        for (i in (0..<remindTimeSelectorAmount)) {
+            medicineReminds.add(
+                MedicineRemind(
+                    remindTime = remindTimes[i]!!,
+                    startDate = startDate!!,
+                    endDate = endDate!!,
+                    name = medicineName,
+                    dose = dose!!,
+                    frequency = frequency!!,
+                    isTaken = List(times) { false },
+                    medicineRepoId = medicineRepoId!!,
+                    method = method!!
+                )
+            )
         }
         viewModelScope.launch {
-            val remindId = medicineRemindRepository.insertAndGetId(medicineRemind).toInt()
-            // TODO: 提早五分钟提醒,这个后期应当在设置中由用户自行选择。
-            val startTimeMillis = startDate!!.atTime(remindTime).toEpochMillis() - 300000
-            val days = (ChronoUnit.DAYS.between(startDate, endDate) + 1).toInt()
+            medicineReminds.forEachIndexed { index, remind ->
+                alarmDateTimes.add(
+                    AlarmDateTime(
+                        remindId = medicineRemindRepository.insertAndGetId(remind).toInt(),
+                        type = GlobalValues.TAKE_MEDICINE_REMIND,
+                        startDateTime = startDate!!.atTime(remindTimes[index]),
+                        endDateTime = endDate!!.atTime(remindTimes[index]),
+                        frequency = frequency!!,
+                        requestCode = requestCodes[index]
+                    )
+                )
+            }
             val schedule = Schedule(context)
-            // 提醒正文
-            val remindContent =
-                "该服药了!请在${remindTime}之前服用${medicineName}  ${dose}片,注意${method!!.convertToString()}服用"
-            // PendingIntent的requestCode
-            val requestCodes: List<Int> = List(days) { (0..Int.MAX_VALUE).random() }
-            val alarmDateTime = AlarmDateTime(
-                remindId = remindId,
-                type = GlobalValues.TAKE_MEDICINE_REMIND,
-                remindContent = remindContent,
-                startDateTime = startTimeMillis.toLocalDateTime(),
-                endDateTime = (startTimeMillis + (days - 1) * 86400000).toLocalDateTime(),
-                requestCode = requestCodes
-            )
             try {
-                schedule.setTakeMedicineAlarm(remindId, remindContent, startTimeMillis, days, requestCodes)
-                alarmDateTimeRepository.insert(alarmDateTime)
+                schedule.setTakeMedicineAlarm(medicineReminds.toList(), requestCodes)
+                alarmDateTimes.forEach { alarmDateTimeRepository.insert(it) }
             } catch (e: SecurityException) {
                 showLongToast(context, "请开启精确闹钟权限")
                 if (Build.VERSION.SDK_INT >= 31) {
@@ -125,7 +137,7 @@ class NewRemindViewModel(
             } catch (e: AlarmSetFailedException) {
                 showLongToast(context, "闹钟设置失败")
             } catch (e: Exception) {
-                alarmDateTimeRepository.delete(alarmDateTime)
+                alarmDateTimes.forEach { alarmDateTimeRepository.delete(it) }
                 showLongToast(context, "提醒设置失败")
             }
             navController.popBackStack()
@@ -149,6 +161,21 @@ class NewRemindViewModel(
 
     fun onFrequencyDropDownMenuItemClicked(value: String) {
         frequency = value.toMedicineFrequency()
+        remindTimeSelectorAmount = when (frequency) {
+            MedicineFrequency.TwiceDaily -> 2
+            MedicineFrequency.ThreeTimesDaily -> 3
+            MedicineFrequency.FourTimesDaily -> 4
+            MedicineFrequency.FiveTimesDaily -> 5
+            MedicineFrequency.SixTimesDaily -> 6
+            else -> 1
+        }
+        intervalDays = when (frequency) {
+            MedicineFrequency.OnceTwoDays -> 2
+            MedicineFrequency.OnceAWeek -> 7
+            MedicineFrequency.OnceTwoWeeks -> 14
+            MedicineFrequency.OnceAMonth -> 30
+            else -> 1
+        }
         checkButtonEnabled()
     }
 
@@ -174,8 +201,9 @@ class NewRemindViewModel(
         checkButtonEnabled()
     }
 
-    fun onRemindTimeSelected(hours: Int, minutes: Int) {
-        remindTime = LocalTime.of(hours, minutes)
+    fun onRemindTimeSelected(index: Int, hours: Int, minutes: Int) {
+        val newRemindTimes = remindTimes.toMutableList().apply { set(index, LocalTime.of(hours, minutes)) }
+        remindTimes = newRemindTimes.toList()
         checkButtonEnabled()
     }
 
@@ -194,13 +222,20 @@ class NewRemindViewModel(
      * 检查按钮是否可用。
      */
     private fun checkButtonEnabled() {
+        // 用户是否选择了提醒时间
+        var flag = false
+        remindTimes.forEach {
+            if (it != null) {
+                flag = true
+                return@forEach
+            }
+        }
         buttonEnabled =
             !dose.isNullOrEmpty() &&
                     medicineName.isNotEmpty() &&
                     frequency != null &&
                     startDate != null &&
                     endDate != null &&
-                    remindTime != null &&
-                    method != null
+                    method != null && flag
     }
 }

@@ -19,7 +19,7 @@ class PermissionRequestPreferences(
     suspend fun set(value: Boolean) {
         dataStore.edit {
             it[key] = value
-            Log.d("qixia", "set: ${it[key]}")
+            Log.e("qixia", "set: ${it[key]}")
         }
     }
 

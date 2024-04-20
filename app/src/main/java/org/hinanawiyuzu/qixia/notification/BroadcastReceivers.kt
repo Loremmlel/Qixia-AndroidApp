@@ -6,7 +6,7 @@ import android.util.*
 
 class TakeMedicineReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("qixia", "onReceive: TakeMedicineReceiver")
+        Log.e("qixia", "onReceive: TakeMedicineReceiver")
         val remindContent = intent.getStringExtra("takeMedicineRemindContent") ?: "您有一条服药提醒"
         val remindId = intent.getStringExtra("remindId")?.toInt() ?: -1
         val notification = Notification(context)

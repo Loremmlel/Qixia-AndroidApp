@@ -7,6 +7,7 @@ import org.hinanawiyuzu.qixia.data.entity.TakeMethod.BeforeMeal
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.BeforeSleep
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.NotMatter
 import java.time.*
+import java.time.temporal.*
 
 /**
  * 服药提醒信息
@@ -57,6 +58,21 @@ data class MedicineRemind(
 )
 
 /**
+ * 根据服药频率判断是否要显示在某一天中
+ */
+fun MedicineRemind.isDisplayedInLocalDate(localDate: LocalDate): Boolean {
+    val intervalDays = when (frequency) {
+        MedicineFrequency.OnceTwoDays -> 2
+        MedicineFrequency.OnceAWeek -> 7
+        MedicineFrequency.OnceTwoWeeks -> 14
+        MedicineFrequency.OnceAMonth -> 30
+        else -> 1
+    }
+    val daysDifference = ChronoUnit.DAYS.between(startDate, localDate).toInt()
+    return daysDifference % intervalDays == 0 && daysDifference >= 0
+}
+
+/**
  * 药物服用方法枚举类
  * @property BeforeMeal 饭前
  * @property AtMeal 饭中
@@ -71,7 +87,7 @@ enum class TakeMethod {
     NotMatter,
     BeforeSleep;
 
-    fun convertToString(): String {
+    fun convertToDisplayedString(): String {
         return when (this) {
             BeforeMeal -> "饭前"
             AtMeal -> "饭中"
@@ -94,13 +110,8 @@ enum class MedicineFrequency {
     FiveTimesDaily, // 一日五次
     SixTimesDaily, // 一日六次
     OnceTwoDays, // 两日一次
-    OnceThreeDays, // 三日一次
-    OnceFourDays, // 四日一次
-    OnceFiveDays, //五日一次
-    OnceSixDays, //六日一次
     OnceAWeek, //一周一次
     OnceTwoWeeks, //两周一次
-    OnceThreeWeeks, //三周一次
     OnceAMonth; //一月一次
 
     fun convertToString(): String {
@@ -112,13 +123,8 @@ enum class MedicineFrequency {
             FiveTimesDaily -> "一日五次"
             SixTimesDaily -> "一日六次"
             OnceTwoDays -> "两日一次"
-            OnceThreeDays -> "三日一次"
-            OnceFourDays -> "四日一次"
-            OnceFiveDays -> "五日一次"
-            OnceSixDays -> "六日一次"
             OnceAWeek -> "一周一次"
             OnceTwoWeeks -> "两周一次"
-            OnceThreeWeeks -> "三周一次"
             OnceAMonth -> "一月一次"
         }
     }
@@ -134,13 +140,8 @@ fun String.toMedicineFrequency(): MedicineFrequency {
         "一日五次" -> MedicineFrequency.FiveTimesDaily
         "一日六次" -> MedicineFrequency.SixTimesDaily
         "两日一次" -> MedicineFrequency.OnceTwoDays
-        "三日一次" -> MedicineFrequency.OnceThreeDays
-        "四日一次" -> MedicineFrequency.OnceFourDays
-        "五日一次" -> MedicineFrequency.OnceFiveDays
-        "六日一次" -> MedicineFrequency.OnceSixDays
         "一周一次" -> MedicineFrequency.OnceAWeek
         "两周一次" -> MedicineFrequency.OnceTwoWeeks
-        "三周一次" -> MedicineFrequency.OnceThreeWeeks
         "一月一次" -> MedicineFrequency.OnceAMonth
         else -> MedicineFrequency.OnceDaily
     }

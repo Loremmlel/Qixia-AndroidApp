@@ -37,7 +37,6 @@ import org.hinanawiyuzu.qixia.ui.viewmodel.*
 import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
 import org.hinanawiyuzu.qixia.utils.*
 import java.time.*
-import java.time.temporal.*
 import kotlin.reflect.*
 
 var searchImages: KFunction1<MedicineRemind, Uri>? = null
@@ -342,7 +341,9 @@ private fun TakeMedicineRemind(
 ) {
     val context = LocalContext.current
     val displayedMedicineReminds = medicineReminds
-        .filter { it.startDate <= currentSelectedDate && it.endDate >= currentSelectedDate }
+        .filter {
+            currentSelectedDate in it.startDate..it.endDate && it.isDisplayedInLocalDate(currentSelectedDate)
+        }
         .sortedBy { it.remindTime }
     val displayedImagesUri = displayedMedicineReminds.map { searchImages!!.invoke(it) }
     var displayedImages by remember { mutableStateOf(List<Bitmap?>(0) { null }) }
@@ -472,8 +473,9 @@ private fun RemindCard(
     onImageClicked: () -> Unit
 ) {
     val remindCardHeightDp = LocalConfiguration.current.screenHeightDp * 0.085
-    val method = medicineRemind.method.convertToString()
-    val checked = medicineRemind.isTaken[ChronoUnit.DAYS.between(medicineRemind.startDate, currentSelectedDate).toInt()]
+    val method = medicineRemind.method.convertToDisplayedString()
+    val checked =
+        medicineRemind.isTaken[medicineRemind.startDate.numberOfMedicineTakenUntilNow(medicineRemind.frequency) - 1]
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start

@@ -35,6 +35,7 @@ import org.hinanawiyuzu.qixia.ui.viewmodel.*
 import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
 import org.hinanawiyuzu.qixia.utils.*
 import java.time.*
+import java.time.temporal.*
 
 private enum class LoadState {
     Loading,
@@ -42,6 +43,8 @@ private enum class LoadState {
     Error
 }
 
+
+val selectorHeight: Dp = 45.dp
 
 /**
  * 新增提醒页面
@@ -60,7 +63,6 @@ fun NewRemindScreen(
     viewModel: NewRemindViewModel = viewModel(factory = AppViewModelProvider.factory),
     navController: NavHostController = rememberNavController(),
 ) {
-    val selectorHeight: Dp = 45.dp
     val screenWidthDp: Dp = LocalConfiguration.current.screenWidthDp.dp
     val context = LocalContext.current
     viewModel.medicineRepoId = sharedViewModel.medicineRepoId
@@ -74,7 +76,8 @@ fun NewRemindScreen(
         BlurredBackground()
         Column(
             modifier = modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .fillMaxHeight(0.85f) //防止与底部的按钮重叠
                 .align(Alignment.TopCenter),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -192,9 +195,19 @@ fun NewRemindScreen(
                         )
                     }
                 }
+                if (viewModel.startDate != null && viewModel.endDate != null && viewModel.frequency != null) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = "期间需服药${
+                            ChronoUnit.DAYS.between(viewModel.startDate, viewModel.endDate) / viewModel
+                                .intervalDays + 1
+                        }次",
+                        style = TextStyle(fontSize = FontSize.smallSize)
+                    )
+                }
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth(0.5f)
+                        .fillMaxWidth(0.6f)
                         .align(Alignment.Start)
                 ) {
                     Text(
@@ -203,10 +216,10 @@ fun NewRemindScreen(
                             fontSize = FontSize.bigSize
                         )
                     )
-                    RemindTimeSelector(
+                    RemindTimeSelectors(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(selectorHeight),
+                            .fillMaxWidth(),
+                        selectorAmount = viewModel.remindTimeSelectorAmount,
                         onRemindTimeSelected = viewModel::onRemindTimeSelected
                     )
                 }
@@ -601,6 +614,43 @@ private fun EndDateSelector(
     }
 }
 
+@Composable
+private fun RemindTimeSelectors(
+    modifier: Modifier = Modifier,
+    selectorAmount: Int,
+    onRemindTimeSelected: (Int, Int, Int) -> Unit
+) {
+    val hours = List(6) { remember { mutableIntStateOf(0) } }
+    val minutes = List(6) { remember { mutableIntStateOf(0) } }
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        repeat(selectorAmount) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                if (selectorAmount != 1) {
+                    Text(
+                        text = "第${it + 1}次",
+                        style = TextStyle(fontSize = FontSize.normalSize)
+                    )
+                }
+                RemindTimeSelector(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(selectorHeight),
+                    onRemindTimeSelected = { hour, minute -> onRemindTimeSelected(it, hour, minute) },
+                    hour = hours[it],
+                    minute = minutes[it]
+                )
+            }
+        }
+    }
+}
+
 /**
  * 选择提醒时间的卡片
  * @param modifier 修饰符
@@ -611,10 +661,10 @@ private fun EndDateSelector(
 @Composable
 private fun RemindTimeSelector(
     modifier: Modifier = Modifier,
-    onRemindTimeSelected: (Int, Int) -> Unit
+    onRemindTimeSelected: (Int, Int) -> Unit,
+    hour: MutableIntState,
+    minute: MutableIntState
 ) {
-    val hour = remember { mutableIntStateOf(0) }
-    val minute = remember { mutableIntStateOf(0) }
     var visible by remember { mutableStateOf(false) }
     Row(
         modifier = modifier
