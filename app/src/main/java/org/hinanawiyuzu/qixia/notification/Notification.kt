@@ -2,7 +2,7 @@ package org.hinanawiyuzu.qixia.notification
 
 import android.app.*
 import android.content.*
-import android.graphics.*
+import android.media.*
 import android.util.*
 import androidx.core.app.*
 import kotlinx.coroutines.*
@@ -51,8 +51,7 @@ class Notification(private val context: Context) {
         val builder = NotificationCompat.Builder(context, NotificationType.TAKE_MEDICINE_REMIND.name)
             .setContentTitle(NotificationType.TAKE_MEDICINE_REMIND.convertToName())
             .setContentText(content)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
+            .setSmallIcon(R.mipmap.ic_launcher) //是MIUI缓存了旧的图标，所以导致不生效……
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
@@ -72,17 +71,29 @@ class Notification(private val context: Context) {
     private fun setNotificationChannel(type: NotificationType) {
         if (notificationManager.getNotificationChannel(type.name) != null)
             return
-        val takeMedicineChannel = NotificationChannel(
-            type.name,
-            type.convertToName(),
-            NotificationManager.IMPORTANCE_HIGH
-        )
-        takeMedicineChannel.apply {
-            enableVibration(true)
-            lockscreenVisibility = NotificationCompat.VISIBILITY_PRIVATE
-            setShowBadge(true)
+        val takeMedicineChannel: NotificationChannel?
+        when (type) {
+            NotificationType.TAKE_MEDICINE_REMIND -> {
+                takeMedicineChannel = NotificationChannel(
+                    type.name,
+                    type.convertToName(),
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    enableVibration(true)
+                    lockscreenVisibility = NotificationCompat.VISIBILITY_PRIVATE
+                    setShowBadge(true)
+                    // 设置通知铃声为默认铃声
+                    val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                    setSound(
+                        alarmSound, AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                            .build()
+                    )
+                }
+                notificationManager.createNotificationChannel(takeMedicineChannel)
+            }
         }
-        notificationManager.createNotificationChannel(takeMedicineChannel)
     }
 
     private fun generateRandomId(importance: Int): Int {
@@ -92,12 +103,6 @@ class Notification(private val context: Context) {
             NotificationManager.IMPORTANCE_DEFAULT -> (Int.MAX_VALUE / 2..Int.MAX_VALUE / 4 * 3).random()
             NotificationManager.IMPORTANCE_HIGH -> (Int.MAX_VALUE / 4 * 3..Int.MAX_VALUE).random()
             else -> (0..Int.MAX_VALUE).random()
-        }
-    }
-
-    companion object {
-        fun checkNotificationPermission(context: Context): Boolean {
-            return NotificationManagerCompat.from(context).areNotificationsEnabled()
         }
     }
 }

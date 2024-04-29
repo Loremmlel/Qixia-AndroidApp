@@ -8,12 +8,15 @@ import androidx.compose.foundation.shape.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.*
+import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.ui.theme.*
+import org.hinanawiyuzu.qixia.utils.*
 
 /**
  * 普通按钮。默认是绿色的圆角矩形。
@@ -61,7 +64,7 @@ fun MyIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable () -> Unit
+    icon: @Composable () -> Unit
 ) {
     // 这也是源码的一部分
     val iconButtonSizeModifier = Modifier.size(40.dp)
@@ -76,5 +79,72 @@ fun MyIconButton(
             )
             .then(iconButtonSizeModifier),
         contentAlignment = Alignment.Center
-    ) { content() }
+    ) { icon() }
+}
+
+/**
+ * 中间有白圈的绿色渐变色按钮。因为普通的按钮无法应用渐变色所以只能用modifier.clickable了
+ * @param modifier 修饰符
+ * @param text 按钮中显示的文字
+ * @param textStyle 文字的样式
+ * @param onClick 点击事件
+ */
+@Composable
+fun GreenGradientButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    textStyle: TextStyle = TextStyle(),
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .clickable { onClick() }
+            .clip(RoundedCornerShape(percent = 20))
+            .background(brush = MyColor.deepGreenButtonGradient),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = text,
+            style = textStyle
+        )
+    }
+}
+
+/**
+ * 这就是上面提到的绿色箭头。下面还会有两个模块要用到这玩意儿。
+ * @param modifier 修饰符
+ * @param onClicked 点击事件
+ * @author HinanawiYuzu
+ */
+@Composable
+fun GreenArrow(
+    modifier: Modifier = Modifier,
+    onClicked: () -> Unit
+) {
+    MyIconButton(
+        modifier = modifier,
+        onClick = onClicked
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                modifier = Modifier
+                    .advancedShadow(
+                        color = primary_color,
+                        alpha = 0.2f,
+                        shadowBlurRadius = 5.dp,
+                        cornersRadius = 10.dp,
+                        offsetY = 5.dp
+                    ),
+                painter = painterResource(id = R.drawable.remind_screen_rec_back),
+                contentDescription = null
+            )
+            Image(
+                painter = painterResource(id = R.drawable.remind_screen_rec_arrow),
+                contentDescription = null
+            )
+        }
+    }
 }

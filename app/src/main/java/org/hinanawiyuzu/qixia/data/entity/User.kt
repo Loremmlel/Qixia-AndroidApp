@@ -1,5 +1,6 @@
 package org.hinanawiyuzu.qixia.data.entity
 
+import android.net.*
 import androidx.room.*
 
 
@@ -13,6 +14,7 @@ import androidx.room.*
  * @param age 用户年龄
  * @param serialNumber 用户的智能药箱序列码
  * @param medicalHistory 用户病史列表。目前来说是硬编码的病史字符串组的下标。
+ * @param profilePhotoUri 用户头像Uri
  */
 @Entity(tableName = "user")
 data class User(
@@ -21,9 +23,12 @@ data class User(
     val phone: String,
     val password: String,
     val loginState: Boolean,
+    val name: String,
     val sexual: String,
     val age: Int,
     val serialNumber: String?,
     @TypeConverters(MedicalHistoryConverter::class)
-    val medicalHistory: List<Int>?
+    val medicalHistory: List<Int>?,
+    @TypeConverters(UriConverter::class)
+    val profilePhotoUri: Uri?,
 )

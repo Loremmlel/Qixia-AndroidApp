@@ -31,6 +31,7 @@ import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.ui.*
+import org.hinanawiyuzu.qixia.ui.route.*
 import org.hinanawiyuzu.qixia.ui.theme.*
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.greenCardGradient
 import org.hinanawiyuzu.qixia.ui.viewmodel.*
@@ -47,11 +48,11 @@ val currentDate: LocalDate = LocalDate.now()
  * @param modifier 修饰符
  * @param changeBottomBarVisibility
  * 用来改变底部导航栏的可见性。因为这个页面涉及到导航至其它页面的操作，因为我AppScreen的设计缺陷，所以需要专门的函数管理底部导航栏的可见性。
- * @param sharedViewModel 用来传递数据的ViewModel。这个ViewModel是用来传递数据的，因为我目前没发现popBackStack()可以传递数据。
+ * @param sharedMedicineRepoIdViewModel 用来传递数据的ViewModel。这个ViewModel是用来传递数据的，因为我目前没发现popBackStack()可以传递数据。
  * @param viewModel 用来管理数据的ViewModel
  * @param navController 用来管理导航的NavController
  * @see RemindViewModel
- * @see SharedBetweenMedicineRepoAndNewRemindViewModel
+ * @see SharedMedicineRepoIdViewModel
  * @author HinanawiYuzu
  */
 @Composable
@@ -59,7 +60,8 @@ fun RemindScreen(
     modifier: Modifier = Modifier,
     changeBottomBarVisibility: (Boolean) -> Unit,
     // 用sharedViewModel来传递数据也是不得已而为之。因为我目前没发现popBackStack()可以传递数据。
-    sharedViewModel: SharedBetweenMedicineRepoAndNewRemindViewModel = viewModel(),
+    sharedMedicineRepoIdViewModel: SharedMedicineRepoIdViewModel = viewModel(),
+    sharedTraceabilityViewModel: SharedTraceabilityViewModel = viewModel(),
     viewModel: RemindViewModel = viewModel(factory = AppViewModelProvider.factory),
     navController: NavHostController = rememberNavController()
 ) {
@@ -140,20 +142,39 @@ fun RemindScreen(
             changeBottomBarVisibility(false)
             NewRemindScreen(
                 navController = navController,
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedMedicineRepoIdViewModel
             )
         }
         slideComposable(route = RemindRoute.MedicineRepoScreen.name) {
             changeBottomBarVisibility(false)
             MedicineRepoScreen(
                 navController = navController,
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedMedicineRepoIdViewModel
             )
         }
         slideComposable(route = RemindRoute.NewMedicineScreen.name) {
             changeBottomBarVisibility(false)
             NewMedicineScreen(
-                navController = navController
+                navController = navController,
+                sharedViewModel = sharedTraceabilityViewModel
+            )
+        }
+        slideComposable(
+            route = "${RemindRoute.TraceabilityInformationScreen.name}/{code}",
+            arguments = listOf(navArgument("code") { type = NavType.StringType })
+        ) {
+            changeBottomBarVisibility(false)
+            TraceabilityInformationScreen(
+                navController = navController,
+                sharedViewModel = sharedTraceabilityViewModel,
+                backStackEntry = it
+            )
+        }
+        slideComposable(route = RemindRoute.TraceabilityDetailScreen.name) {
+            changeBottomBarVisibility(false)
+            TraceabilityDetailScreen(
+                navController = navController,
+                sharedViewModel = sharedTraceabilityViewModel
             )
         }
         imageDetailComposable(
@@ -414,44 +435,6 @@ private fun TakeMedicineRemind(
 }
 
 /**
- * 这就是上面提到的绿色箭头。下面还会有两个模块要用到这玩意儿。
- * @param modifier 修饰符
- * @param onClicked 点击事件
- * @author HinanawiYuzu
- */
-@Composable
-private fun GreenArrow(
-    modifier: Modifier = Modifier,
-    onClicked: () -> Unit
-) {
-    MyIconButton(
-        modifier = modifier,
-        onClick = onClicked
-    ) {
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier
-                    .advancedShadow(
-                        color = primary_color,
-                        alpha = 0.2f,
-                        shadowBlurRadius = 5.dp,
-                        cornersRadius = 10.dp,
-                        offsetY = 5.dp
-                    ),
-                painter = painterResource(id = R.drawable.remind_screen_rec_back),
-                contentDescription = null
-            )
-            Image(
-                painter = painterResource(id = R.drawable.remind_screen_rec_arrow),
-                contentDescription = null
-            )
-        }
-    }
-}
-
-/**
  * 单个提醒卡片。
  *
  * BYD这个函数嵌套真多啊。
@@ -475,7 +458,9 @@ private fun RemindCard(
     val remindCardHeightDp = LocalConfiguration.current.screenHeightDp * 0.085
     val method = medicineRemind.method.convertToDisplayedString()
     val checked =
-        medicineRemind.isTaken[medicineRemind.startDate.numberOfMedicineTakenUntilNow(medicineRemind.frequency) - 1]
+        medicineRemind.isTaken[
+            medicineRemind.startDate
+                .numberOfMedicineTakenUntilSpecificDate(medicineRemind.frequency, currentSelectedDate) - 1]
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start

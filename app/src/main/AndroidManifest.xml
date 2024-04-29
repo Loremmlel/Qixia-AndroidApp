@@ -30,10 +30,14 @@
             android:theme="@style/Theme.Qixia">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.yxing.ScanCodeActivity"
+            tools:ignore="Instantiatable"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <receiver
             android:name=".notification.TakeMedicineReceiver"
             android:enabled="true"

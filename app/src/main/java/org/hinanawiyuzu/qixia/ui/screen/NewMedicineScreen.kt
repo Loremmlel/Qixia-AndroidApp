@@ -1,8 +1,10 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
+import android.content.*
 import android.graphics.*
 import android.net.*
 import android.provider.*
+import android.util.*
 import androidx.activity.compose.*
 import androidx.activity.result.*
 import androidx.activity.result.contract.*
@@ -22,16 +24,19 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.input.*
-import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import com.yxing.*
+import com.yxing.def.*
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.*
 import org.hinanawiyuzu.qixia.ui.*
+import org.hinanawiyuzu.qixia.ui.route.*
 import org.hinanawiyuzu.qixia.ui.theme.*
 import org.hinanawiyuzu.qixia.ui.viewmodel.*
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
 import org.hinanawiyuzu.qixia.utils.*
 import java.io.*
 import java.time.*
@@ -52,10 +57,17 @@ const val CAMERA = true
 fun NewMedicineScreen(
     modifier: Modifier = Modifier,
     viewModel: NewMedicineViewModel = viewModel(factory = AppViewModelProvider.factory),
+    sharedViewModel: SharedTraceabilityViewModel,
     navController: NavHostController = rememberNavController()
 ) {
     val selectorHeight: Dp = 75.dp
     val screenWidthDp: Dp = LocalConfiguration.current.screenWidthDp.dp
+    if (sharedViewModel.isNeedAdd) {
+        viewModel.medicineName = sharedViewModel.traceability?.essential?.chineseCommonName ?: ""
+        viewModel.dosageForm = sharedViewModel.traceability?.essential?.dosageForm
+        viewModel.specification = sharedViewModel.traceability?.essential?.specification
+        viewModel.expiryDate = sharedViewModel.traceability?.produce?.validityDate?.toLocalDate()
+    }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
@@ -90,6 +102,7 @@ fun NewMedicineScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(selectorHeight),
+                        navController = navController,
                         userInput = viewModel.medicineName,
                         registrationCertificateNumber = viewModel.inputRegistrationCertificateNumber,
                         onUserInputChanged = viewModel::onMedicineNameChanged,
@@ -213,14 +226,54 @@ private fun TopBar(
 @Composable
 private fun MedicineSelector(
     modifier: Modifier = Modifier,
+    navController: NavController,
     userInput: String,
     registrationCertificateNumber: String,
     onUserInputChanged: (String) -> Unit,
     onInputRegistrationCertificateNumberChanged: (String) -> Unit,
     startSearch: () -> Unit
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+    val activity = LocalContext.current.getActivity()
     val containerColor = Color(0xFFF4FFF8)
+    val scanCodeLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val data = result.data
+        val extras = data?.extras
+        extras?.let {
+            // 0代表条形码，1代表二维码
+            val codeType = it.getInt(ScanCodeConfig.CODE_TYPE)
+            val code = it.getString(ScanCodeConfig.CODE_KEY)
+            Log.e("qixia", "codeType: $codeType, code: $code")
+            navController.navigate("${RemindRoute.TraceabilityInformationScreen.name}/$code")
+        }
+    }
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { hasPermission ->
+        if (hasPermission) {
+            activity?.let {
+                val scanCodeModel = ScanCodeConfig.create(it).apply {
+                    setStyle(ScanStyle.CUSTOMIZE)
+                    setPlayAudio(true)
+                    setAudioId(com.example.yxing.R.raw.beep)
+                    setLimitRect(true)  //是否限制识别区域为设定扫码框大小
+                    setScanSize(900, 0, 0)  //设置扫码框位置
+                    setShowFrame(true) // 是否显示边框上四个角标
+                    setFrameColor(R.color.white)  //设置边框上四个角标颜色
+                    setFrameRadius(20)   //设置边框上四个角标圆角  单位 /dp
+                    setFrameWith(2)  //设置边框上四个角宽度 单位 /dp
+                    setFrameLength(20)  //设置边框上四个角长度
+                    setShowShadow(true)  //设置是否显示边框外部阴影
+                    setShadeColor(R.color.black_tran30) //设置边框外部阴影颜色
+                    setScanBitmapId(com.example.yxing.R.drawable.scan_wechatline)
+                }
+                val intent = Intent(activity, ScanCodeActivity::class.java)
+                intent.putExtra("model", scanCodeModel)
+                scanCodeLauncher.launch(intent)
+            }
+        }
+    }
     OutlinedTextField(
         modifier = modifier,
         shape = RoundedCornerShape(percent = 40),
@@ -232,7 +285,9 @@ private fun MedicineSelector(
         },
         trailingIcon = {
             Image(
-                modifier = Modifier.clickable { showDialog = true },
+                modifier = Modifier.clickable {
+                    cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                },
                 painter = painterResource(id = R.drawable.search_icon_green_gradient),
                 contentDescription = "通过注册证号来搜索药物"
             )
@@ -254,38 +309,38 @@ private fun MedicineSelector(
         value = userInput,
         onValueChange = onUserInputChanged
     )
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = {
-                Column {
-                    Text(text = "请输入注册证号或批准文号", fontSize = FontSize.bigSize)
-                    Text(text = "系统会自动匹配药品名称", fontSize = FontSize.smallSize)
-                }
-            },
-            text = {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = registrationCertificateNumber,
-                    onValueChange = onInputRegistrationCertificateNumberChanged,
-                    placeholder = { Text(text = "例:H20080599") }
-                )
-            },
-            confirmButton = {
-                Button(onClick = {
-                    showDialog = false
-                    startSearch()
-                }) {
-                    Text(text = "确定")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text(text = "取消")
-                }
-            }
-        )
-    }
+//    if (showDialog) {
+//        AlertDialog(
+//            onDismissRequest = { showDialog = false },
+//            title = {
+//                Column {
+//                    Text(text = "请输入注册证号或批准文号", fontSize = FontSize.bigSize)
+//                    Text(text = "系统会自动匹配药品名称", fontSize = FontSize.smallSize)
+//                }
+//            },
+//            text = {
+//                OutlinedTextField(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    value = registrationCertificateNumber,
+//                    onValueChange = onInputRegistrationCertificateNumberChanged,
+//                    placeholder = { Text(text = "例:H20080599") }
+//                )
+//            },
+//            confirmButton = {
+//                Button(onClick = {
+//                    showDialog = false
+//                    startSearch()
+//                }) {
+//                    Text(text = "确定")
+//                }
+//            },
+//            dismissButton = {
+//                Button(onClick = { showDialog = false }) {
+//                    Text(text = "取消")
+//                }
+//            }
+//        )
+//    }
 }
 
 /**
@@ -552,12 +607,4 @@ private fun NextButton(
         ),
         fontColors = Color.Black
     )
-}
-
-@Preview
-@Composable
-fun NewMedicineScreenPreview() {
-    QixiaTheme {
-        NewMedicineScreen()
-    }
 }

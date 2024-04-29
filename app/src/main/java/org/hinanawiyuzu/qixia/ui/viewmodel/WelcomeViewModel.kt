@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.*
 import org.hinanawiyuzu.qixia.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
-import org.hinanawiyuzu.qixia.utils.*
+import org.hinanawiyuzu.qixia.ui.route.*
 
 class WelcomeViewModel(
     private val application: QixiaApplication,

@@ -12,6 +12,8 @@ interface AlarmDateTimeRepository {
 
     suspend fun deleteById(remindId: Int)
 
+    suspend fun queryUserIdByRemindId(remindId: Int): Int
+
     fun getStreamByRemindId(remindId: Int): Flow<AlarmDateTime>
     fun getAllStream(): Flow<List<AlarmDateTime>>
 }
@@ -26,6 +28,8 @@ class OfflineAlarmDateTimeRepository(
     override suspend fun update(alarmDateTime: AlarmDateTime) = alarmDateTimeDao.update(alarmDateTime)
 
     override suspend fun deleteById(remindId: Int) = alarmDateTimeDao.deleteById(remindId)
+
+    override suspend fun queryUserIdByRemindId(remindId: Int): Int = alarmDateTimeDao.queryUserIdByRemindId(remindId)
 
     override fun getStreamByRemindId(remindId: Int): Flow<AlarmDateTime> =
         alarmDateTimeDao.queryByRemindId(remindId)

@@ -36,13 +36,13 @@ import java.time.*
  * @param viewModel 药品仓库界面的ViewModel
  * @param navController 导航控制器
  * @see MedicineRepoViewModel
- * @see SharedBetweenMedicineRepoAndNewRemindViewModel
+ * @see SharedMedicineRepoIdViewModel
  * @author HinanawiYuzu
  */
 @Composable
 fun MedicineRepoScreen(
     modifier: Modifier = Modifier,
-    sharedViewModel: SharedBetweenMedicineRepoAndNewRemindViewModel,
+    sharedViewModel: SharedMedicineRepoIdViewModel,
     viewModel: MedicineRepoViewModel = viewModel(factory = AppViewModelProvider.factory),
     navController: NavHostController = rememberNavController()
 ) {

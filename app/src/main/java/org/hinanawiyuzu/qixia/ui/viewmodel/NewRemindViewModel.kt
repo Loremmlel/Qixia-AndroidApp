@@ -13,6 +13,7 @@ import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
 import org.hinanawiyuzu.qixia.exception.*
 import org.hinanawiyuzu.qixia.notification.*
+import org.hinanawiyuzu.qixia.ui.route.*
 import org.hinanawiyuzu.qixia.ui.screen.*
 import org.hinanawiyuzu.qixia.utils.*
 import java.time.*
@@ -21,7 +22,8 @@ import java.time.temporal.*
 class NewRemindViewModel(
     private val medicineRemindRepository: MedicineRemindRepository,
     private val medicineRepoRepository: MedicineRepoRepository,
-    private val alarmDateTimeRepository: AlarmDateTimeRepository
+    private val alarmDateTimeRepository: AlarmDateTimeRepository,
+    private val application: QixiaApplication
 ) : ViewModel() {
     /**
      *对应的仓库id，从[MedicineRepoScreen]传过来
@@ -84,6 +86,7 @@ class NewRemindViewModel(
     ) {
         if (!hasPermission)
             showLongToast(context, "不开启通知权限的话，无法正常使用提醒功能。")
+        val currentLoginUserId = application.currentLoginUserId!!
         // 计算总天数
         val totalDays = (ChronoUnit.DAYS.between(startDate!!, endDate!!) + 1).toInt()
         // 计算提醒次数
@@ -104,7 +107,8 @@ class NewRemindViewModel(
                     frequency = frequency!!,
                     isTaken = List(times) { false },
                     medicineRepoId = medicineRepoId!!,
-                    method = method!!
+                    method = method!!,
+                    userId = currentLoginUserId
                 )
             )
         }
@@ -123,7 +127,7 @@ class NewRemindViewModel(
             }
             val schedule = Schedule(context)
             try {
-                schedule.setTakeMedicineAlarm(medicineReminds.toList(), requestCodes)
+                schedule.setTakeMedicineAlarm(medicineReminds.toList(), requestCodes, currentLoginUserId)
                 alarmDateTimes.forEach { alarmDateTimeRepository.insert(it) }
             } catch (e: SecurityException) {
                 showLongToast(context, "请开启精确闹钟权限")

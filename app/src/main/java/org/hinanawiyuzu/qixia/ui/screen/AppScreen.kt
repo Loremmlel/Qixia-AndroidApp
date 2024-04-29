@@ -55,7 +55,15 @@ fun AppScreen(
     ) {
         BlurredBackground()
         when (viewModel.appScreenState) {
-            Main -> {}
+            Main -> {
+                MainScreen(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxHeight(if (isBottomBarVisible) 0.9167f else 1f),
+                    changeBottomBarVisibility = { isBottomBarVisible = it }
+                )
+            }
+
             Box -> {}
             Remind -> {
                 RemindScreen(

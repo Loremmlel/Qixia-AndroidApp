@@ -31,10 +31,18 @@ import java.time.temporal.*
             childColumns = ["medicineRepoId"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = User::class,
+            parentColumns = ["id"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         )
     ],
     indices = [
-        Index(value = ["medicineRepoId"])
+        Index(value = ["medicineRepoId"]),
+        Index(value = ["userId"])
     ]
 )
 data class MedicineRemind(
@@ -54,7 +62,8 @@ data class MedicineRemind(
     val isTaken: List<Boolean>,
     @TypeConverters(MedicineFrequencyConverter::class)
     val frequency: MedicineFrequency,
-    val medicineRepoId: Int
+    val medicineRepoId: Int,
+    val userId: Int
 )
 
 /**

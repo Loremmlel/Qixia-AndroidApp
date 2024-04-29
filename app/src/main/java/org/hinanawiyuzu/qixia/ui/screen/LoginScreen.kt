@@ -22,10 +22,9 @@ import androidx.navigation.compose.*
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.*
 import org.hinanawiyuzu.qixia.ui.*
+import org.hinanawiyuzu.qixia.ui.route.*
 import org.hinanawiyuzu.qixia.ui.theme.*
 import org.hinanawiyuzu.qixia.ui.viewmodel.*
-import org.hinanawiyuzu.qixia.utils.AppRoute
-import org.hinanawiyuzu.qixia.utils.LoginRoute
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 import org.hinanawiyuzu.qixia.utils.slideComposable
 

@@ -52,14 +52,14 @@ val selectorHeight: Dp = 45.dp
  * @param sharedViewModel 用于共享数据的ViewModel
  * @param viewModel 用于处理逻辑的ViewModel
  * @param navController 导航控制器
- * @see SharedBetweenMedicineRepoAndNewRemindViewModel
+ * @see SharedMedicineRepoIdViewModel
  * @see NewRemindViewModel
  * @author HinanawiYuzu
  */
 @Composable
 fun NewRemindScreen(
     modifier: Modifier = Modifier,
-    sharedViewModel: SharedBetweenMedicineRepoAndNewRemindViewModel,
+    sharedViewModel: SharedMedicineRepoIdViewModel,
     viewModel: NewRemindViewModel = viewModel(factory = AppViewModelProvider.factory),
     navController: NavHostController = rememberNavController(),
 ) {

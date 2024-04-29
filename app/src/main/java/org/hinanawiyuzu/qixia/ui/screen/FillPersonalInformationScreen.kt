@@ -38,6 +38,7 @@ fun FillPersonalInformationScreen(
     navController: NavController = rememberNavController(),
     backStackEntry: NavBackStackEntry
 ) {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val uiState by viewModel.uiState.collectAsState()
@@ -96,17 +97,20 @@ fun FillPersonalInformationScreen(
                 modifier = Modifier.weight(0.2f),
                 maleSelected = uiState.maleSelected,
                 femaleSelected = uiState.femaleSelected,
+                name = uiState.name,
                 age = uiState.age,
                 isAgeError = uiState.isAgeError,
+                isNameError = uiState.isNameError,
                 serialNumber = uiState.serialNumber,
                 onMaleClicked = { viewModel.onMaleSelected() },
                 onFemaleClicked = { viewModel.onFemaleSelected() },
                 onAgeChanged = { viewModel.onAgeChanged(it) },
-                onSerialNumberChanged = { viewModel.onSerialNumberChanged(it) }
+                onSerialNumberChanged = { viewModel.onSerialNumberChanged(it) },
+                onNameChanged = { viewModel.onNameChanged(it) }
             )
             MedicalHistory(
                 modifier = Modifier
-                    .weight(0.25f)
+                    .weight(0.15f)
                     .padding(bottom = 30.dp),
                 isIllnessCardClicked = viewModel.illnessCardsClicked,
                 onIllnessCardClicked = { viewModel.onIllnessCardClicked(it) }
@@ -117,7 +121,7 @@ fun FillPersonalInformationScreen(
                     .fillMaxWidth(0.8f),
                 onButtonClicked = {
                     coroutineScope.launch {
-                        viewModel.onConfirmButtonClicked(navController)
+                        viewModel.onConfirmButtonClicked(navController, context)
                     }
                 }
             )
@@ -165,13 +169,16 @@ private fun InputArea(
     modifier: Modifier = Modifier,
     maleSelected: Boolean,
     femaleSelected: Boolean,
+    name: String,
     age: String,
     serialNumber: String,
     isAgeError: Boolean,
+    isNameError: Boolean,
     onMaleClicked: () -> Unit,
     onFemaleClicked: () -> Unit,
     onAgeChanged: (String) -> Unit,
-    onSerialNumberChanged: (String) -> Unit
+    onSerialNumberChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -195,6 +202,14 @@ private fun InputArea(
             Text(text = "女")
             RadioButton(selected = femaleSelected, onClick = onFemaleClicked)
         }
+        CommonInputFieldWithoutLeadingIcon(
+            modifier = Modifier.fillMaxWidth(),
+            value = name,
+            placeholderTextRes = R.string.name,
+            isError = isNameError,
+            errorMessage = "请输入姓名",
+            onValueChanged = { onNameChanged(it) }
+        )
         CommonInputFieldWithoutLeadingIcon(
             modifier = Modifier.fillMaxWidth(),
             value = age,

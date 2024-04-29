@@ -5,7 +5,7 @@ import androidx.navigation.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.hinanawiyuzu.qixia.data.repo.*
-import org.hinanawiyuzu.qixia.utils.*
+import org.hinanawiyuzu.qixia.ui.route.*
 
 class LoginViewModel(
     private val userRepository: UserRepository

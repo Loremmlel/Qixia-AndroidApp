@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import androidx.navigation.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
 import org.hinanawiyuzu.qixia.utils.*
@@ -13,40 +14,35 @@ import java.time.*
 
 class NewMedicineViewModel(
     private val medicineInfoRepository: MedicineInfoRepository,
-    private val medicineRepoRepository: MedicineRepoRepository
+    private val medicineRepoRepository: MedicineRepoRepository,
+    private val application: QixiaApplication
 ) : ViewModel() {
     // 用户输入的药品名
     var medicineName: String by mutableStateOf("")
-        private set
 
     // 用户输入的库存数量
     var inventory: String by mutableStateOf("")
-        private set
 
     // 用户输入的注册证号
     var inputRegistrationCertificateNumber: String by mutableStateOf("")
-        private set
 
     // 用户选择的过期日期
     var expiryDate: LocalDate? by mutableStateOf(null)
-        private set
 
     // 用户选择的图片Uri
     private var imageUri by mutableStateOf<Uri?>(null)
 
     // 是否显示提示信息
     var showSnackBar by mutableStateOf(false)
-        private set
 
     // 按钮是否可用
     var buttonEnabled by mutableStateOf(false)
-        private set
 
     // 根据注册证号查到的药品剂型
-    private var dosageForm: String? by mutableStateOf(null)
+    var dosageForm: String? by mutableStateOf(null)
 
     // 根据注册证号查到的药品规格
-    private var specification: String? by mutableStateOf(null)
+    var specification: String? by mutableStateOf(null)
 
     fun onMedicineNameChanged(value: String) {
         medicineName = value
@@ -103,7 +99,8 @@ class NewMedicineViewModel(
             specification = specification,
             imageUri = imageUri!!,
             expiryDate = expiryDate!!,
-            attentionMatter = null
+            attentionMatter = null,
+            userId = application.currentLoginUserId!!
         )
         viewModelScope.launch {
             medicineRepoRepository.insert(medicineRepo)

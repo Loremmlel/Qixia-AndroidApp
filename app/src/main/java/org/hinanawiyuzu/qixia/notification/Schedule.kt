@@ -22,7 +22,8 @@ class Schedule(private val context: Context) {
     @SuppressLint("ScheduleExactAlarm")
     fun setTakeMedicineAlarm(
         medicineReminds: List<MedicineRemind>,
-        requestCodes: List<List<Int>>
+        requestCodes: List<List<Int>>,
+        alarmUserId: Int
     ) {
         // 纠结我半天的收不到广播，完全是因为没有设置精确的闹钟！！！！
         // 安卓我日你先人
@@ -44,6 +45,7 @@ class Schedule(private val context: Context) {
                         .setComponent(ComponentName(context, TakeMedicineReceiver::class.java))
                         .putExtra("takeMedicineRemindContent", remindContent)
                         .putExtra("remindId", medicineRemind.id)
+                        .putExtra("alarmUserId", alarmUserId)
                         .setAction(GlobalValues.TAKE_MEDICINE_REMIND)
                     val pendingIntent = PendingIntent.getBroadcast(
                         context,

@@ -3,7 +3,7 @@ package org.hinanawiyuzu.qixia.ui.viewmodel
 import androidx.lifecycle.*
 import androidx.navigation.*
 import kotlinx.coroutines.flow.*
-import org.hinanawiyuzu.qixia.utils.*
+import org.hinanawiyuzu.qixia.ui.route.*
 
 class RegisterViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterUiState())

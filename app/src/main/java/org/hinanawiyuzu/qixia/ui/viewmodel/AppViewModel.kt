@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import org.hinanawiyuzu.qixia.ui.screen.*
 
 class AppViewModel : ViewModel() {
-    var appScreenState by mutableStateOf(AppScreenState.Remind)
+    var appScreenState by mutableStateOf(AppScreenState.Main)
         private set
 
     fun onBottomBarItemClicked(id: Int) {

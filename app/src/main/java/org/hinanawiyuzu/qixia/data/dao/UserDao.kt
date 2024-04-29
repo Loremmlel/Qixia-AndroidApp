@@ -7,7 +7,7 @@ import org.hinanawiyuzu.qixia.data.entity.*
 @Dao
 interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(user: User)
+    suspend fun insert(user: User): Long
 
     @Update
     suspend fun update(user: User)

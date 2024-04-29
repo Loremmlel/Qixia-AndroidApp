@@ -11,37 +11,60 @@ import org.hinanawiyuzu.qixia.ui.viewmodel.*
 object AppViewModelProvider {
     val factory = viewModelFactory {
         initializer {
-            LoginViewModel(qixiaApplication().container.userRepository)
+            val application = qixiaApplication()
+            LoginViewModel(application.container.userRepository)
         }
         initializer {
-            FillPersonalInformationViewModel(qixiaApplication().container.userRepository)
+            val application = qixiaApplication()
+            FillPersonalInformationViewModel(
+                userRepository = application.container.userRepository,
+                application = application
+            )
         }
         initializer {
+            val application = qixiaApplication()
             WelcomeViewModel(
-                application = qixiaApplication(),
-                userRepository = qixiaApplication().container.userRepository,
+                application = application,
+                userRepository = application.container.userRepository,
             )
         }
         initializer {
+            val application = qixiaApplication()
             NewRemindViewModel(
-                medicineRemindRepository = qixiaApplication().container.medicineRemindRepository,
-                medicineRepoRepository = qixiaApplication().container.medicineRepoRepository,
-                alarmDateTimeRepository = qixiaApplication().container.alarmDateTimeRepository
+                medicineRemindRepository = application.container.medicineRemindRepository,
+                medicineRepoRepository = application.container.medicineRepoRepository,
+                alarmDateTimeRepository = application.container.alarmDateTimeRepository,
+                application = application
             )
         }
         initializer {
+            val application = qixiaApplication()
             RemindViewModel(
-                medicineRemindRepository = qixiaApplication().container.medicineRemindRepository,
-                medicineRepoRepository = qixiaApplication().container.medicineRepoRepository
+                medicineRemindRepository = application.container.medicineRemindRepository,
+                medicineRepoRepository = application.container.medicineRepoRepository,
+                application = application
             )
         }
         initializer {
-            MedicineRepoViewModel(qixiaApplication().container.medicineRepoRepository)
+            val application = qixiaApplication()
+            MedicineRepoViewModel(
+                medicineRepoRepository = application.container.medicineRepoRepository,
+                application = application
+            )
         }
         initializer {
+            val application = qixiaApplication()
             NewMedicineViewModel(
-                medicineInfoRepository = qixiaApplication().container.medicineInfoRepository,
-                medicineRepoRepository = qixiaApplication().container.medicineRepoRepository
+                medicineInfoRepository = application.container.medicineInfoRepository,
+                medicineRepoRepository = application.container.medicineRepoRepository,
+                application = application
+            )
+        }
+        initializer {
+            val application = qixiaApplication()
+            MainViewModel(
+                userRepository = application.container.userRepository,
+                application = application
             )
         }
     }

@@ -12,50 +12,6 @@ import androidx.compose.ui.unit.*
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.ui.theme.*
 
-/**
- * 默认的背景样式。即横向渐变色+两个alpha值为0.3的白色圆圈。
- * @param modifier 修饰符
- * @param screenHeight 屏幕高度dp，建议在对应的ViewModel里定义并获取。
- * @param content 要加入的内容。占屏幕高度的0.8空间。
- * @author HinanawiYuzu
- */
-@Composable
-fun CommonBackground(
-    modifier: Modifier = Modifier,
-    screenHeight: Dp,
-    content: @Composable (screenHeight: Dp) -> Unit
-) {
-    val circleOffsetX = (-20).dp
-    val circleOffsetY = 50.dp
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(brush = MyColor.themeHorizontalGradient)
-    ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .fillMaxSize()
-        ) {
-            Image(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = circleOffsetX, y = circleOffsetY),
-                painter = painterResource(id = R.drawable.background_circle),
-                contentDescription = null
-            )
-            Image(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = circleOffsetX + 30.dp, y = circleOffsetY + 45.dp),
-                painter = painterResource(id = R.drawable.background_circle),
-                contentDescription = null
-            )
-        }
-        content(screenHeight)
-    }
-}
-
 
 /**
  * 使用模糊效果的背景。

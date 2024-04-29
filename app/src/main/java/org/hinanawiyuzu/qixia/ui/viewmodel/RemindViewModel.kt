@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
 import org.hinanawiyuzu.qixia.utils.*
@@ -14,7 +15,8 @@ import java.time.temporal.*
 
 class RemindViewModel(
     private val medicineRemindRepository: MedicineRemindRepository,
-    private val medicineRepoRepository: MedicineRepoRepository
+    private val medicineRepoRepository: MedicineRepoRepository,
+    private val application: QixiaApplication
 ) : ViewModel() {
     private val currentDate: LocalDate = LocalDate.now()
 
@@ -25,7 +27,9 @@ class RemindViewModel(
     // 一次性查出来所有的提醒信息。客户端这样做我觉得没啥问题，因为提醒信息不会很多
     val allMedicineRemind: StateFlow<AllMedicineRemind> =
         medicineRemindRepository.getAllStream()
-            .map { AllMedicineRemind(it) }
+            .map { allMedicineRemind ->
+                AllMedicineRemind(allMedicineRemind.filter { it.userId == application.currentLoginUserId })
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000L),
@@ -33,7 +37,9 @@ class RemindViewModel(
             )
     val allMedicineRepo: StateFlow<AllMedicineRepo> =
         medicineRepoRepository.getAllStream()
-            .map { AllMedicineRepo(it) }
+            .map { allMedicineRepo ->
+                AllMedicineRepo(allMedicineRepo.filter { it.userId == application.currentLoginUserId })
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000L),

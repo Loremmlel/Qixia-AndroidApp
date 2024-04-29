@@ -5,18 +5,20 @@ import androidx.lifecycle.*
 import androidx.navigation.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
+import org.hinanawiyuzu.qixia.ui.route.*
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByExpiryDateASC
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByExpiryDateDESC
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByNameASC
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByNameDESC
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByRemainAmountASC
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByRemainAmountDESC
-import org.hinanawiyuzu.qixia.utils.*
 
 class MedicineRepoViewModel(
-    medicineRepoRepository: MedicineRepoRepository
+    medicineRepoRepository: MedicineRepoRepository,
+    private val application: QixiaApplication
 ) : ViewModel() {
     // 用户选择的排序方式
     private var sortCondition: SortCondition? by mutableStateOf(null)
@@ -41,7 +43,9 @@ class MedicineRepoViewModel(
      * 查询到的所有药品信息
      */
     val allMedicineRepo: StateFlow<AllMedicineRepo> = medicineRepoRepository.getAllStream()
-        .map { AllMedicineRepo(it) }
+        .map { allMedicineRepo ->
+            AllMedicineRepo(allMedicineRepo.filter { it.userId == application.currentLoginUserId!! })
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -60,12 +64,12 @@ class MedicineRepoViewModel(
     fun onSortConditionChanged(index: Int) {
         sortCondition = SortCondition.entries[index]
         displayedMedicineRepo = when (sortCondition) {
-            SortCondition.ByNameDESC -> displayedMedicineRepo.sortedByDescending { it.name }
-            SortCondition.ByNameASC -> displayedMedicineRepo.sortedBy { it.name }
-            SortCondition.ByExpiryDateDESC -> displayedMedicineRepo.sortedByDescending { it.expiryDate }
-            SortCondition.ByExpiryDateASC -> displayedMedicineRepo.sortedBy { it.expiryDate }
-            SortCondition.ByRemainAmountDESC -> displayedMedicineRepo.sortedByDescending { it.remainAmount }
-            SortCondition.ByRemainAmountASC -> displayedMedicineRepo.sortedBy { it.remainAmount }
+            ByNameDESC -> displayedMedicineRepo.sortedByDescending { it.name }
+            ByNameASC -> displayedMedicineRepo.sortedBy { it.name }
+            ByExpiryDateDESC -> displayedMedicineRepo.sortedByDescending { it.expiryDate }
+            ByExpiryDateASC -> displayedMedicineRepo.sortedBy { it.expiryDate }
+            ByRemainAmountDESC -> displayedMedicineRepo.sortedByDescending { it.remainAmount }
+            ByRemainAmountASC -> displayedMedicineRepo.sortedBy { it.remainAmount }
             else -> displayedMedicineRepo
         }
     }

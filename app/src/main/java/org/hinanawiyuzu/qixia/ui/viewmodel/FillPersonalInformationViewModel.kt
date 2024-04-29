@@ -1,16 +1,20 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
+import android.content.*
 import androidx.compose.runtime.*
 import androidx.lifecycle.*
 import androidx.navigation.*
 import kotlinx.coroutines.flow.*
+import org.hinanawiyuzu.qixia.*
 import org.hinanawiyuzu.qixia.data.entity.*
 import org.hinanawiyuzu.qixia.data.repo.*
 import org.hinanawiyuzu.qixia.data.source.fake.*
+import org.hinanawiyuzu.qixia.ui.route.*
 import org.hinanawiyuzu.qixia.utils.*
 
 class FillPersonalInformationViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val application: QixiaApplication
 ) : ViewModel() {
     private val illnessSize = fakeMedicalHistory.size
     private val _uiState = MutableStateFlow(FillPersonalInformationUiState())
@@ -59,9 +63,18 @@ class FillPersonalInformationViewModel(
             _uiState.update { currentState ->
                 currentState.copy(
                     age = value,
-                    isAgeError = value.toInt() !in (0..120)
+                    isAgeError = value == "" || value.toInt() !in (0..120)
                 )
             }
+        }
+    }
+
+    fun onNameChanged(value: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                name = value,
+                isNameError = value.trim() == ""
+            )
         }
     }
 
@@ -85,27 +98,46 @@ class FillPersonalInformationViewModel(
         }
     }
 
-    suspend fun onConfirmButtonClicked(navController: NavController) {
-        if (!_uiState.value.isAgeError) {
+    suspend fun onConfirmButtonClicked(
+        navController: NavController,
+        context: Context
+    ) {
+        if (!_uiState.value.isAgeError && !_uiState.value.isNameError
+            && _uiState.value.age != "" && _uiState.value.name != ""
+        ) {
             val medicalHistory: MutableList<Int> = mutableListOf()
             illnessCardsClicked.mapIndexed { index, b ->
                 if (b) medicalHistory.add(index)
+            }
+            if (medicalHistory.isEmpty()) {
+                showShortToast(context, "请选择病史")
+                return
             }
             val user = User(
                 phone = accountPhone,
                 password = accountPassword,
                 loginState = true,
+                name = _uiState.value.name,
                 sexual = if (_uiState.value.maleSelected) "男" else "女",
-                age = _uiState.value.age.toInt(),
+                age = if (_uiState.value.age == "") 30 else _uiState.value.age.toInt(),
                 serialNumber = _uiState.value.serialNumber,
-                medicalHistory = medicalHistory.toList()
+                medicalHistory = medicalHistory.toList(),
+                profilePhotoUri = null
             )
-            userRepository.insert(user)
+            val userId = userRepository.insert(user)
+            application.currentLoginUserId = userId.toInt()
             navController.navigate(AppRoute.AppScreen.name) {
                 // 清空所有到LoginScreen的路线。inclusive为true表示包括LoginScreen
                 navController.popBackStack(
                     route = LoginRoute.LoginScreen.name,
                     inclusive = true
+                )
+            }
+        } else {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isAgeError = _uiState.value.age == "" || _uiState.value.age.toInt() !in (0..120),
+                    isNameError = _uiState.value.name == ""
                 )
             }
         }
@@ -116,6 +148,8 @@ data class FillPersonalInformationUiState(
     val maleSelected: Boolean = true,
     val femaleSelected: Boolean = false,
     val age: String = "",
+    val name: String = "",
     val isAgeError: Boolean = false,
+    val isNameError: Boolean = false,
     val serialNumber: String = ""
 )

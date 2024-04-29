@@ -67,7 +67,7 @@ object MyColor {
     )
 
     val deepGreenButtonGradient: Brush = Brush.radialGradient(
-        colors = listOf(Color(0xFFFFFFFF), Color(0xFFB4E3CC), Color(0xFF5BC28F))
+        colors = listOf(Color(0xFFFFFFFF), Color(0xB2B4E3CC), Color(0xB25BC28F))
     )
 
     val transparentButtonBorderGradient: Brush = Brush.linearGradient(

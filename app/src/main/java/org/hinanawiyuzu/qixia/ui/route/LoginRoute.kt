@@ -1,5 +1,4 @@
-package org.hinanawiyuzu.qixia.utils
-
+package org.hinanawiyuzu.qixia.ui.route
 
 /**
  * 登录系列页面导航路由枚举类
@@ -17,16 +16,4 @@ enum class LoginRoute {
     FillPersonalInformationScreen,
     ForgetPasswordScreen,
     ResetPasswordScreen,
-}
-
-enum class AppRoute {
-    AppScreen
-}
-
-enum class RemindRoute {
-    RemindScreen,
-    NewRemindScreen,
-    MedicineRepoScreen,
-    NewMedicineScreen,
-    ImageDetailScreen,
 }

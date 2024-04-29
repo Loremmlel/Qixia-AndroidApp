@@ -32,9 +32,9 @@ fun ZoneId.toZoneOffset(): ZoneOffset {
 }
 
 /**
- * 计算从指定日期到现在为止已经服药的次数。
+ * 计算从指定日期到特定日期为止已经服药的次数。
  */
-fun LocalDate.numberOfMedicineTakenUntilNow(frequency: MedicineFrequency): Int {
+fun LocalDate.numberOfMedicineTakenUntilSpecificDate(frequency: MedicineFrequency, specificDate: LocalDate): Int {
     val internalDays = when (frequency) {
         MedicineFrequency.OnceTwoDays -> 2
         MedicineFrequency.OnceAWeek -> 7
@@ -42,5 +42,42 @@ fun LocalDate.numberOfMedicineTakenUntilNow(frequency: MedicineFrequency): Int {
         MedicineFrequency.OnceAMonth -> 30
         else -> 1
     }
-    return ChronoUnit.DAYS.between(this, LocalDate.now()).toInt() / internalDays + 1
+    return ChronoUnit.DAYS.between(this, specificDate).toInt() / internalDays + 1
+}
+
+fun String.toLocalDate(): LocalDate? {
+    return try {
+        LocalDate.parse(this)
+    } catch (e: Exception) {
+        null
+    }
+}
+
+fun String.toLocalDateTime(): LocalDateTime? {
+    return try {
+        LocalDateTime.parse(this)
+    } catch (e: Exception) {
+        null
+    }
+}
+
+/**
+ * 计算两个日期时间之间的时间间隔。
+ *
+ * 以中文的方式返回，如：1天前、2小时后、3分钟前。
+ * @param other 另一个日期时间。
+ */
+fun LocalDateTime.ofChineseIntervalTime(other: LocalDateTime): String {
+    val isAfter = this.isAfter(other)
+    val days = ChronoUnit.DAYS.between(this.toLocalDate(), other.toLocalDate())
+    val hours = ChronoUnit.HOURS.between(this, other)
+    val minutes = ChronoUnit.MINUTES.between(this, other)
+    var result = when {
+        days > 0 -> "${days}天"
+        hours > 0 -> "${hours}小时"
+        minutes > 0 -> "${minutes}分钟"
+        else -> "刚刚"
+    }
+    result += if (isAfter) "后" else "前"
+    return result
 }

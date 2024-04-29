@@ -8,7 +8,7 @@ import org.hinanawiyuzu.qixia.data.entity.*
  * 用户信息仓库
  */
 interface UserRepository {
-    suspend fun insert(user: User)
+    suspend fun insert(user: User): Long
     suspend fun update(user: User)
     suspend fun delete(user: User)
     fun getStreamByPhone(phone: String): Flow<User>
@@ -17,7 +17,7 @@ interface UserRepository {
 }
 
 class OfflineUserRepository(private val userDao: UserDao) : UserRepository {
-    override suspend fun insert(user: User) = userDao.insert(user)
+    override suspend fun insert(user: User): Long = userDao.insert(user)
 
     override suspend fun update(user: User) = userDao.update(user)
     override suspend fun delete(user: User) = userDao.delete(user)

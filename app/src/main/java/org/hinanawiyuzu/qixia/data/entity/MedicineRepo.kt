@@ -15,7 +15,19 @@ import java.time.*
  * @param expiryDate 药物到期时间
  * @param attentionMatter 药物注意事项
  */
-@Entity(tableName = "medicine_repo")
+@Entity(
+    tableName = "medicine_repo",
+    foreignKeys = [ForeignKey(
+        entity = User::class,
+        parentColumns = ["id"],
+        childColumns = ["userId"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [
+        Index(value = ["id"]),
+        Index(value = ["userId"])
+    ]
+)
 data class MedicineRepo(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
@@ -28,7 +40,8 @@ data class MedicineRepo(
     @TypeConverters(LocalDateConverter::class)
     val expiryDate: LocalDate,
     @TypeConverters(AttentionMatterConverter::class)
-    val attentionMatter: AttentionMatter?
+    val attentionMatter: AttentionMatter?,
+    val userId: Int
 )
 
 
