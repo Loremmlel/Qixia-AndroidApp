@@ -1,8 +1,10 @@
 package org.hinanawiyuzu.qixia.ui
 
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.viewmodel.*
-import org.hinanawiyuzu.qixia.*
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import org.hinanawiyuzu.qixia.QixiaApplication
 import org.hinanawiyuzu.qixia.ui.viewmodel.*
 
 /**

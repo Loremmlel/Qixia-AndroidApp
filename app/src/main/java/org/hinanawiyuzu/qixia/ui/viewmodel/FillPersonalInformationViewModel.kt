@@ -1,16 +1,19 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import android.content.*
-import androidx.compose.runtime.*
-import androidx.lifecycle.*
-import androidx.navigation.*
-import kotlinx.coroutines.flow.*
-import org.hinanawiyuzu.qixia.*
-import org.hinanawiyuzu.qixia.data.entity.*
-import org.hinanawiyuzu.qixia.data.repo.*
-import org.hinanawiyuzu.qixia.data.source.fake.*
-import org.hinanawiyuzu.qixia.ui.route.*
-import org.hinanawiyuzu.qixia.utils.*
+import android.content.Context
+import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import org.hinanawiyuzu.qixia.QixiaApplication
+import org.hinanawiyuzu.qixia.data.entity.User
+import org.hinanawiyuzu.qixia.data.repo.UserRepository
+import org.hinanawiyuzu.qixia.data.source.fake.fakeMedicalHistory
+import org.hinanawiyuzu.qixia.ui.route.AppRoute
+import org.hinanawiyuzu.qixia.ui.route.LoginRoute
+import org.hinanawiyuzu.qixia.utils.showShortToast
 
 class FillPersonalInformationViewModel(
     private val userRepository: UserRepository,

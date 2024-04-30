@@ -1,6 +1,9 @@
 package org.hinanawiyuzu.qixia.data.source.fake
 
-import org.hinanawiyuzu.qixia.data.entity.*
+import org.hinanawiyuzu.qixia.data.entity.Traceability
+import org.hinanawiyuzu.qixia.data.entity.TraceabilityEssential
+import org.hinanawiyuzu.qixia.data.entity.TraceabilityManufacturer
+import org.hinanawiyuzu.qixia.data.entity.TraceabilityProduce
 
 val fakeTraceabilityInformation: List<Traceability> = listOf(
     Traceability(

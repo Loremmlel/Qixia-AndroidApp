@@ -1,8 +1,8 @@
 package org.hinanawiyuzu.qixia.data.repo
 
-import kotlinx.coroutines.flow.*
-import org.hinanawiyuzu.qixia.data.dao.*
-import org.hinanawiyuzu.qixia.data.entity.*
+import kotlinx.coroutines.flow.Flow
+import org.hinanawiyuzu.qixia.data.dao.AlarmDateTimeDao
+import org.hinanawiyuzu.qixia.data.entity.AlarmDateTime
 
 interface AlarmDateTimeRepository {
     suspend fun insert(alarmDateTime: AlarmDateTime)

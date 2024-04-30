@@ -1,13 +1,19 @@
 package org.hinanawiyuzu.qixia.utils
 
-import android.content.*
-import android.graphics.*
-import android.graphics.drawable.*
-import android.net.*
-import android.os.*
-import android.provider.*
-import androidx.annotation.*
-import androidx.core.content.*
+import android.content.ContentValues
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 
 /**
  * 这个函数创建一个 ContentValues 对象，表示图像文件的元数据。

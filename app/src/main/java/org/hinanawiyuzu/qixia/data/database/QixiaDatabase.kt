@@ -1,7 +1,10 @@
 package org.hinanawiyuzu.qixia.data.database
 
-import android.content.*
-import androidx.room.*
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import org.hinanawiyuzu.qixia.data.dao.*
 import org.hinanawiyuzu.qixia.data.entity.*
 

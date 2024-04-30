@@ -1,12 +1,14 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.*
-import androidx.lifecycle.*
-import androidx.navigation.*
-import org.hinanawiyuzu.qixia.data.entity.*
-import org.hinanawiyuzu.qixia.data.source.fake.*
-import org.hinanawiyuzu.qixia.ui.route.*
-import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import org.hinanawiyuzu.qixia.data.entity.Traceability
+import org.hinanawiyuzu.qixia.data.source.fake.fakeTraceabilityInformation
+import org.hinanawiyuzu.qixia.ui.route.RemindRoute
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedTraceabilityViewModel
 
 class TraceabilityInformationViewModel : ViewModel() {
     var code: String? by mutableStateOf(null)

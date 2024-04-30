@@ -1,27 +1,36 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.*
-import androidx.compose.ui.text.input.*
-import androidx.compose.ui.tooling.preview.*
-import androidx.compose.ui.unit.*
-import androidx.lifecycle.viewmodel.compose.*
-import androidx.navigation.*
-import androidx.navigation.compose.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.components.*
-import org.hinanawiyuzu.qixia.ui.route.*
-import org.hinanawiyuzu.qixia.ui.theme.*
-import org.hinanawiyuzu.qixia.ui.viewmodel.*
-import org.hinanawiyuzu.qixia.utils.*
+import org.hinanawiyuzu.qixia.components.CommonButton
+import org.hinanawiyuzu.qixia.components.CommonInputField
+import org.hinanawiyuzu.qixia.components.PasswordInputField
+import org.hinanawiyuzu.qixia.ui.route.LoginRoute
+import org.hinanawiyuzu.qixia.ui.theme.FontSize
+import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
+import org.hinanawiyuzu.qixia.ui.viewmodel.RegisterViewModel
+import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 
 /**

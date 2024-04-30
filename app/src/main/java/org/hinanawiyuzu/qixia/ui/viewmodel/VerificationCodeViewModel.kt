@@ -1,10 +1,10 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.*
-import androidx.compose.ui.focus.*
-import androidx.lifecycle.*
-import androidx.navigation.*
-import org.hinanawiyuzu.qixia.ui.route.*
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.focus.FocusRequester
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import org.hinanawiyuzu.qixia.ui.route.LoginRoute
 
 
 class VerificationCodeViewModel : ViewModel() {

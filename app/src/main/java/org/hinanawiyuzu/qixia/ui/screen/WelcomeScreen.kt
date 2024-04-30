@@ -1,24 +1,28 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.draw.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.res.*
-import androidx.compose.ui.tooling.preview.*
-import androidx.compose.ui.unit.*
-import androidx.lifecycle.viewmodel.compose.*
-import androidx.navigation.*
-import androidx.navigation.compose.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.ui.*
-import org.hinanawiyuzu.qixia.ui.route.*
-import org.hinanawiyuzu.qixia.ui.theme.*
-import org.hinanawiyuzu.qixia.ui.viewmodel.*
-import org.hinanawiyuzu.qixia.utils.*
+import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
+import org.hinanawiyuzu.qixia.ui.route.AppRoute
+import org.hinanawiyuzu.qixia.ui.route.LoginRoute
+import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
+import org.hinanawiyuzu.qixia.ui.viewmodel.WelcomeViewModel
+import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 @Composable
 fun WelcomeScreen(

@@ -1,9 +1,11 @@
 package org.hinanawiyuzu.qixia.data.entity
 
-import android.net.*
-import androidx.room.*
-import java.time.*
-import java.time.format.*
+import android.net.Uri
+import androidx.room.TypeConverter
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class TakeMethodConverter {
     @TypeConverter

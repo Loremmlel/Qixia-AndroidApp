@@ -1,6 +1,8 @@
 package org.hinanawiyuzu.qixia.data.entity
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 /**
  * 药品信息实体类。

@@ -1,40 +1,65 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import android.graphics.*
-import android.net.*
-import android.util.*
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.shape.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.draw.*
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.*
-import androidx.compose.ui.platform.*
-import androidx.compose.ui.res.*
-import androidx.compose.ui.text.*
-import androidx.compose.ui.text.font.*
-import androidx.compose.ui.unit.*
-import androidx.lifecycle.viewmodel.compose.*
-import androidx.navigation.*
-import androidx.navigation.compose.*
-import kotlinx.coroutines.*
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.components.*
-import org.hinanawiyuzu.qixia.data.entity.*
-import org.hinanawiyuzu.qixia.data.source.fake.*
-import org.hinanawiyuzu.qixia.ui.*
-import org.hinanawiyuzu.qixia.ui.route.*
-import org.hinanawiyuzu.qixia.ui.theme.*
-import org.hinanawiyuzu.qixia.ui.viewmodel.*
-import org.hinanawiyuzu.qixia.utils.*
-import java.time.*
+import org.hinanawiyuzu.qixia.components.GrayLine
+import org.hinanawiyuzu.qixia.components.GreenArrow
+import org.hinanawiyuzu.qixia.components.MyIconButton
+import org.hinanawiyuzu.qixia.data.entity.FamilyRemind
+import org.hinanawiyuzu.qixia.data.source.fake.fakeFamilyRemind
+import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
+import org.hinanawiyuzu.qixia.ui.route.MainRoute
+import org.hinanawiyuzu.qixia.ui.theme.FontSize
+import org.hinanawiyuzu.qixia.ui.viewmodel.MainViewModel
+import org.hinanawiyuzu.qixia.utils.advancedShadow
+import org.hinanawiyuzu.qixia.utils.ofChineseIntervalTime
+import org.hinanawiyuzu.qixia.utils.slideComposable
+import org.hinanawiyuzu.qixia.utils.toBitmap
+import java.time.LocalDateTime
 
 private const val BANNER_IMAGE_HEIGHT = 200
 private const val CONTENT_PADDING = 15
@@ -103,7 +128,9 @@ fun MainScreen(
                             R.drawable.banner_example_2.toBitmap(context),
                             R.drawable.banner_example_3.toBitmap(context)
                         )
-                    )
+                    ) {
+                        viewModel.onBannerClicked(navController = navController, id = it)
+                    }
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(5.dp)
@@ -115,7 +142,7 @@ fun MainScreen(
                             fontWeight = FontWeight.ExtraBold
                         )
                         HealthCalendar(title = fakeTitle, content = fakeContent) {
-
+                            navController.navigate(MainRoute.HealthCalendarScreen.name)
                         }
                     }
                     Column(
@@ -134,6 +161,24 @@ fun MainScreen(
                     }
                 }
             }
+        }
+        slideComposable(
+            route = "${MainRoute.HealthMessageScreen.name}/{healthMessageId}",
+            arguments = listOf(navArgument("healthMessageId") { type = NavType.IntType })
+        ) {
+            changeBottomBarVisibility(false)
+            HealthMessageScreen(
+                navController = navController,
+                backStackEntry = it
+            )
+        }
+        slideComposable(
+            route = MainRoute.HealthCalendarScreen.name,
+        ) {
+            changeBottomBarVisibility(false)
+            HealthCalendarScreen(
+                navController = navController
+            )
         }
     }
 }
@@ -206,7 +251,8 @@ private fun Greeting(
 @Composable
 private fun Banner(
     modifier: Modifier = Modifier,
-    images: List<Bitmap>
+    images: List<Bitmap>,
+    onBannerClicked: (Int) -> Unit
 ) {
     val imageWidthDp = (LocalConfiguration.current.screenWidthDp - CONTENT_PADDING * 2 - 25).dp
     val size = images.size
@@ -239,6 +285,11 @@ private fun Banner(
                 items(size) {
                     Image(
                         modifier = Modifier
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { onBannerClicked(it) }
+                            )
                             .width(imageWidthDp)
                             .fillMaxHeight(),
                         bitmap = images[it].asImageBitmap(),

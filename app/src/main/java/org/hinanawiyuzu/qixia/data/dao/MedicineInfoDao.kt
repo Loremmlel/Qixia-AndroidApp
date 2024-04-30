@@ -1,8 +1,9 @@
 package org.hinanawiyuzu.qixia.data.dao
 
-import androidx.room.*
-import kotlinx.coroutines.flow.*
-import org.hinanawiyuzu.qixia.data.entity.*
+import androidx.room.Dao
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
+import org.hinanawiyuzu.qixia.data.entity.MedicineInfo
 
 @Dao
 interface MedicineInfoDao {

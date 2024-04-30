@@ -1,8 +1,10 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
-import androidx.compose.runtime.*
-import androidx.lifecycle.*
-import org.hinanawiyuzu.qixia.ui.screen.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import org.hinanawiyuzu.qixia.ui.screen.AppScreenState
 
 class AppViewModel : ViewModel() {
     var appScreenState by mutableStateOf(AppScreenState.Main)

@@ -1,8 +1,10 @@
 package org.hinanawiyuzu.qixia.notification
 
-import android.content.*
-import android.util.*
-import org.hinanawiyuzu.qixia.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import org.hinanawiyuzu.qixia.QixiaApplication
 
 class TakeMedicineReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

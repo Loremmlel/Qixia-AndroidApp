@@ -1,8 +1,10 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel.shared
 
-import androidx.compose.runtime.*
-import androidx.lifecycle.*
-import org.hinanawiyuzu.qixia.data.entity.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import org.hinanawiyuzu.qixia.data.entity.Traceability
 
 class SharedTraceabilityViewModel : ViewModel() {
     /**

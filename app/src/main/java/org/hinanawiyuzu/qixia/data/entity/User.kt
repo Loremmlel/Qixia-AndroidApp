@@ -1,7 +1,9 @@
 package org.hinanawiyuzu.qixia.data.entity
 
-import android.net.*
-import androidx.room.*
+import android.net.Uri
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 
 
 /**

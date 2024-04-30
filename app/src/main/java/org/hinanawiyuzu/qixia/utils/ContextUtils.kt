@@ -1,7 +1,8 @@
 package org.hinanawiyuzu.qixia.utils
 
-import android.content.*
-import androidx.activity.*
+import android.content.Context
+import android.content.ContextWrapper
+import androidx.activity.ComponentActivity
 
 /**
  * 获取上下文的Activity

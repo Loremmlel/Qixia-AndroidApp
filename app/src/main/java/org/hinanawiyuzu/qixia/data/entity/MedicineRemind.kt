@@ -6,8 +6,9 @@ import org.hinanawiyuzu.qixia.data.entity.TakeMethod.AtMeal
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.BeforeMeal
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.BeforeSleep
 import org.hinanawiyuzu.qixia.data.entity.TakeMethod.NotMatter
-import java.time.*
-import java.time.temporal.*
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 
 /**
  * 服药提醒信息

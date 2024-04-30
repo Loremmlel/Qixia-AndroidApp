@@ -1,11 +1,13 @@
 package org.hinanawiyuzu.qixia.preferences
 
-import android.content.*
-import android.util.*
-import androidx.datastore.core.*
-import androidx.datastore.preferences.*
-import androidx.datastore.preferences.core.*
-import kotlinx.coroutines.flow.*
+import android.content.Context
+import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.first
 
 private const val PREFERENCES_NAME = "permission_request_preferences"
 val Context.permissionRequestDataStore by preferencesDataStore(name = PREFERENCES_NAME)

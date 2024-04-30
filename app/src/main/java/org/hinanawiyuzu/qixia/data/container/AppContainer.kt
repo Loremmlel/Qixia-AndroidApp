@@ -1,7 +1,7 @@
 package org.hinanawiyuzu.qixia.data.container
 
-import android.content.*
-import org.hinanawiyuzu.qixia.data.database.*
+import android.content.Context
+import org.hinanawiyuzu.qixia.data.database.QixiaDatabase
 import org.hinanawiyuzu.qixia.data.repo.*
 
 

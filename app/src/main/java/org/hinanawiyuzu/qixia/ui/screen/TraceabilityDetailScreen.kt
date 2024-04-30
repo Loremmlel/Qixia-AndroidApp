@@ -1,22 +1,32 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.platform.*
-import androidx.compose.ui.res.*
-import androidx.compose.ui.text.*
-import androidx.compose.ui.text.font.*
-import androidx.compose.ui.unit.*
-import androidx.navigation.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import org.hinanawiyuzu.qixia.R
-import org.hinanawiyuzu.qixia.components.*
-import org.hinanawiyuzu.qixia.data.entity.*
-import org.hinanawiyuzu.qixia.ui.theme.*
-import org.hinanawiyuzu.qixia.ui.viewmodel.shared.*
+import org.hinanawiyuzu.qixia.components.BlurredBackground
+import org.hinanawiyuzu.qixia.components.Fold
+import org.hinanawiyuzu.qixia.components.GrayLine
+import org.hinanawiyuzu.qixia.data.entity.TraceabilityAttribute
+import org.hinanawiyuzu.qixia.data.entity.TraceabilityEssential
+import org.hinanawiyuzu.qixia.data.entity.TraceabilityManufacturer
+import org.hinanawiyuzu.qixia.data.entity.TraceabilityProduce
+import org.hinanawiyuzu.qixia.ui.theme.FontSize
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedTraceabilityViewModel
 
 // 展开信息中的灰色背景颜色
 val infoGray = Color(0xFFF8F8F8)

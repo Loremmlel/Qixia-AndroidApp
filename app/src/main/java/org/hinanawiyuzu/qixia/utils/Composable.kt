@@ -1,10 +1,13 @@
 package org.hinanawiyuzu.qixia.utils
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
-import androidx.compose.runtime.*
-import androidx.navigation.*
-import androidx.navigation.compose.*
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.Composable
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDeepLink
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 
 const val animationSpec: Int = 500
 

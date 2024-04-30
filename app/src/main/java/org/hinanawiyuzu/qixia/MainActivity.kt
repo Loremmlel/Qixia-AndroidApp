@@ -1,16 +1,21 @@
 package org.hinanawiyuzu.qixia
 
-import android.content.*
-import android.os.*
-import androidx.activity.*
-import androidx.activity.compose.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.ui.*
-import kotlinx.coroutines.*
-import org.hinanawiyuzu.qixia.preferences.*
-import org.hinanawiyuzu.qixia.ui.screen.*
-import org.hinanawiyuzu.qixia.ui.theme.*
+import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import org.hinanawiyuzu.qixia.preferences.PermissionRequestPreferences
+import org.hinanawiyuzu.qixia.ui.screen.WelcomeScreen
+import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

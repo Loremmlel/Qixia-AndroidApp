@@ -1,8 +1,8 @@
 package org.hinanawiyuzu.qixia.data.repo
 
-import kotlinx.coroutines.flow.*
-import org.hinanawiyuzu.qixia.data.dao.*
-import org.hinanawiyuzu.qixia.data.entity.*
+import kotlinx.coroutines.flow.Flow
+import org.hinanawiyuzu.qixia.data.dao.MedicineRepoDao
+import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
 
 interface MedicineRepoRepository {
     suspend fun insert(medicineRepo: MedicineRepo)

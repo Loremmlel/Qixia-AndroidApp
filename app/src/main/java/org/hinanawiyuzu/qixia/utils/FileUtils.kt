@@ -1,8 +1,10 @@
 package org.hinanawiyuzu.qixia.utils
 
-import android.content.*
-import android.net.*
-import java.io.*
+import android.content.Context
+import android.net.Uri
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 /**
  * 这个函数将原始图片复制到应用程序的内部存储目录中。

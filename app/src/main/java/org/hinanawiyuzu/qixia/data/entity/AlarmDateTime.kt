@@ -1,7 +1,10 @@
 package org.hinanawiyuzu.qixia.data.entity
 
-import androidx.room.*
-import java.time.*
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import java.time.LocalDateTime
 
 @Entity(
     tableName = "alarm_date_time",
