@@ -69,6 +69,13 @@ object AppViewModelProvider {
                 application = application
             )
         }
+        initializer {
+            val application = qixiaApplication()
+            BoxViewModel(
+                userRepository = application.container.userRepository,
+                application = application
+            )
+        }
     }
 }
 

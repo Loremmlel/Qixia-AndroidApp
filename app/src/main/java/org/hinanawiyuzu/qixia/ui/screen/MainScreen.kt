@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -54,6 +53,7 @@ import org.hinanawiyuzu.qixia.data.source.fake.fakeFamilyRemind
 import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
 import org.hinanawiyuzu.qixia.ui.route.MainRoute
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
+import org.hinanawiyuzu.qixia.ui.theme.MyColor
 import org.hinanawiyuzu.qixia.ui.viewmodel.MainViewModel
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 import org.hinanawiyuzu.qixia.utils.ofChineseIntervalTime
@@ -183,6 +183,7 @@ fun MainScreen(
     }
 }
 
+// 说真的，我懒了，不想再抽出通用的函数来了.
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
@@ -359,7 +360,7 @@ private fun HealthCalendar(
             .clip(RoundedCornerShape(percent = 15))
             .fillMaxWidth()
             .height(CARD_HEIGHT.dp)
-            .background(brush = Brush.radialGradient(colors = listOf(Color(0xFFFFFFFF), Color(0xFFF4FFFB)))),
+            .background(brush = MyColor.lightGreenCardGradient),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -413,7 +414,7 @@ private fun FamilyReminder(
             .clip(RoundedCornerShape(percent = 15))
             .fillMaxWidth()
             .height(CARD_HEIGHT.dp)
-            .background(brush = Brush.radialGradient(colors = listOf(Color(0xFFFFFFFF), Color(0xFFF4FFFB)))),
+            .background(brush = MyColor.lightGreenCardGradient),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(

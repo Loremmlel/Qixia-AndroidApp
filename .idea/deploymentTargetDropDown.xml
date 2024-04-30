@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AnimateTempDisplayPreview">
+        <State />
+      </entry>
       <entry key="DataTimePicker">
         <State />
       </entry>
@@ -12,9 +15,6 @@
         <State />
       </entry>
       <entry key="NewRemindScreenPreview">
-        <State />
-      </entry>
-      <entry key="UserInfoDaoTest">
         <State />
       </entry>
       <entry key="app">

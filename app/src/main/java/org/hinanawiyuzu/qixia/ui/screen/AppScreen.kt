@@ -77,7 +77,15 @@ fun AppScreen(
                 )
             }
 
-            Box -> {}
+            Box -> {
+                BoxScreen(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxHeight(if (isBottomBarVisible) 0.9167f else 1f),
+                    changeBottomBarVisibility = { isBottomBarVisible = it }
+                )
+            }
+
             Remind -> {
                 RemindScreen(
                     modifier = Modifier

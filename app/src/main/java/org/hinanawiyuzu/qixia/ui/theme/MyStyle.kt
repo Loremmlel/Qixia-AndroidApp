@@ -75,5 +75,7 @@ object MyColor {
         colors = listOf(Color(0xFFFFFFFF), Color(0x00FFFFFF))
     )
 
+    val lightGreenCardGradient = Brush.radialGradient(colors = listOf(Color(0xFFFFFFFF), Color(0xFFF4FFFB)))
+
     val font_deep_blue: Color = Color(0xFF333E63)
 }
