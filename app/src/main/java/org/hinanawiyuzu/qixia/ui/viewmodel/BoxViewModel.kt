@@ -13,8 +13,8 @@ import org.hinanawiyuzu.qixia.QixiaApplication
 import org.hinanawiyuzu.qixia.data.repo.UserRepository
 
 class BoxViewModel(
-    private val userRepository: UserRepository,
-    private val application: QixiaApplication
+    userRepository: UserRepository,
+    application: QixiaApplication
 ) : ViewModel() {
     val currentUser: StateFlow<CurrentLoginUser> = userRepository.getStreamById(application.currentLoginUserId!!)
         .map { CurrentLoginUser(listOf(it)) }

@@ -56,6 +56,13 @@ object AppViewModelProvider {
         }
         initializer {
             val application = qixiaApplication()
+            MedicineRepoListViewModel(
+                medicineRepoRepository = application.container.medicineRepoRepository,
+                application = application
+            )
+        }
+        initializer {
+            val application = qixiaApplication()
             NewMedicineViewModel(
                 medicineInfoRepository = application.container.medicineInfoRepository,
                 medicineRepoRepository = application.container.medicineRepoRepository,

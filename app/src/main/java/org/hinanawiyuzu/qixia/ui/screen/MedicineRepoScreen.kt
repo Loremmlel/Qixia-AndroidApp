@@ -17,6 +17,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -34,11 +35,13 @@ import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
 import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
 import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.neutral_color
+import org.hinanawiyuzu.qixia.ui.viewmodel.MedicineRepoListViewModel
 import org.hinanawiyuzu.qixia.ui.viewmodel.MedicineRepoViewModel
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition
 import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedMedicineRepoIdViewModel
 import org.hinanawiyuzu.qixia.utils.advancedShadow
 import java.time.LocalDate
+
 
 /**
  * 药品仓库清单界面
@@ -109,6 +112,61 @@ fun MedicineRepoScreen(
     }
 }
 
+/**
+ * 没有sharedViewModel的，能够进行删的版本.
+ */
+@Composable
+fun MedicineRepoListScreen(
+    modifier: Modifier = Modifier,
+    viewModel: MedicineRepoListViewModel = viewModel(factory = AppViewModelProvider.factory),
+    navController: NavHostController = rememberNavController()
+) {
+    val context = LocalContext.current
+    val screenWidthDp: Dp = LocalConfiguration.current.screenWidthDp.dp
+    val allMedicineRepo by viewModel.allMedicineRepo.collectAsState()
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        BlurredBackground()
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(10.dp)
+                .align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            TopBar(
+                modifier = Modifier.fillMaxWidth(),
+                onBackClicked = { navController.popBackStack() },
+                onDropDownMenuItemClicked = viewModel::onSortConditionChanged
+            )
+            GrayLine(screenWidthDp = screenWidthDp)
+            SearchBox(
+                modifier = Modifier.fillMaxWidth(),
+                userInput = viewModel.userSearchInput,
+                onUserInputChanged = viewModel::onUserSearchInputChanged,
+                startSearch = viewModel::startSearch
+            )
+            MedicineRepoCards(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(10.dp),
+                allMedicineRepo = allMedicineRepo.allMedicineRepoList,
+                medicineRepos = viewModel.displayedMedicineRepo,
+                selectedStates = viewModel.selectedStates,
+                onSelectClicked = viewModel::toggleSelection
+            )
+        }
+        DeleteButton(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = (-20).dp),
+            enabled = viewModel.deleteButtonEnabled,
+            onDeleteClicked = { viewModel.onDeleteClicked(context) },
+        )
+    }
+}
 
 /**
  * 药品仓库清单界面的顶部栏
@@ -261,6 +319,7 @@ private fun MedicineRepoCards(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         medicineRepos.forEach { medicineRepo ->
+            // 获取位于allMedicineRepo中的索引
             val index = allMedicineRepo.indexOf(medicineRepo)
             MedicineRepoCard(
                 modifier = Modifier.fillMaxWidth(),
@@ -584,5 +643,87 @@ private fun BottomButtons(
                 )
             )
         }
+    }
+}
+
+@Composable
+private fun DeleteButton(
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    onDeleteClicked: () -> Unit
+) {
+    var showConfirmDeleteWindow by remember { mutableStateOf(false) }
+    val unableBrush: Brush = Brush.verticalGradient(
+        colors = listOf(Color(249, 239, 222), Color(249, 239, 222))
+    )
+    val enableBrush: Brush = Brush.linearGradient(
+        colors = listOf(Color(0xB5FECE98), Color(0xBFF59A19))
+    )
+    Column(
+        modifier = modifier
+            .width(150.dp)
+            .height(50.dp)
+            .clip(RoundedCornerShape(percent = 20))
+            .clickable(enabled = enabled) { showConfirmDeleteWindow = true }
+            .background(brush = if (enabled) enableBrush else unableBrush),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "删除",
+            style = TextStyle(
+                fontSize = FontSize.extraLargeSize,
+                fontWeight = FontWeight.Medium,
+                color = Color.Red
+            )
+        )
+    }
+    if (showConfirmDeleteWindow) {
+        AlertDialog(
+            onDismissRequest = { showConfirmDeleteWindow = false },
+            title = {
+                Text(
+                    text = "确认删除",
+                    style = TextStyle(
+                        fontSize = FontSize.extraLargeSize,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            },
+            text = {
+                Text(
+                    text = "确认删除选中的药品？(操作不可恢复)",
+                    style = TextStyle(
+                        fontSize = FontSize.normalSize,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    onDeleteClicked()
+                    showConfirmDeleteWindow = false
+                }) {
+                    Text(
+                        text = "确认",
+                        style = TextStyle(
+                            fontSize = FontSize.normalSize,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showConfirmDeleteWindow = false }) {
+                    Text(
+                        text = "取消",
+                        style = TextStyle(
+                            fontSize = FontSize.normalSize,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
+            }
+        )
     }
 }

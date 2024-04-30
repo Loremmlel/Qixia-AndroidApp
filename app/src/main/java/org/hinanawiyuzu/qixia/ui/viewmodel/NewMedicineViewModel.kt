@@ -1,5 +1,6 @@
 package org.hinanawiyuzu.qixia.ui.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +15,7 @@ import org.hinanawiyuzu.qixia.QixiaApplication
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
 import org.hinanawiyuzu.qixia.data.repo.MedicineInfoRepository
 import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
+import org.hinanawiyuzu.qixia.utils.showShortToast
 import org.hinanawiyuzu.qixia.utils.toLocalDate
 import java.time.LocalDate
 
@@ -96,7 +98,10 @@ class NewMedicineViewModel(
         checkButtonEnabled()
     }
 
-    fun onNextButtonClicked(navController: NavController) {
+    fun onNextButtonClicked(
+        navController: NavController,
+        context: Context
+    ) {
         val medicineRepo = MedicineRepo(
             name = medicineName,
             remainAmount = inventory,
@@ -109,6 +114,7 @@ class NewMedicineViewModel(
         )
         viewModelScope.launch {
             medicineRepoRepository.insert(medicineRepo)
+            showShortToast(context, "添加成功")
             navController.popBackStack()
         }
     }

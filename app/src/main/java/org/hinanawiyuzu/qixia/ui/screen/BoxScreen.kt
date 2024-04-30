@@ -54,6 +54,7 @@ import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.MyColor
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.BoxViewModel
+import org.hinanawiyuzu.qixia.utils.slideComposable
 import org.hinanawiyuzu.qixia.utils.toBitmap
 import java.text.DecimalFormat
 import kotlin.math.cos
@@ -138,7 +139,7 @@ fun BoxScreen(
                                 modifier = Modifier.weight(1f),
                                 iconRes = R.drawable.box_screen_medicine_list,
                                 text = "查看药品清单",
-                                onClick = {}
+                                onClick = { navController.navigate(BoxRoute.MedicineRepoScreen.name) }
                             )
                             Spacer(modifier = Modifier.width(10.dp))
                             ClickButton(
@@ -166,6 +167,12 @@ fun BoxScreen(
                     }
                 }
             }
+        }
+        slideComposable(
+            route = BoxRoute.MedicineRepoScreen.name,
+        ) {
+            changeBottomBarVisibility(false)
+            MedicineRepoListScreen(navController = navController)
         }
     }
 }

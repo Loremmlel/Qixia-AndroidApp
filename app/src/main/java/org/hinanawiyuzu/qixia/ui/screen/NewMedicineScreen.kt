@@ -77,6 +77,7 @@ fun NewMedicineScreen(
     sharedViewModel: SharedTraceabilityViewModel,
     navController: NavHostController = rememberNavController()
 ) {
+    val context = LocalContext.current
     val selectorHeight: Dp = 75.dp
     val screenWidthDp: Dp = LocalConfiguration.current.screenWidthDp.dp
     if (sharedViewModel.isNeedAdd) {
@@ -194,10 +195,11 @@ fun NewMedicineScreen(
                 .fillMaxWidth(),
             enabled = viewModel.buttonEnabled,
             buttonHeight = 70.dp,
-            onNextClicked = { viewModel.onNextButtonClicked(navController) }
+            onNextClicked = { viewModel.onNextButtonClicked(navController, context) }
         )
     }
 }
+
 
 /**
  * 顶部栏
