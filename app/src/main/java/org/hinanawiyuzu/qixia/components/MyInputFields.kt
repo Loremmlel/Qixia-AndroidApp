@@ -33,70 +33,70 @@ import org.hinanawiyuzu.qixia.ui.theme.FontSize
  */
 @Composable
 fun PasswordInputField(
-    modifier: Modifier = Modifier,
-    password: String,
-    hidePassword: Boolean,
-    isError: Boolean = false,
-    errorMessage: String = "账户或密码输入错误",
-    onPasswordChanged: (String) -> Unit,
-    onHidePasswordClicked: () -> Unit,
-    @StringRes placeholderTextRes: Int,
-    imeAction: ImeAction = ImeAction.Done,
+  modifier: Modifier = Modifier,
+  password: String,
+  hidePassword: Boolean,
+  isError: Boolean = false,
+  errorMessage: String = "账户或密码输入错误",
+  onPasswordChanged: (String) -> Unit,
+  onHidePasswordClicked: () -> Unit,
+  @StringRes placeholderTextRes: Int,
+  imeAction: ImeAction = ImeAction.Done,
 ) {
-    TextField(
-        modifier = modifier,
-        singleLine = true,
-        placeholder = {
-            Text(
-                text = stringResource(id = placeholderTextRes),
-                style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
-            )
-        },
-        leadingIcon = {
-            Image(
-                painter = painterResource(id = R.drawable.login_screen_password),
-                contentDescription = null
-            )
-        },
-        trailingIcon = {
-            IconButton(onClick = onHidePasswordClicked) {
-                Icon(
-                    painter = painterResource(
-                        id = if (hidePassword) R.drawable.login_screen_hide_password
-                        else R.drawable.login_screen_password //TODO 显示密码的XML还没有
-                    ),
-                    contentDescription = stringResource(
-                        id = if (hidePassword) R.string.login_screen_hide_password
-                        else R.string.login_screen_display_password
-                    )
-                )
-            }
-        },
-        supportingText = {
-            if (isError) {
-                Text(
-                    text = errorMessage,
-                    style = TextStyle(
-                        color = Color.Red,
-                        fontSize = FontSize.tinySize
-                    )
-                )
-            }
-        },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Password,
-            imeAction = imeAction
-        ),
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.White,
-        ),
-        visualTransformation =
-        if (hidePassword) PasswordVisualTransformation()
-        else VisualTransformation.None,
-        value = password,
-        isError = isError,
-        onValueChange = { onPasswordChanged(it) }
-    )
+  TextField(
+    modifier = modifier,
+    singleLine = true,
+    placeholder = {
+      Text(
+        text = stringResource(id = placeholderTextRes),
+        style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
+      )
+    },
+    leadingIcon = {
+      Image(
+        painter = painterResource(id = R.drawable.login_screen_password),
+        contentDescription = null
+      )
+    },
+    trailingIcon = {
+      IconButton(onClick = onHidePasswordClicked) {
+        Icon(
+          painter = painterResource(
+            id = if (hidePassword) R.drawable.login_screen_hide_password
+            else R.drawable.login_screen_password //TODO 显示密码的XML还没有
+          ),
+          contentDescription = stringResource(
+            id = if (hidePassword) R.string.login_screen_hide_password
+            else R.string.login_screen_display_password
+          )
+        )
+      }
+    },
+    supportingText = {
+      if (isError) {
+        Text(
+          text = errorMessage,
+          style = TextStyle(
+            color = Color.Red,
+            fontSize = FontSize.tinySize
+          )
+        )
+      }
+    },
+    keyboardOptions = KeyboardOptions.Default.copy(
+      keyboardType = KeyboardType.Password,
+      imeAction = imeAction
+    ),
+    colors = TextFieldDefaults.colors(
+      unfocusedContainerColor = Color.White,
+    ),
+    visualTransformation =
+    if (hidePassword) PasswordVisualTransformation()
+    else VisualTransformation.None,
+    value = password,
+    isError = isError,
+    onValueChange = { onPasswordChanged(it) }
+  )
 }
 
 /**
@@ -116,89 +116,89 @@ fun PasswordInputField(
  */
 @Composable
 fun CommonInputField(
-    modifier: Modifier = Modifier,
-    value: String,
-    @DrawableRes leadingIconRes: Int,
-    @StringRes placeholderTextRes: Int,
-    colors: TextFieldColors = TextFieldDefaults.colors(
-        unfocusedContainerColor = Color.White
-    ),
-    isError: Boolean = false,
-    errorMessage: String = "账户或密码输入错误",
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    onValueChanged: (String) -> Unit
+  modifier: Modifier = Modifier,
+  value: String,
+  @DrawableRes leadingIconRes: Int,
+  @StringRes placeholderTextRes: Int,
+  colors: TextFieldColors = TextFieldDefaults.colors(
+    unfocusedContainerColor = Color.White
+  ),
+  isError: Boolean = false,
+  errorMessage: String = "账户或密码输入错误",
+  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+  onValueChanged: (String) -> Unit
 ) {
-    TextField(
-        modifier = modifier,
-        singleLine = true,
-        leadingIcon = {
-            Image(
-                painter = painterResource(id = leadingIconRes),
-                contentDescription = null
-            )
-        },
-        placeholder = {
-            Text(
-                text = stringResource(id = placeholderTextRes),
-                style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
-            )
-        },
-        supportingText = {
-            if (isError) {
-                Text(
-                    text = errorMessage,
-                    style = TextStyle(
-                        color = Color.Red,
-                        fontSize = FontSize.tinySize
-                    )
-                )
-            }
-        },
-        isError = isError,
-        colors = colors,
-        keyboardOptions = keyboardOptions,
-        value = value,
-        onValueChange = onValueChanged
-    )
+  TextField(
+    modifier = modifier,
+    singleLine = true,
+    leadingIcon = {
+      Image(
+        painter = painterResource(id = leadingIconRes),
+        contentDescription = null
+      )
+    },
+    placeholder = {
+      Text(
+        text = stringResource(id = placeholderTextRes),
+        style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
+      )
+    },
+    supportingText = {
+      if (isError) {
+        Text(
+          text = errorMessage,
+          style = TextStyle(
+            color = Color.Red,
+            fontSize = FontSize.tinySize
+          )
+        )
+      }
+    },
+    isError = isError,
+    colors = colors,
+    keyboardOptions = keyboardOptions,
+    value = value,
+    onValueChange = onValueChanged
+  )
 }
 
 @Composable
 fun CommonInputFieldWithoutLeadingIcon(
-    modifier: Modifier = Modifier,
-    value: String,
-    @StringRes placeholderTextRes: Int,
-    colors: TextFieldColors = TextFieldDefaults.colors(
-        unfocusedContainerColor = Color.White
-    ),
-    isError: Boolean = false,
-    errorMessage: String = "账户或密码输入错误",
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    onValueChanged: (String) -> Unit
+  modifier: Modifier = Modifier,
+  value: String,
+  @StringRes placeholderTextRes: Int,
+  colors: TextFieldColors = TextFieldDefaults.colors(
+    unfocusedContainerColor = Color.White
+  ),
+  isError: Boolean = false,
+  errorMessage: String = "账户或密码输入错误",
+  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+  onValueChanged: (String) -> Unit
 ) {
-    TextField(
-        modifier = modifier,
-        singleLine = true,
-        placeholder = {
-            Text(
-                text = stringResource(id = placeholderTextRes),
-                style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
-            )
-        },
-        isError = isError,
-        supportingText = {
-            if (isError) {
-                Text(
-                    text = errorMessage,
-                    style = TextStyle(
-                        color = Color.Red,
-                        fontSize = FontSize.tinySize
-                    )
-                )
-            }
-        },
-        colors = colors,
-        keyboardOptions = keyboardOptions,
-        value = value,
-        onValueChange = onValueChanged
-    )
+  TextField(
+    modifier = modifier,
+    singleLine = true,
+    placeholder = {
+      Text(
+        text = stringResource(id = placeholderTextRes),
+        style = TextStyle(color = Color.Gray, fontSize = FontSize.normalSize)
+      )
+    },
+    isError = isError,
+    supportingText = {
+      if (isError) {
+        Text(
+          text = errorMessage,
+          style = TextStyle(
+            color = Color.Red,
+            fontSize = FontSize.tinySize
+          )
+        )
+      }
+    },
+    colors = colors,
+    keyboardOptions = keyboardOptions,
+    value = value,
+    onValueChange = onValueChanged
+  )
 }

@@ -45,30 +45,30 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
  */
 @Composable
 fun CommonButton(
-    modifier: Modifier = Modifier,
-    @StringRes buttonTextRes: Int,
-    onButtonClicked: () -> Unit,
-    shape: Shape = RoundedCornerShape(percent = 15),
-    buttonColors: ButtonColors = ButtonDefaults.buttonColors(containerColor = secondary_color),
-    fontColors: Color = Color.White,
-    fontSize: TextUnit = FontSize.loginScreenLoginButtonTextSize,
-    enabled: Boolean = true
+  modifier: Modifier = Modifier,
+  @StringRes buttonTextRes: Int,
+  onButtonClicked: () -> Unit,
+  shape: Shape = RoundedCornerShape(percent = 15),
+  buttonColors: ButtonColors = ButtonDefaults.buttonColors(containerColor = secondary_color),
+  fontColors: Color = Color.White,
+  fontSize: TextUnit = FontSize.loginScreenLoginButtonTextSize,
+  enabled: Boolean = true
 ) {
-    Button(
-        modifier = modifier,
-        shape = shape,
-        colors = buttonColors,
-        enabled = enabled,
-        onClick = onButtonClicked
-    ) {
-        Text(
-            text = stringResource(id = buttonTextRes),
-            style = TextStyle(
-                fontSize = fontSize,
-                color = fontColors
-            )
-        )
-    }
+  Button(
+    modifier = modifier,
+    shape = shape,
+    colors = buttonColors,
+    enabled = enabled,
+    onClick = onButtonClicked
+  ) {
+    Text(
+      text = stringResource(id = buttonTextRes),
+      style = TextStyle(
+        fontSize = fontSize,
+        color = fontColors
+      )
+    )
+  }
 }
 
 /**
@@ -76,26 +76,26 @@ fun CommonButton(
  */
 @Composable
 fun MyIconButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    icon: @Composable () -> Unit
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  enabled: Boolean = true,
+  interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+  icon: @Composable () -> Unit
 ) {
-    // 这也是源码的一部分
-    val iconButtonSizeModifier = Modifier.size(40.dp)
-    Box(
-        modifier = modifier
-            .clickable(
-                onClick = onClick,
-                enabled = enabled,
-                role = Role.Button,
-                interactionSource = interactionSource,
-                indication = null
-            )
-            .then(iconButtonSizeModifier),
-        contentAlignment = Alignment.Center
-    ) { icon() }
+  // 这也是源码的一部分
+  val iconButtonSizeModifier = Modifier.size(40.dp)
+  Box(
+    modifier = modifier
+      .clickable(
+        onClick = onClick,
+        enabled = enabled,
+        role = Role.Button,
+        interactionSource = interactionSource,
+        indication = null
+      )
+      .then(iconButtonSizeModifier),
+    contentAlignment = Alignment.Center
+  ) { icon() }
 }
 
 /**
@@ -107,24 +107,24 @@ fun MyIconButton(
  */
 @Composable
 fun GreenGradientButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    textStyle: TextStyle = TextStyle(),
-    onClick: () -> Unit
+  modifier: Modifier = Modifier,
+  text: String,
+  textStyle: TextStyle = TextStyle(),
+  onClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier
-            .clickable { onClick() }
-            .clip(RoundedCornerShape(percent = 20))
-            .background(brush = MyColor.deepGreenButtonGradient),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = text,
-            style = textStyle
-        )
-    }
+  Row(
+    modifier = modifier
+      .clickable { onClick() }
+      .clip(RoundedCornerShape(percent = 20))
+      .background(brush = MyColor.deepGreenButtonGradient),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Center
+  ) {
+    Text(
+      text = text,
+      style = textStyle
+    )
+  }
 }
 
 /**
@@ -135,32 +135,32 @@ fun GreenGradientButton(
  */
 @Composable
 fun GreenArrow(
-    modifier: Modifier = Modifier,
-    onClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  onClicked: () -> Unit
 ) {
-    MyIconButton(
-        modifier = modifier,
-        onClick = onClicked
+  MyIconButton(
+    modifier = modifier,
+    onClick = onClicked
+  ) {
+    Box(
+      contentAlignment = Alignment.Center
     ) {
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier
-                    .advancedShadow(
-                        color = primary_color,
-                        alpha = 0.2f,
-                        shadowBlurRadius = 5.dp,
-                        cornersRadius = 10.dp,
-                        offsetY = 5.dp
-                    ),
-                painter = painterResource(id = R.drawable.remind_screen_rec_back),
-                contentDescription = null
-            )
-            Image(
-                painter = painterResource(id = R.drawable.remind_screen_rec_arrow),
-                contentDescription = null
-            )
-        }
+      Image(
+        modifier = Modifier
+          .advancedShadow(
+            color = primary_color,
+            alpha = 0.2f,
+            shadowBlurRadius = 5.dp,
+            cornersRadius = 10.dp,
+            offsetY = 5.dp
+          ),
+        painter = painterResource(id = R.drawable.remind_screen_rec_back),
+        contentDescription = null
+      )
+      Image(
+        painter = painterResource(id = R.drawable.remind_screen_rec_arrow),
+        contentDescription = null
+      )
     }
+  }
 }

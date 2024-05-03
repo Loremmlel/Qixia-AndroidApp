@@ -33,176 +33,176 @@ val infoGray = Color(0xFFF8F8F8)
 
 @Composable
 fun TraceabilityDetailScreen(
-    modifier: Modifier = Modifier,
-    sharedViewModel: SharedTraceabilityViewModel,
-    navController: NavController
+  modifier: Modifier = Modifier,
+  sharedViewModel: SharedTraceabilityViewModel,
+  navController: NavController
 ) {
-    val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter,
+  val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
+  Box(
+    modifier = modifier.fillMaxSize(),
+    contentAlignment = Alignment.BottomCenter,
+  ) {
+    BlurredBackground()
+    Column(
+      modifier = Modifier.fillMaxSize(),
+      horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        BlurredBackground()
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            TopBar(
-                modifier = Modifier.fillMaxWidth(),
-                onBackClicked = { navController.popBackStack() }
+      TopBar(
+        modifier = Modifier.fillMaxWidth(),
+        onBackClicked = { navController.popBackStack() }
+      )
+      GrayLine(screenWidthDp = screenWidthDp)
+      Column(
+        modifier = Modifier
+          .verticalScroll(state = rememberScrollState())
+          .padding(10.dp)
+          .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+      ) {
+        val traceability = sharedViewModel.traceability
+        traceability?.let {
+          Essential(
+            modifier = Modifier.fillMaxWidth(),
+            essential = it.essential
+          )
+          Produce(
+            modifier = Modifier.fillMaxWidth(),
+            produce = it.produce
+          )
+          it.attribute?.let { attribute ->
+            Attribute(
+              modifier = Modifier.fillMaxWidth(),
+              attribute = attribute
             )
-            GrayLine(screenWidthDp = screenWidthDp)
-            Column(
-                modifier = Modifier
-                    .verticalScroll(state = rememberScrollState())
-                    .padding(10.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                val traceability = sharedViewModel.traceability
-                traceability?.let {
-                    Essential(
-                        modifier = Modifier.fillMaxWidth(),
-                        essential = it.essential
-                    )
-                    Produce(
-                        modifier = Modifier.fillMaxWidth(),
-                        produce = it.produce
-                    )
-                    it.attribute?.let { attribute ->
-                        Attribute(
-                            modifier = Modifier.fillMaxWidth(),
-                            attribute = attribute
-                        )
-                    }
-                    Manufacturer(
-                        modifier = Modifier.fillMaxWidth(),
-                        manufacturer = it.manufacturer
-                    )
-                }
-            }
+          }
+          Manufacturer(
+            modifier = Modifier.fillMaxWidth(),
+            manufacturer = it.manufacturer
+          )
         }
+      }
     }
+  }
 }
 
 @Composable
 private fun TopBar(
-    modifier: Modifier = Modifier,
-    onBackClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  onBackClicked: () -> Unit
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        IconButton(onClick = onBackClicked) {
-            Icon(
-                painter = painterResource(id = R.drawable.left_arrow),
-                contentDescription = "返回"
-            )
-        }
-        Text(
-            text = "药品追溯信息",
-            style = TextStyle(
-                fontSize = FontSize.veryLargeSize,
-            )
-        )
-        Spacer(modifier = Modifier.size(40.dp))
+  Row(
+    modifier = modifier,
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.SpaceBetween
+  ) {
+    IconButton(onClick = onBackClicked) {
+      Icon(
+        painter = painterResource(id = R.drawable.left_arrow),
+        contentDescription = "返回"
+      )
     }
+    Text(
+      text = "药品追溯信息",
+      style = TextStyle(
+        fontSize = FontSize.veryLargeSize,
+      )
+    )
+    Spacer(modifier = Modifier.size(40.dp))
+  }
 }
 
 @Composable
 private fun Essential(
-    modifier: Modifier = Modifier,
-    essential: TraceabilityEssential
+  modifier: Modifier = Modifier,
+  essential: TraceabilityEssential
 ) {
-    Fold(
-        modifier = modifier,
-        text = "基本信息"
-    ) {
-        ExpandInfo(infoMap = essential.toDisplayedStringMap())
-    }
+  Fold(
+    modifier = modifier,
+    text = "基本信息"
+  ) {
+    ExpandInfo(infoMap = essential.toDisplayedStringMap())
+  }
 }
 
 @Composable
 private fun Produce(
-    modifier: Modifier = Modifier,
-    produce: TraceabilityProduce
+  modifier: Modifier = Modifier,
+  produce: TraceabilityProduce
 ) {
-    Fold(
-        modifier = modifier,
-        text = "生产信息"
-    ) {
-        ExpandInfo(infoMap = produce.toDisplayedStringMap())
-    }
+  Fold(
+    modifier = modifier,
+    text = "生产信息"
+  ) {
+    ExpandInfo(infoMap = produce.toDisplayedStringMap())
+  }
 }
 
 @Composable
 private fun Attribute(
-    modifier: Modifier = Modifier,
-    attribute: TraceabilityAttribute
+  modifier: Modifier = Modifier,
+  attribute: TraceabilityAttribute
 ) {
-    Fold(
-        modifier = modifier,
-        text = "类别属性"
-    ) {
-        ExpandInfo(infoMap = attribute.toDisplayedStringMap())
-    }
+  Fold(
+    modifier = modifier,
+    text = "类别属性"
+  ) {
+    ExpandInfo(infoMap = attribute.toDisplayedStringMap())
+  }
 }
 
 @Composable
 private fun Manufacturer(
-    modifier: Modifier = Modifier,
-    manufacturer: TraceabilityManufacturer
+  modifier: Modifier = Modifier,
+  manufacturer: TraceabilityManufacturer
 ) {
-    Fold(
-        modifier = modifier,
-        text = "厂商信息"
-    ) {
-        ExpandInfo(infoMap = manufacturer.toDisplayedStringMap())
-    }
+  Fold(
+    modifier = modifier,
+    text = "厂商信息"
+  ) {
+    ExpandInfo(infoMap = manufacturer.toDisplayedStringMap())
+  }
 }
 
 @Composable
 private fun ExpandInfo(
-    modifier: Modifier = Modifier,
-    infoMap: Map<String, String>
+  modifier: Modifier = Modifier,
+  infoMap: Map<String, String>
 ) {
-    var isOdd by remember { mutableStateOf(true) }
-    Column(
-        modifier = modifier
-            .padding(bottom = 10.dp)
-            .fillMaxWidth()
-    ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(0.5.dp)
-                .background(Color.Gray)
+  var isOdd by remember { mutableStateOf(true) }
+  Column(
+    modifier = modifier
+      .padding(bottom = 10.dp)
+      .fillMaxWidth()
+  ) {
+    Spacer(
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(0.5.dp)
+        .background(Color.Gray)
+    )
+    infoMap.forEach { (key, value) ->
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .background(if (isOdd) infoGray else Color.White),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Text(
+          text = key,
+          modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp),
+          fontSize = FontSize.smallSize,
+          fontWeight = FontWeight.Bold
         )
-        infoMap.forEach { (key, value) ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(if (isOdd) infoGray else Color.White),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = key,
-                    modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom = 10.dp),
-                    fontSize = FontSize.smallSize,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = value,
-                    modifier = Modifier.padding(end = 10.dp, top = 10.dp, bottom = 10.dp),
-                    fontSize = FontSize.smallSize,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            isOdd = !isOdd
-        }
+        Text(
+          text = value,
+          modifier = Modifier.padding(end = 10.dp, top = 10.dp, bottom = 10.dp),
+          fontSize = FontSize.smallSize,
+          fontWeight = FontWeight.Bold
+        )
+      }
+      isOdd = !isOdd
     }
+  }
 }

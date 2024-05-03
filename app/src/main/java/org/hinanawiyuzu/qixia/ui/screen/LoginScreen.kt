@@ -58,115 +58,115 @@ import org.hinanawiyuzu.qixia.utils.slideComposable
  */
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.factory),
-    navController: NavHostController = rememberNavController()
+  modifier: Modifier = Modifier,
+  viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.factory),
+  navController: NavHostController = rememberNavController()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    NavHost(navController = navController, startDestination = LoginRoute.LoginScreen.name) {
-        composable(
-            route = LoginRoute.LoginScreen.name,
-            exitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
-            },
-            enterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
-            },
-            // pop可以控制用户按返回键的动画，即NavigateUp,同Navigate区分开来。
-            popEnterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
-            }
+  val uiState by viewModel.uiState.collectAsState()
+  NavHost(navController = navController, startDestination = LoginRoute.LoginScreen.name) {
+    composable(
+      route = LoginRoute.LoginScreen.name,
+      exitTransition = {
+        slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+      },
+      enterTransition = {
+        slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+      },
+      // pop可以控制用户按返回键的动画，即NavigateUp,同Navigate区分开来。
+      popEnterTransition = {
+        slideInHorizontally(animationSpec = tween(500), initialOffsetX = { -it })
+      }
+    ) {
+      Column {
+        LoginPicture(
+          modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(20.dp)
+            .weight(0.33f)
+        )
+        LoginArea(
+          modifier = Modifier.weight(0.4f),
+          accountPhone = uiState.accountPhone,
+          accountPassword = uiState.accountPassword,
+          hidePassword = uiState.hidePassword,
+          onAccountPhoneChanged = viewModel::onAccountPhoneChanged,
+          onAccountPasswordChanged = viewModel::onAccountPasswordChanged,
+          onHidePasswordClicked = viewModel::onHidePasswordClicked,
+          onForgetPasswordClicked = {
+            navController.navigate(LoginRoute.ForgetPasswordScreen.name)
+          },
+          isError = uiState.isError,
+          // TODO:应该加登录验证的逻辑。因为可能涉及到数据层，所以暂时不写。
+          onLoginButtonClicked = { viewModel.onLoginButtonClicked(navController) },
+        )
+        ThirdPartyLogin(
+          modifier = Modifier.align(Alignment.CenterHorizontally),
+          onWechatLoginClicked = viewModel::onWechatLoginClicked,
+          onAlipayLoginClicked = viewModel::onAlipayLoginClicked
+        )
+        Column(
+          modifier = Modifier
+            .padding(start = 15.dp, end = 15.dp)
+            .align(Alignment.CenterHorizontally)
         ) {
-            Column {
-                LoginPicture(
-                    modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(20.dp)
-                        .weight(0.33f)
-                )
-                LoginArea(
-                    modifier = Modifier.weight(0.4f),
-                    accountPhone = uiState.accountPhone,
-                    accountPassword = uiState.accountPassword,
-                    hidePassword = uiState.hidePassword,
-                    onAccountPhoneChanged = viewModel::onAccountPhoneChanged,
-                    onAccountPasswordChanged = viewModel::onAccountPasswordChanged,
-                    onHidePasswordClicked = viewModel::onHidePasswordClicked,
-                    onForgetPasswordClicked = {
-                        navController.navigate(LoginRoute.ForgetPasswordScreen.name)
-                    },
-                    isError = uiState.isError,
-                    // TODO:应该加登录验证的逻辑。因为可能涉及到数据层，所以暂时不写。
-                    onLoginButtonClicked = { viewModel.onLoginButtonClicked(navController) },
-                )
-                ThirdPartyLogin(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onWechatLoginClicked = viewModel::onWechatLoginClicked,
-                    onAlipayLoginClicked = viewModel::onAlipayLoginClicked
-                )
-                Column(
-                    modifier = Modifier
-                        .padding(start = 15.dp, end = 15.dp)
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    RegisterArea(
-                        onRegisterClicked = { navController.navigate(LoginRoute.RegisterScreen.name) }
-                    )
-                }
-            }
+          RegisterArea(
+            onRegisterClicked = { navController.navigate(LoginRoute.RegisterScreen.name) }
+          )
         }
-        slideComposable(
-            route = LoginRoute.RegisterScreen.name,
-        ) {
-            // 如果要传导航控制器，那么在被传的组件中，不能出现新的NavHost。否则会报异常。
-            RegisterScreen(navController = navController)
-        }
-        slideComposable(
-            route = "${LoginRoute.VerificationCodeScreen.name}/{accountPhone}/{accountPassword}",
-            arguments = listOf(
-                navArgument("accountPhone") { type = NavType.StringType },
-                navArgument("accountPassword") {
-                    type = NavType.StringType
-                    nullable = true
-                }
-            ),
-        ) {
-            VerificationCodeScreen(navController = navController, navBackStackEntry = it)
-        }
-        slideComposable(
-            route = "${LoginRoute.FillPersonalInformationScreen.name}/{accountPhone}/{accountPassword}",
-            arguments = listOf(
-                navArgument("accountPhone") { type = NavType.StringType },
-                navArgument("accountPassword") {
-                    type = NavType.StringType
-                    nullable = true
-                }
-            ),
-        ) {
-            FillPersonalInformationScreen(navController = navController, backStackEntry = it)
-        }
-        slideComposable(
-            route = LoginRoute.ForgetPasswordScreen.name,
-        ) {
-            ForgetPasswordScreen(navController = navController)
-        }
-        slideComposable(
-            route = LoginRoute.ResetPasswordScreen.name,
-        ) {
-            ResetPasswordScreen(navController = navController)
-        }
-        composable(
-            route = AppRoute.AppScreen.name,
-            exitTransition = {
-                slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
-            },
-            enterTransition = {
-                slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
-            }
-        ) {
-            AppScreen()
-        }
+      }
     }
+    slideComposable(
+      route = LoginRoute.RegisterScreen.name,
+    ) {
+      // 如果要传导航控制器，那么在被传的组件中，不能出现新的NavHost。否则会报异常。
+      RegisterScreen(navController = navController)
+    }
+    slideComposable(
+      route = "${LoginRoute.VerificationCodeScreen.name}/{accountPhone}/{accountPassword}",
+      arguments = listOf(
+        navArgument("accountPhone") { type = NavType.StringType },
+        navArgument("accountPassword") {
+          type = NavType.StringType
+          nullable = true
+        }
+      ),
+    ) {
+      VerificationCodeScreen(navController = navController, navBackStackEntry = it)
+    }
+    slideComposable(
+      route = "${LoginRoute.FillPersonalInformationScreen.name}/{accountPhone}/{accountPassword}",
+      arguments = listOf(
+        navArgument("accountPhone") { type = NavType.StringType },
+        navArgument("accountPassword") {
+          type = NavType.StringType
+          nullable = true
+        }
+      ),
+    ) {
+      FillPersonalInformationScreen(navController = navController, backStackEntry = it)
+    }
+    slideComposable(
+      route = LoginRoute.ForgetPasswordScreen.name,
+    ) {
+      ForgetPasswordScreen(navController = navController)
+    }
+    slideComposable(
+      route = LoginRoute.ResetPasswordScreen.name,
+    ) {
+      ResetPasswordScreen(navController = navController)
+    }
+    composable(
+      route = AppRoute.AppScreen.name,
+      exitTransition = {
+        slideOutHorizontally(animationSpec = tween(500), targetOffsetX = { -it })
+      },
+      enterTransition = {
+        slideInHorizontally(animationSpec = tween(500), initialOffsetX = { it })
+      }
+    ) {
+      AppScreen()
+    }
+  }
 }
 
 /**
@@ -177,17 +177,17 @@ fun LoginScreen(
 @Stable
 @Composable
 private fun LoginPicture(
-    modifier: Modifier = Modifier
+  modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.login_screen_picture),
-            contentDescription = null
-        )
-    }
+  Column(
+    modifier = modifier,
+    verticalArrangement = Arrangement.Center
+  ) {
+    Image(
+      painter = painterResource(id = R.drawable.login_screen_picture),
+      contentDescription = null
+    )
+  }
 }
 
 
@@ -206,107 +206,107 @@ private fun LoginPicture(
  */
 @Composable
 private fun LoginArea(
-    modifier: Modifier = Modifier,
-    accountPhone: String,
-    accountPassword: String,
-    hidePassword: Boolean,
-    isError: Boolean,
-    onAccountPhoneChanged: (String) -> Unit,
-    onAccountPasswordChanged: (String) -> Unit,
-    onHidePasswordClicked: () -> Unit,
-    onForgetPasswordClicked: () -> Unit,
-    onLoginButtonClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  accountPhone: String,
+  accountPassword: String,
+  hidePassword: Boolean,
+  isError: Boolean,
+  onAccountPhoneChanged: (String) -> Unit,
+  onAccountPasswordChanged: (String) -> Unit,
+  onHidePasswordClicked: () -> Unit,
+  onForgetPasswordClicked: () -> Unit,
+  onLoginButtonClicked: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 15.dp, end = 15.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+  Column(
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(start = 15.dp, end = 15.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center
+  ) {
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    Text(
+      modifier = Modifier.align(Alignment.Start),
+      text = stringResource(R.string.login_screen_login),
+      style = TextStyle(
+        fontSize = FontSize.extraLargeSize
+      )
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    // 账户电话输入
+    CommonInputField(
+      modifier = Modifier.fillMaxWidth(),
+      leadingIconRes = R.drawable.login_screen_call,
+      placeholderTextRes = R.string.login_screen_account_name_input_placeholder,
+      keyboardOptions = KeyboardOptions.Default.copy(
+        keyboardType = KeyboardType.Phone,
+        imeAction = ImeAction.Next
+      ),
+      isError = isError,
+      value = accountPhone,
+      onValueChanged = { onAccountPhoneChanged(it) },
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    // 账户密码输入
+    PasswordInputField(
+      modifier = Modifier.fillMaxWidth(),
+      password = accountPassword,
+      hidePassword = hidePassword,
+      isError = isError,
+      onPasswordChanged = onAccountPasswordChanged,
+      onHidePasswordClicked = onHidePasswordClicked,
+      placeholderTextRes = R.string.login_screen_account_password_input_placeholder
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    TextButton(
+      onClick = onForgetPasswordClicked,
+      modifier = Modifier
+        .align(Alignment.End)
     ) {
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        Text(
-            modifier = Modifier.align(Alignment.Start),
-            text = stringResource(R.string.login_screen_login),
-            style = TextStyle(
-                fontSize = FontSize.extraLargeSize
-            )
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        // 账户电话输入
-        CommonInputField(
-            modifier = Modifier.fillMaxWidth(),
-            leadingIconRes = R.drawable.login_screen_call,
-            placeholderTextRes = R.string.login_screen_account_name_input_placeholder,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Phone,
-                imeAction = ImeAction.Next
-            ),
-            isError = isError,
-            value = accountPhone,
-            onValueChanged = { onAccountPhoneChanged(it) },
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        // 账户密码输入
-        PasswordInputField(
-            modifier = Modifier.fillMaxWidth(),
-            password = accountPassword,
-            hidePassword = hidePassword,
-            isError = isError,
-            onPasswordChanged = onAccountPasswordChanged,
-            onHidePasswordClicked = onHidePasswordClicked,
-            placeholderTextRes = R.string.login_screen_account_password_input_placeholder
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        TextButton(
-            onClick = onForgetPasswordClicked,
-            modifier = Modifier
-                .align(Alignment.End)
-        ) {
-            Text(
-                text = stringResource(R.string.login_screen_forget_password),
-                style = TextStyle(fontSize = FontSize.loginScreenForgetPasswordSize)
-            )
-        }
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        CommonButton(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .height(dimensionResource(id = R.dimen.login_screen_login_button_height))
-                .align(Alignment.CenterHorizontally)
-                .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
-            buttonTextRes = R.string.login_screen_button_text,
-            onButtonClicked = onLoginButtonClicked
-        )
-        Spacer(modifier = Modifier.height(15.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .align(Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                modifier = Modifier.weight(0.5f),
-                painter = painterResource(id = R.drawable.transverse_line),
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier.weight(0.2f),
-                text = stringResource(R.string.login_screen_or),
-                style = TextStyle(
-                    color = Color.Gray,
-                    fontSize = FontSize.loginScreenOrSize
-                ),
-                textAlign = TextAlign.Center
-            )
-            Image(
-                modifier = Modifier.weight(0.5f),
-                painter = painterResource(id = R.drawable.transverse_line),
-                contentDescription = null
-            )
-        }
-        Spacer(modifier = Modifier.height(15.dp))
+      Text(
+        text = stringResource(R.string.login_screen_forget_password),
+        style = TextStyle(fontSize = FontSize.loginScreenForgetPasswordSize)
+      )
     }
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    CommonButton(
+      modifier = Modifier
+        .fillMaxWidth(0.9f)
+        .height(dimensionResource(id = R.dimen.login_screen_login_button_height))
+        .align(Alignment.CenterHorizontally)
+        .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
+      buttonTextRes = R.string.login_screen_button_text,
+      onButtonClicked = onLoginButtonClicked
+    )
+    Spacer(modifier = Modifier.height(15.dp))
+    Row(
+      modifier = Modifier
+        .fillMaxWidth(0.9f)
+        .align(Alignment.CenterHorizontally),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Image(
+        modifier = Modifier.weight(0.5f),
+        painter = painterResource(id = R.drawable.transverse_line),
+        contentDescription = null
+      )
+      Text(
+        modifier = Modifier.weight(0.2f),
+        text = stringResource(R.string.login_screen_or),
+        style = TextStyle(
+          color = Color.Gray,
+          fontSize = FontSize.loginScreenOrSize
+        ),
+        textAlign = TextAlign.Center
+      )
+      Image(
+        modifier = Modifier.weight(0.5f),
+        painter = painterResource(id = R.drawable.transverse_line),
+        contentDescription = null
+      )
+    }
+    Spacer(modifier = Modifier.height(15.dp))
+  }
 }
 
 
@@ -319,60 +319,60 @@ private fun LoginArea(
  */
 @Composable
 private fun ThirdPartyLogin(
-    modifier: Modifier = Modifier,
-    onAlipayLoginClicked: () -> Unit,
-    onWechatLoginClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  onAlipayLoginClicked: () -> Unit,
+  onWechatLoginClicked: () -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth(0.9f)
-            .padding(start = 15.dp, end = 15.dp)
-            .height(dimensionResource(id = R.dimen.login_screen_login_button_height))
-            .background(light_background),
-        shape = RoundedCornerShape(8.dp),
+  Card(
+    modifier = modifier
+      .fillMaxWidth(0.9f)
+      .padding(start = 15.dp, end = 15.dp)
+      .height(dimensionResource(id = R.dimen.login_screen_login_button_height))
+      .background(light_background),
+    shape = RoundedCornerShape(8.dp),
+  ) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.Center
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+      Row(
+        modifier = Modifier.fillMaxWidth(0.5f)
+      ) {
+        IconButton(
+          modifier = Modifier
+            .fillMaxHeight()
+            .weight(1f),
+          onClick = onWechatLoginClicked
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(0.5f)
-            ) {
-                IconButton(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f),
-                    onClick = onWechatLoginClicked
-                ) {
-                    Icon(
-                        tint = Color.Unspecified,
-                        painter = painterResource(id = R.drawable.wechat_icon),
-                        contentDescription = stringResource(R.string.login_screen_wechat_login)
-                    )
-                }
-                IconButton(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f),
-                    onClick = onAlipayLoginClicked
-                ) {
-                    Icon(
-                        tint = Color.Unspecified,
-                        painter = painterResource(id = R.drawable.alipay_icon),
-                        contentDescription = stringResource(R.string.login_screen_alipay_login)
-                    )
-                }
-            }
-            Text(
-                text = stringResource(R.string.login_screen_third_party_login),
-                style = TextStyle(
-                    fontSize = FontSize.loginScreenThirdPartySize,
-                    color = Color.DarkGray
-                )
-            )
+          Icon(
+            tint = Color.Unspecified,
+            painter = painterResource(id = R.drawable.wechat_icon),
+            contentDescription = stringResource(R.string.login_screen_wechat_login)
+          )
         }
+        IconButton(
+          modifier = Modifier
+            .fillMaxHeight()
+            .weight(1f),
+          onClick = onAlipayLoginClicked
+        ) {
+          Icon(
+            tint = Color.Unspecified,
+            painter = painterResource(id = R.drawable.alipay_icon),
+            contentDescription = stringResource(R.string.login_screen_alipay_login)
+          )
+        }
+      }
+      Text(
+        text = stringResource(R.string.login_screen_third_party_login),
+        style = TextStyle(
+          fontSize = FontSize.loginScreenThirdPartySize,
+          color = Color.DarkGray
+        )
+      )
     }
+  }
 }
 
 /**
@@ -383,30 +383,30 @@ private fun ThirdPartyLogin(
  */
 @Composable
 private fun RegisterArea(
-    modifier: Modifier = Modifier,
-    onRegisterClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  onRegisterClicked: () -> Unit
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(R.string.login_screen_no_account)
-        )
-        TextButton(onClick = onRegisterClicked) {
-            Text(
-                text = stringResource(R.string.login_screen_register_new_account),
-                style = TextStyle(fontSize = FontSize.normalSize)
-            )
-        }
+  Row(
+    modifier = modifier,
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Center
+  ) {
+    Text(
+      text = stringResource(R.string.login_screen_no_account)
+    )
+    TextButton(onClick = onRegisterClicked) {
+      Text(
+        text = stringResource(R.string.login_screen_register_new_account),
+        style = TextStyle(fontSize = FontSize.normalSize)
+      )
     }
+  }
 }
 
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    QixiaTheme {
-        LoginScreen()
-    }
+  QixiaTheme {
+    LoginScreen()
+  }
 }

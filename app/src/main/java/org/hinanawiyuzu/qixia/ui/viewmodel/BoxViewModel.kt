@@ -13,16 +13,16 @@ import org.hinanawiyuzu.qixia.QixiaApplication
 import org.hinanawiyuzu.qixia.data.repo.UserRepository
 
 class BoxViewModel(
-    userRepository: UserRepository,
-    application: QixiaApplication
+  userRepository: UserRepository,
+  application: QixiaApplication
 ) : ViewModel() {
-    val currentUser: StateFlow<CurrentLoginUser> = userRepository.getStreamById(application.currentLoginUserId!!)
-        .map { CurrentLoginUser(listOf(it)) }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = CurrentLoginUser()
-        )
-    var currentTemperature: Float by mutableFloatStateOf(24f)
-    var currentHumidity: Float by mutableFloatStateOf(50f)
+  val currentUser: StateFlow<CurrentLoginUser> = userRepository.getStreamById(application.currentLoginUserId!!)
+    .map { CurrentLoginUser(listOf(it)) }
+    .stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5_000L),
+      initialValue = CurrentLoginUser()
+    )
+  var currentTemperature: Float by mutableFloatStateOf(24f)
+  var currentHumidity: Float by mutableFloatStateOf(50f)
 }

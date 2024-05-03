@@ -34,78 +34,78 @@ import coil.compose.rememberAsyncImagePainter
  */
 @Composable
 fun FullScreenImage(
-    modifier: Modifier = Modifier,
-    uri: Uri,
-    onClick: () -> Unit = {}
+  modifier: Modifier = Modifier,
+  uri: Uri,
+  onClick: () -> Unit = {}
 ) {
 
-    var scale by remember { mutableFloatStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
-    val state = rememberTransformableState { zoomChange, _, _ ->
-        scale = (zoomChange * scale).coerceAtLeast(1f)
-    }
-    Surface(
-        color = Color.DarkGray,
-        modifier = modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onDoubleTap = {
-                        scale = 1f
-                        offset = Offset.Zero
-                    },
-                    onTap = {
-                        onClick.invoke()
-                    }
-                )
-            }
-    ) {
-        Image(
-            painter = rememberAsyncImagePainter(uri),
-            contentDescription = "",
-            modifier = Modifier
-                .fillMaxSize()
-                .transformable(state = state)
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offset.x,
-                    translationY = offset.y
-                )
-                .pointerInput(Unit) {
-                    detectDragGestures { _, dragAmount ->
-                        offset += dragAmount
-                    }
-                }
-
+  var scale by remember { mutableFloatStateOf(1f) }
+  var offset by remember { mutableStateOf(Offset.Zero) }
+  val state = rememberTransformableState { zoomChange, _, _ ->
+    scale = (zoomChange * scale).coerceAtLeast(1f)
+  }
+  Surface(
+    color = Color.DarkGray,
+    modifier = modifier
+      .fillMaxSize()
+      .pointerInput(Unit) {
+        detectTapGestures(
+          onDoubleTap = {
+            scale = 1f
+            offset = Offset.Zero
+          },
+          onTap = {
+            onClick.invoke()
+          }
         )
-    }
+      }
+  ) {
+    Image(
+      painter = rememberAsyncImagePainter(uri),
+      contentDescription = "",
+      modifier = Modifier
+        .fillMaxSize()
+        .transformable(state = state)
+        .graphicsLayer(
+          scaleX = scale,
+          scaleY = scale,
+          translationX = offset.x,
+          translationY = offset.y
+        )
+        .pointerInput(Unit) {
+          detectDragGestures { _, dragAmount ->
+            offset += dragAmount
+          }
+        }
+
+    )
+  }
 }
 
 @Stable
 @Composable
 fun FullScreenImageView(
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit = {},
-    backStackEntry: NavBackStackEntry
+  modifier: Modifier = Modifier,
+  onDismiss: () -> Unit = {},
+  backStackEntry: NavBackStackEntry
 ) {
-    val uriString = backStackEntry.arguments?.getString("uri")
-    val uri = uriString?.replace("*", "/")?.toUri() ?: Uri.EMPTY
-    val bitmap = BitmapFactory.decodeStream(LocalContext.current.contentResolver.openInputStream(uri))
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { onDismiss.invoke() },
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            bitmap = bitmap.asImageBitmap(),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-    }
+  val uriString = backStackEntry.arguments?.getString("uri")
+  val uri = uriString?.replace("*", "/")?.toUri() ?: Uri.EMPTY
+  val bitmap = BitmapFactory.decodeStream(LocalContext.current.contentResolver.openInputStream(uri))
+  Box(
+    modifier = modifier
+      .fillMaxSize()
+      .clickable(
+        interactionSource = remember { MutableInteractionSource() },
+        indication = null
+      ) { onDismiss.invoke() },
+    contentAlignment = Alignment.Center
+  ) {
+    Image(
+      bitmap = bitmap.asImageBitmap(),
+      contentDescription = null,
+      modifier = Modifier.fillMaxSize(),
+      contentScale = ContentScale.Crop
+    )
+  }
 }

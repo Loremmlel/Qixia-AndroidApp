@@ -20,17 +20,17 @@ import androidx.room.TypeConverters
  */
 @Entity(tableName = "user")
 data class User(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val phone: String,
-    val password: String,
-    val loginState: Boolean,
-    val name: String,
-    val sexual: String,
-    val age: Int,
-    val serialNumber: String?,
-    @TypeConverters(MedicalHistoryConverter::class)
-    val medicalHistory: List<Int>?,
-    @TypeConverters(UriConverter::class)
-    val profilePhotoUri: Uri?,
+  @PrimaryKey(autoGenerate = true)
+  val id: Int = 0,
+  val phone: String,
+  val password: String,
+  val loginState: Boolean,
+  val name: String,
+  val sexual: String,
+  val age: Int,
+  val serialNumber: String?,
+  @TypeConverters(MedicalHistoryConverter::class)
+  val medicalHistory: List<Int>?,
+  @TypeConverters(UriConverter::class)
+  val profilePhotoUri: Uri?,
 )

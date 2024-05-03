@@ -23,44 +23,44 @@ import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 @Stable
 @Composable
 fun BlurredBackground(
-    modifier: Modifier = Modifier
+  modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = Color.White),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            modifier = Modifier
-                .fillMaxSize(),
-            // 2的饱和度更高，颜色更鲜艳
-            painter = painterResource(id = R.drawable.blurred_background40),
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth
-        )
-    }
+  Box(
+    modifier = modifier
+      .fillMaxSize()
+      .background(color = Color.White),
+    contentAlignment = Alignment.Center
+  ) {
+    Image(
+      modifier = Modifier
+        .fillMaxSize(),
+      // 2的饱和度更高，颜色更鲜艳
+      painter = painterResource(id = R.drawable.blurred_background40),
+      contentDescription = null,
+      contentScale = ContentScale.FillWidth
+    )
+  }
 }
 
 
 @Composable
 fun GrayLine(
-    modifier: Modifier = Modifier,
-    screenWidthDp: Dp,
+  modifier: Modifier = Modifier,
+  screenWidthDp: Dp,
 ) {
-    Spacer(modifier = Modifier.size(5.dp))
-    Column(
-        modifier = modifier
-            .requiredWidth(screenWidthDp)
-            .height(1.dp)
-            .background(Color.LightGray)
-    ) {}
+  Spacer(modifier = Modifier.size(5.dp))
+  Column(
+    modifier = modifier
+      .requiredWidth(screenWidthDp)
+      .height(1.dp)
+      .background(Color.LightGray)
+  ) {}
 }
 
 @Preview
 @Composable
 fun BackgroundPreview() {
-    QixiaTheme {
-        BlurredBackground()
-    }
+  QixiaTheme {
+    BlurredBackground()
+  }
 }

@@ -42,42 +42,42 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
  */
 @Composable
 fun RegisterScreen(
-    modifier: Modifier = Modifier,
-    viewModel: RegisterViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+  modifier: Modifier = Modifier,
+  viewModel: RegisterViewModel = viewModel(),
+  navController: NavHostController = rememberNavController()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        RegisterPicture(
-            modifier = Modifier
-                .weight(0.33f)
-                .padding(20.dp)
-        )
-        RegisterArea(
-            modifier = Modifier.weight(0.4f),
-            accountPassword = uiState.accountPassword,
-            accountPhone = uiState.accountPhone,
-            hidePassword = uiState.hidePassword,
-            isPhoneError = uiState.isPhoneError,
-            isPasswordError = uiState.isPasswordError,
-            onAccountPasswordChanged = viewModel::onAccountPasswordChanged,
-            onAccountPhoneChanged = viewModel::onAccountPhoneChanged,
-            onHidePasswordClicked = viewModel::onHidePasswordClicked,
-            onNextButtonClicked = { viewModel.onNextButtonClicked(navController) },
-            onClauseClicked = viewModel::onClauseClicked,
-            onPrivacyPolicyClicked = viewModel::onPrivacyPolicyClicked
-        )
-        ReturnToLogin(
-            onReturnToLoginClicked = {
-                navController.navigate(LoginRoute.LoginScreen.name) {
-                    navController.popBackStack(LoginRoute.LoginScreen.name, inclusive = true)
-                }
-            }
-        )
-    }
+  val uiState by viewModel.uiState.collectAsState()
+  Column(
+    modifier = modifier,
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    RegisterPicture(
+      modifier = Modifier
+        .weight(0.33f)
+        .padding(20.dp)
+    )
+    RegisterArea(
+      modifier = Modifier.weight(0.4f),
+      accountPassword = uiState.accountPassword,
+      accountPhone = uiState.accountPhone,
+      hidePassword = uiState.hidePassword,
+      isPhoneError = uiState.isPhoneError,
+      isPasswordError = uiState.isPasswordError,
+      onAccountPasswordChanged = viewModel::onAccountPasswordChanged,
+      onAccountPhoneChanged = viewModel::onAccountPhoneChanged,
+      onHidePasswordClicked = viewModel::onHidePasswordClicked,
+      onNextButtonClicked = { viewModel.onNextButtonClicked(navController) },
+      onClauseClicked = viewModel::onClauseClicked,
+      onPrivacyPolicyClicked = viewModel::onPrivacyPolicyClicked
+    )
+    ReturnToLogin(
+      onReturnToLoginClicked = {
+        navController.navigate(LoginRoute.LoginScreen.name) {
+          navController.popBackStack(LoginRoute.LoginScreen.name, inclusive = true)
+        }
+      }
+    )
+  }
 }
 
 
@@ -98,76 +98,76 @@ fun RegisterScreen(
  */
 @Composable
 private fun RegisterArea(
-    modifier: Modifier = Modifier,
-    accountPhone: String,
-    accountPassword: String,
-    hidePassword: Boolean,
-    isPhoneError: Boolean,
-    isPasswordError: Boolean,
-    onAccountPhoneChanged: (String) -> Unit,
-    onAccountPasswordChanged: (String) -> Unit,
-    onHidePasswordClicked: () -> Unit,
-    onNextButtonClicked: () -> Unit,
-    onClauseClicked: () -> Unit,
-    onPrivacyPolicyClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  accountPhone: String,
+  accountPassword: String,
+  hidePassword: Boolean,
+  isPhoneError: Boolean,
+  isPasswordError: Boolean,
+  onAccountPhoneChanged: (String) -> Unit,
+  onAccountPasswordChanged: (String) -> Unit,
+  onHidePasswordClicked: () -> Unit,
+  onNextButtonClicked: () -> Unit,
+  onClauseClicked: () -> Unit,
+  onPrivacyPolicyClicked: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(start = 15.dp, end = 15.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Text(
-            modifier = Modifier.align(Alignment.Start),
-            text = stringResource(R.string.register_screen_register),
-            style = TextStyle(
-                fontSize = FontSize.extraLargeSize
-            )
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        // 电话号码输入
-        CommonInputField(
-            modifier = Modifier.fillMaxWidth(),
-            leadingIconRes = R.drawable.login_screen_call,
-            placeholderTextRes = R.string.login_screen_account_name_input_placeholder,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Phone,
-                imeAction = ImeAction.Next
-            ),
-            isError = isPhoneError,
-            errorMessage = "请输入正确的电话号码!",
-            value = accountPhone,
-            onValueChanged = { onAccountPhoneChanged(it) },
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        PasswordInputField(
-            modifier = Modifier.fillMaxWidth(),
-            password = accountPassword,
-            hidePassword = hidePassword,
-            isError = isPasswordError,
-            errorMessage = "密码少于18位,大于6位;且只能包括大小写字母、数字和.",
-            onPasswordChanged = onAccountPasswordChanged,
-            onHidePasswordClicked = onHidePasswordClicked,
-            placeholderTextRes = R.string.login_screen_account_password_input_placeholder
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        CommonButton(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .height(dimensionResource(id = R.dimen.login_screen_login_button_height))
-                .align(Alignment.CenterHorizontally)
-                .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
-            buttonTextRes = R.string.register_screen_button_text,
-            onButtonClicked = onNextButtonClicked
-        )
-        Spacer(modifier = Modifier.height(15.dp))
-        ClauseStatement(
-            onClauseClicked = onClauseClicked,
-            onPrivacyPolicyClicked = onPrivacyPolicyClicked
-        )
-    }
+  Column(
+    modifier = modifier
+      .fillMaxSize()
+      .padding(start = 15.dp, end = 15.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Top
+  ) {
+    Text(
+      modifier = Modifier.align(Alignment.Start),
+      text = stringResource(R.string.register_screen_register),
+      style = TextStyle(
+        fontSize = FontSize.extraLargeSize
+      )
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    // 电话号码输入
+    CommonInputField(
+      modifier = Modifier.fillMaxWidth(),
+      leadingIconRes = R.drawable.login_screen_call,
+      placeholderTextRes = R.string.login_screen_account_name_input_placeholder,
+      keyboardOptions = KeyboardOptions.Default.copy(
+        keyboardType = KeyboardType.Phone,
+        imeAction = ImeAction.Next
+      ),
+      isError = isPhoneError,
+      errorMessage = "请输入正确的电话号码!",
+      value = accountPhone,
+      onValueChanged = { onAccountPhoneChanged(it) },
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    PasswordInputField(
+      modifier = Modifier.fillMaxWidth(),
+      password = accountPassword,
+      hidePassword = hidePassword,
+      isError = isPasswordError,
+      errorMessage = "密码少于18位,大于6位;且只能包括大小写字母、数字和.",
+      onPasswordChanged = onAccountPasswordChanged,
+      onHidePasswordClicked = onHidePasswordClicked,
+      placeholderTextRes = R.string.login_screen_account_password_input_placeholder
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    CommonButton(
+      modifier = Modifier
+        .fillMaxWidth(0.9f)
+        .height(dimensionResource(id = R.dimen.login_screen_login_button_height))
+        .align(Alignment.CenterHorizontally)
+        .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
+      buttonTextRes = R.string.register_screen_button_text,
+      onButtonClicked = onNextButtonClicked
+    )
+    Spacer(modifier = Modifier.height(15.dp))
+    ClauseStatement(
+      onClauseClicked = onClauseClicked,
+      onPrivacyPolicyClicked = onPrivacyPolicyClicked
+    )
+  }
 }
 
 /**
@@ -178,17 +178,17 @@ private fun RegisterArea(
 @Stable
 @Composable
 private fun RegisterPicture(
-    modifier: Modifier = Modifier
+  modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.register_screen_picture),
-            contentDescription = null
-        )
-    }
+  Column(
+    modifier = modifier,
+    verticalArrangement = Arrangement.Center
+  ) {
+    Image(
+      painter = painterResource(id = R.drawable.register_screen_picture),
+      contentDescription = null
+    )
+  }
 }
 
 /**
@@ -200,44 +200,44 @@ private fun RegisterPicture(
  */
 @Composable
 private fun ClauseStatement(
-    modifier: Modifier = Modifier,
-    onClauseClicked: () -> Unit,
-    onPrivacyPolicyClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  onClauseClicked: () -> Unit,
+  onPrivacyPolicyClicked: () -> Unit
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(0.8f),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+  Row(
+    modifier = modifier.fillMaxWidth(0.8f),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Center
+  ) {
+    Text(text = stringResource(R.string.register_screen_agree))
+    TextButton(
+      onClick = onClauseClicked,
+      contentPadding = PaddingValues(0.dp),
     ) {
-        Text(text = stringResource(R.string.register_screen_agree))
-        TextButton(
-            onClick = onClauseClicked,
-            contentPadding = PaddingValues(0.dp),
-        ) {
-            Text(
-                maxLines = 1,
-                text = stringResource(R.string.register_screen_clause),
-                style = TextStyle(fontSize = FontSize.normalSize)
-            )
-        }
+      Text(
+        maxLines = 1,
+        text = stringResource(R.string.register_screen_clause),
+        style = TextStyle(fontSize = FontSize.normalSize)
+      )
     }
-    Row(
-        modifier = modifier.fillMaxWidth(0.8f),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+  }
+  Row(
+    modifier = modifier.fillMaxWidth(0.8f),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Center
+  ) {
+    Text(text = stringResource(R.string.register_screen_and))
+    TextButton(
+      onClick = onPrivacyPolicyClicked,
+      contentPadding = PaddingValues(0.dp)
     ) {
-        Text(text = stringResource(R.string.register_screen_and))
-        TextButton(
-            onClick = onPrivacyPolicyClicked,
-            contentPadding = PaddingValues(0.dp)
-        ) {
-            Text(
-                maxLines = 1,
-                text = stringResource(R.string.register_screen_privacy_policy),
-                style = TextStyle(fontSize = FontSize.normalSize)
-            )
-        }
+      Text(
+        maxLines = 1,
+        text = stringResource(R.string.register_screen_privacy_policy),
+        style = TextStyle(fontSize = FontSize.normalSize)
+      )
     }
+  }
 }
 
 /**
@@ -248,27 +248,27 @@ private fun ClauseStatement(
  */
 @Composable
 private fun ReturnToLogin(
-    modifier: Modifier = Modifier,
-    onReturnToLoginClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  onReturnToLoginClicked: () -> Unit
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = stringResource(R.string.register_screen_already_join_us))
-        TextButton(onClick = onReturnToLoginClicked) {
-            Text(
-                text = stringResource(R.string.register_screen_login),
-                style = TextStyle(fontSize = FontSize.normalSize)
-            )
-        }
+  Row(
+    modifier = modifier,
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+    Text(text = stringResource(R.string.register_screen_already_join_us))
+    TextButton(onClick = onReturnToLoginClicked) {
+      Text(
+        text = stringResource(R.string.register_screen_login),
+        style = TextStyle(fontSize = FontSize.normalSize)
+      )
     }
+  }
 }
 
 @Preview
 @Composable
 fun RegisterScreenPreview() {
-    QixiaTheme {
-        RegisterScreen()
-    }
+  QixiaTheme {
+    RegisterScreen()
+  }
 }

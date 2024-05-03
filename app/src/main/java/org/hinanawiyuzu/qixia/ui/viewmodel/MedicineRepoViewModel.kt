@@ -19,98 +19,98 @@ import org.hinanawiyuzu.qixia.ui.route.RemindRoute
 import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.*
 
 class MedicineRepoViewModel(
-    medicineRepoRepository: MedicineRepoRepository,
-    private val application: QixiaApplication
+  medicineRepoRepository: MedicineRepoRepository,
+  private val application: QixiaApplication
 ) : ViewModel() {
-    // 用户选择的排序方式
-    private var sortCondition: SortCondition? by mutableStateOf(null)
+  // 用户选择的排序方式
+  private var sortCondition: SortCondition? by mutableStateOf(null)
 
-    // 用户输入的搜索内容
-    var userSearchInput: String? by mutableStateOf(null)
-        private set
+  // 用户输入的搜索内容
+  var userSearchInput: String? by mutableStateOf(null)
+    private set
 
-    /**
-     * 药品的选择情况
-     */
-    lateinit var selectedStates: MutableList<Boolean>
-        private set
+  /**
+   * 药品的选择情况
+   */
+  lateinit var selectedStates: MutableList<Boolean>
+    private set
 
-    /**
-     * 显示的药品信息。由allMedicineRepo经过排序、筛选方式得到
-     */
-    var displayedMedicineRepo: List<MedicineRepo> by mutableStateOf(emptyList())
-        private set
+  /**
+   * 显示的药品信息。由allMedicineRepo经过排序、筛选方式得到
+   */
+  var displayedMedicineRepo: List<MedicineRepo> by mutableStateOf(emptyList())
+    private set
 
-    /**
-     * 查询到的所有药品信息
-     */
-    val allMedicineRepo: StateFlow<AllMedicineRepo> = medicineRepoRepository.getAllStream()
-        .map { allMedicineRepo ->
-            AllMedicineRepo(allMedicineRepo.filter { it.userId == application.currentLoginUserId!! })
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = AllMedicineRepo()
-        )
-
-    init {
-        viewModelScope.launch {
-            allMedicineRepo.collect {
-                selectedStates = MutableList(it.allMedicineRepoList.size) { false }.toMutableStateList()
-                displayedMedicineRepo = it.allMedicineRepoList
-            }
-        }
+  /**
+   * 查询到的所有药品信息
+   */
+  val allMedicineRepo: StateFlow<AllMedicineRepo> = medicineRepoRepository.getAllStream()
+    .map { allMedicineRepo ->
+      AllMedicineRepo(allMedicineRepo.filter { it.userId == application.currentLoginUserId!! })
     }
+    .stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5000),
+      initialValue = AllMedicineRepo()
+    )
 
-    fun onSortConditionChanged(index: Int) {
-        sortCondition = SortCondition.entries[index]
-        displayedMedicineRepo = when (sortCondition) {
-            ByNameDESC -> displayedMedicineRepo.sortedByDescending { it.name }
-            ByNameASC -> displayedMedicineRepo.sortedBy { it.name }
-            ByExpiryDateDESC -> displayedMedicineRepo.sortedByDescending { it.expiryDate }
-            ByExpiryDateASC -> displayedMedicineRepo.sortedBy { it.expiryDate }
-            ByRemainAmountDESC -> displayedMedicineRepo.sortedByDescending { it.remainAmount }
-            ByRemainAmountASC -> displayedMedicineRepo.sortedBy { it.remainAmount }
-            else -> displayedMedicineRepo
-        }
+  init {
+    viewModelScope.launch {
+      allMedicineRepo.collect {
+        selectedStates = MutableList(it.allMedicineRepoList.size) { false }.toMutableStateList()
+        displayedMedicineRepo = it.allMedicineRepoList
+      }
     }
+  }
 
-    fun onUserSearchInputChanged(input: String) {
-        userSearchInput = input
+  fun onSortConditionChanged(index: Int) {
+    sortCondition = SortCondition.entries[index]
+    displayedMedicineRepo = when (sortCondition) {
+      ByNameDESC -> displayedMedicineRepo.sortedByDescending { it.name }
+      ByNameASC -> displayedMedicineRepo.sortedBy { it.name }
+      ByExpiryDateDESC -> displayedMedicineRepo.sortedByDescending { it.expiryDate }
+      ByExpiryDateASC -> displayedMedicineRepo.sortedBy { it.expiryDate }
+      ByRemainAmountDESC -> displayedMedicineRepo.sortedByDescending { it.remainAmount }
+      ByRemainAmountASC -> displayedMedicineRepo.sortedBy { it.remainAmount }
+      else -> displayedMedicineRepo
     }
+  }
 
-    fun startSearch() {
-        displayedMedicineRepo = allMedicineRepo.value.allMedicineRepoList.filter {
-            it.name.contains(userSearchInput ?: "", ignoreCase = true)
-        }
-    }
+  fun onUserSearchInputChanged(input: String) {
+    userSearchInput = input
+  }
 
-    fun toggleSelection(index: Int) {
-        val trueIndex: Int = selectedStates.indexOf(true)
-        // 只能选中一个
-        if (trueIndex != -1) {
-            selectedStates[index] = !selectedStates[index]
-            selectedStates[trueIndex] = false
-        } else {
-            selectedStates[index] = !selectedStates[index]
-        }
+  fun startSearch() {
+    displayedMedicineRepo = allMedicineRepo.value.allMedicineRepoList.filter {
+      it.name.contains(userSearchInput ?: "", ignoreCase = true)
     }
+  }
 
-    fun onAddMedicineClicked(navController: NavHostController) {
-        navController.navigate(RemindRoute.NewMedicineScreen.name)
+  fun toggleSelection(index: Int) {
+    val trueIndex: Int = selectedStates.indexOf(true)
+    // 只能选中一个
+    if (trueIndex != -1) {
+      selectedStates[index] = !selectedStates[index]
+      selectedStates[trueIndex] = false
+    } else {
+      selectedStates[index] = !selectedStates[index]
     }
+  }
 
-    fun onSelectClicked(
-        navController: NavHostController,
-        changeMedicineRepoId: (Int) -> Unit
-    ) {
-        if (selectedStates.indexOf(true) != -1) {
-            val selectedMedicineRepo = allMedicineRepo.value.allMedicineRepoList[selectedStates.indexOf(true)]
-            changeMedicineRepoId(selectedMedicineRepo.id)
-            navController.popBackStack()
-        }
+  fun onAddMedicineClicked(navController: NavHostController) {
+    navController.navigate(RemindRoute.NewMedicineScreen.name)
+  }
+
+  fun onSelectClicked(
+    navController: NavHostController,
+    changeMedicineRepoId: (Int) -> Unit
+  ) {
+    if (selectedStates.indexOf(true) != -1) {
+      val selectedMedicineRepo = allMedicineRepo.value.allMedicineRepoList[selectedStates.indexOf(true)]
+      changeMedicineRepoId(selectedMedicineRepo.id)
+      navController.popBackStack()
     }
+  }
 }
 
 /**
@@ -123,25 +123,25 @@ class MedicineRepoViewModel(
  * @property ByRemainAmountASC 按剩余数量升序
  */
 enum class SortCondition {
-    ByNameDESC,
-    ByNameASC,
-    ByExpiryDateDESC,
-    ByExpiryDateASC,
-    ByRemainAmountDESC,
-    ByRemainAmountASC;
+  ByNameDESC,
+  ByNameASC,
+  ByExpiryDateDESC,
+  ByExpiryDateASC,
+  ByRemainAmountDESC,
+  ByRemainAmountASC;
 
-    fun convertToString(): String {
-        return when (this) {
-            ByNameDESC -> "按名称降序"
-            ByNameASC -> "按名称升序"
-            ByExpiryDateDESC -> "按到期时间降序"
-            ByExpiryDateASC -> "按到期时间升序"
-            ByRemainAmountDESC -> "按剩余数量降序"
-            ByRemainAmountASC -> "按剩余数量升序"
-        }
+  fun convertToString(): String {
+    return when (this) {
+      ByNameDESC -> "按名称降序"
+      ByNameASC -> "按名称升序"
+      ByExpiryDateDESC -> "按到期时间降序"
+      ByExpiryDateASC -> "按到期时间升序"
+      ByRemainAmountDESC -> "按剩余数量降序"
+      ByRemainAmountASC -> "按剩余数量升序"
     }
+  }
 }
 
 data class AllMedicineRepo(
-    val allMedicineRepoList: List<MedicineRepo> = emptyList()
+  val allMedicineRepoList: List<MedicineRepo> = emptyList()
 )

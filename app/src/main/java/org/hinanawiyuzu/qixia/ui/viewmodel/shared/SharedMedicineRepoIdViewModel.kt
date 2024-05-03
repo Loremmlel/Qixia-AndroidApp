@@ -6,9 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class SharedMedicineRepoIdViewModel : ViewModel() {
-    var medicineRepoId: Int? by mutableStateOf(null)
+  var medicineRepoId: Int? by mutableStateOf(null)
 
-    fun changeMedicineRepoId(id: Int) {
-        medicineRepoId = id
-    }
+  fun changeMedicineRepoId(id: Int) {
+    medicineRepoId = id
+  }
 }

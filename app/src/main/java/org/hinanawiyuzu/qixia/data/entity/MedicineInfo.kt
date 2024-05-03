@@ -14,14 +14,14 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "medicine_info")
 data class MedicineInfo(
-    // 为什么要都加上可空类型呢。因为我用Python的sqlite3创建数据库的时候，它给所有字段标记的默认都是可空。
-    @PrimaryKey
-    val id: Int?,
-    @ColumnInfo(name = "registration_certificate_number")
-    val registrationCertificateNumber: String?,
-    @ColumnInfo(name = "product_name")
-    val productName: String?,
-    @ColumnInfo(name = "dosage_form")
-    val dosageForm: String?,
-    val specification: String?
+  // 为什么要都加上可空类型呢。因为我用Python的sqlite3创建数据库的时候，它给所有字段标记的默认都是可空。
+  @PrimaryKey
+  val id: Int?,
+  @ColumnInfo(name = "registration_certificate_number")
+  val registrationCertificateNumber: String?,
+  @ColumnInfo(name = "product_name")
+  val productName: String?,
+  @ColumnInfo(name = "dosage_form")
+  val dosageForm: String?,
+  val specification: String?
 )

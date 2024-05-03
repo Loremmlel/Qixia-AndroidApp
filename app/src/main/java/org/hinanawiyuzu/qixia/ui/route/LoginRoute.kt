@@ -10,10 +10,10 @@ package org.hinanawiyuzu.qixia.ui.route
  * @property ResetPasswordScreen -> [org.hinanawiyuzu.qixia.ui.screen.ResetPasswordScreen]
  */
 enum class LoginRoute {
-    LoginScreen,
-    RegisterScreen,
-    VerificationCodeScreen,
-    FillPersonalInformationScreen,
-    ForgetPasswordScreen,
-    ResetPasswordScreen,
+  LoginScreen,
+  RegisterScreen,
+  VerificationCodeScreen,
+  FillPersonalInformationScreen,
+  ForgetPasswordScreen,
+  ResetPasswordScreen,
 }

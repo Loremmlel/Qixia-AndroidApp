@@ -32,107 +32,107 @@ import org.hinanawiyuzu.qixia.utils.advancedShadow
 
 @Composable
 fun ForgetPasswordScreen(
-    modifier: Modifier = Modifier,
-    viewModel: ForgetPasswordViewModel = viewModel(),
-    navController: NavController = rememberNavController()
+  modifier: Modifier = Modifier,
+  viewModel: ForgetPasswordViewModel = viewModel(),
+  navController: NavController = rememberNavController()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    Column(
-        modifier = modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Picture(
-            modifier = modifier.weight(0.33f)
-        )
-        PhoneInputArea(
-            modifier = modifier.weight(0.2f),
-            accountPhone = uiState.accountPhone,
-            onAccountPhoneChanged = { viewModel.onAccountPhoneChanged(it) }
-        )
-        SubmitButton(
-            modifier = modifier
-                .weight(0.4f)
-                .fillMaxWidth(0.8f),
-            onSubmitButtonClicked = {
-                //TODO: 检查账户是否存在的逻辑
-                navController.navigate(route = LoginRoute.ResetPasswordScreen.name)
-            }
-        )
-    }
+  val uiState by viewModel.uiState.collectAsState()
+  Column(
+    modifier = modifier
+      .fillMaxSize(),
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Picture(
+      modifier = modifier.weight(0.33f)
+    )
+    PhoneInputArea(
+      modifier = modifier.weight(0.2f),
+      accountPhone = uiState.accountPhone,
+      onAccountPhoneChanged = { viewModel.onAccountPhoneChanged(it) }
+    )
+    SubmitButton(
+      modifier = modifier
+        .weight(0.4f)
+        .fillMaxWidth(0.8f),
+      onSubmitButtonClicked = {
+        //TODO: 检查账户是否存在的逻辑
+        navController.navigate(route = LoginRoute.ResetPasswordScreen.name)
+      }
+    )
+  }
 }
 
 @Stable
 @Composable
 private fun Picture(
-    modifier: Modifier = Modifier
+  modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.forget_password_screen_picture),
-            contentDescription = null
-        )
-    }
+  Column(
+    modifier = modifier
+  ) {
+    Image(
+      painter = painterResource(id = R.drawable.forget_password_screen_picture),
+      contentDescription = null
+    )
+  }
 }
 
 @Composable
 private fun PhoneInputArea(
-    modifier: Modifier = Modifier,
-    accountPhone: String,
-    onAccountPhoneChanged: (String) -> Unit
+  modifier: Modifier = Modifier,
+  accountPhone: String,
+  onAccountPhoneChanged: (String) -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 15.dp, end = 15.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        Text(
-            modifier = Modifier.align(Alignment.Start),
-            text = stringResource(R.string.forget_password_screen_isForget),
-            style = TextStyle(
-                fontSize = FontSize.loginScreenLoginSize
-            )
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-        // 账户电话输入
-        CommonInputField(
-            modifier = Modifier.fillMaxWidth(),
-            value = accountPhone,
-            leadingIconRes = R.drawable.login_screen_call,
-            placeholderTextRes = R.string.login_screen_account_name_input_placeholder,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Phone,
-                imeAction = ImeAction.Next
-            ),
-            onValueChanged = onAccountPhoneChanged
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
-    }
+  Column(
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(start = 15.dp, end = 15.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Top
+  ) {
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    Text(
+      modifier = Modifier.align(Alignment.Start),
+      text = stringResource(R.string.forget_password_screen_isForget),
+      style = TextStyle(
+        fontSize = FontSize.loginScreenLoginSize
+      )
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+    // 账户电话输入
+    CommonInputField(
+      modifier = Modifier.fillMaxWidth(),
+      value = accountPhone,
+      leadingIconRes = R.drawable.login_screen_call,
+      placeholderTextRes = R.string.login_screen_account_name_input_placeholder,
+      keyboardOptions = KeyboardOptions.Default.copy(
+        keyboardType = KeyboardType.Phone,
+        imeAction = ImeAction.Next
+      ),
+      onValueChanged = onAccountPhoneChanged
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.login_screen_spacer_size)))
+  }
 }
 
 @Composable
 private fun SubmitButton(
-    modifier: Modifier = Modifier,
-    onSubmitButtonClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  onSubmitButtonClicked: () -> Unit
 ) {
-    CommonButton(
-        modifier = modifier
-            .requiredHeight(dimensionResource(id = R.dimen.login_screen_login_button_height))
-            .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
-        buttonTextRes = R.string.forget_password_screen_submit_button_text,
-        onButtonClicked = onSubmitButtonClicked
-    )
+  CommonButton(
+    modifier = modifier
+      .requiredHeight(dimensionResource(id = R.dimen.login_screen_login_button_height))
+      .advancedShadow(alpha = 0.4f, shadowBlurRadius = 5.dp, offsetY = 5.dp),
+    buttonTextRes = R.string.forget_password_screen_submit_button_text,
+    onButtonClicked = onSubmitButtonClicked
+  )
 }
 
 @Preview
 @Composable
 private fun ForgetPasswordScreenPreview() {
-    QixiaTheme {
-        ForgetPasswordScreen()
-    }
+  QixiaTheme {
+    ForgetPasswordScreen()
+  }
 }

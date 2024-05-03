@@ -16,32 +16,32 @@ import java.time.LocalDate
  * @param attentionMatter 药物注意事项
  */
 @Entity(
-    tableName = "medicine_repo",
-    foreignKeys = [ForeignKey(
-        entity = User::class,
-        parentColumns = ["id"],
-        childColumns = ["userId"],
-        onDelete = ForeignKey.CASCADE
-    )],
-    indices = [
-        Index(value = ["id"]),
-        Index(value = ["userId"])
-    ]
+  tableName = "medicine_repo",
+  foreignKeys = [ForeignKey(
+    entity = User::class,
+    parentColumns = ["id"],
+    childColumns = ["userId"],
+    onDelete = ForeignKey.CASCADE
+  )],
+  indices = [
+    Index(value = ["id"]),
+    Index(value = ["userId"])
+  ]
 )
 data class MedicineRepo(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val name: String,
-    val dosageForm: String? = null,
-    val specification: String? = null,
-    val remainAmount: String,
-    @TypeConverters(UriConverter::class)
-    val imageUri: Uri,
-    @TypeConverters(LocalDateConverter::class)
-    val expiryDate: LocalDate,
-    @TypeConverters(AttentionMatterConverter::class)
-    val attentionMatter: AttentionMatter?,
-    val userId: Int
+  @PrimaryKey(autoGenerate = true)
+  val id: Int = 0,
+  val name: String,
+  val dosageForm: String? = null,
+  val specification: String? = null,
+  val remainAmount: String,
+  @TypeConverters(UriConverter::class)
+  val imageUri: Uri,
+  @TypeConverters(LocalDateConverter::class)
+  val expiryDate: LocalDate,
+  @TypeConverters(AttentionMatterConverter::class)
+  val attentionMatter: AttentionMatter?,
+  val userId: Int
 )
 
 
@@ -49,18 +49,18 @@ data class MedicineRepo(
  * 服药注意事项枚举类
  */
 enum class AttentionMatter {
-    None,
-    EmptyStomach, //空腹
-    KeepInDarkPlace, //避光
-    Desiccation; //干燥
+  None,
+  EmptyStomach, //空腹
+  KeepInDarkPlace, //避光
+  Desiccation; //干燥
 
-    fun convertToString(): String {
-        return when (this) {
-            None -> "无"
-            EmptyStomach -> "空腹"
-            KeepInDarkPlace -> "避光"
-            Desiccation -> "干燥"
-        }
+  fun convertToString(): String {
+    return when (this) {
+      None -> "无"
+      EmptyStomach -> "空腹"
+      KeepInDarkPlace -> "避光"
+      Desiccation -> "干燥"
     }
+  }
 }
 

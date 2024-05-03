@@ -18,54 +18,54 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class RecordViewModel(
-    medicineRemindRepository: MedicineRemindRepository,
-    application: QixiaApplication
+  medicineRemindRepository: MedicineRemindRepository,
+  application: QixiaApplication
 ) : ViewModel() {
-    val currentLoginUserId = application.currentLoginUserId
-    private val allMedicineRemind: StateFlow<AllMedicineRemind> =
-        medicineRemindRepository.getAllStream()
-            .map { allMedicineRemind ->
-                AllMedicineRemind(allMedicineRemind.filter { it.userId == application.currentLoginUserId })
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000L),
-                initialValue = AllMedicineRemind()
-            )
-    var takeMedicineRecord: List<TakeMedicineRecord> by mutableStateOf(emptyList())
+  val currentLoginUserId = application.currentLoginUserId
+  private val allMedicineRemind: StateFlow<AllMedicineRemind> =
+    medicineRemindRepository.getAllStream()
+      .map { allMedicineRemind ->
+        AllMedicineRemind(allMedicineRemind.filter { it.userId == application.currentLoginUserId })
+      }
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000L),
+        initialValue = AllMedicineRemind()
+      )
+  var takeMedicineRecord: List<TakeMedicineRecord> by mutableStateOf(emptyList())
 
-    init {
-        viewModelScope.launch {
-            val currentDate = LocalDate.now()
-            allMedicineRemind.collect {
-                takeMedicineRecord =
-                    (it.medicineRemindList.map { medicineRemind ->
-                        TakeMedicineRecord(
-                            medicineName = medicineRemind.name,
-                            takeStatus = medicineRemind.isTakenInSpecificDate(currentDate)
-                        )
-                    } + it.medicineRemindList.map { medicineRemind ->
-                        TakeMedicineRecord(
-                            medicineName = medicineRemind.name,
-                            takeStatus = medicineRemind.isTakenInSpecificDate(currentDate.minusDays(1))
-                        )
-                    } + it.medicineRemindList.map { medicineRemind ->
-                        TakeMedicineRecord(
-                            medicineName = medicineRemind.name,
-                            takeStatus = medicineRemind.isTakenInSpecificDate(currentDate.minusDays(2))
-                        )
-                    } + it.medicineRemindList.map { medicineRemind ->
-                        TakeMedicineRecord(
-                            medicineName = medicineRemind.name,
-                            takeStatus = medicineRemind.isTakenInSpecificDate(currentDate.minusDays(3))
-                        )
-                    }).filter { takeMedicineRecord -> takeMedicineRecord.takeStatus.first != IsTake.NotNeed }
-            }
-        }
+  init {
+    viewModelScope.launch {
+      val currentDate = LocalDate.now()
+      allMedicineRemind.collect {
+        takeMedicineRecord =
+          (it.medicineRemindList.map { medicineRemind ->
+            TakeMedicineRecord(
+              medicineName = medicineRemind.name,
+              takeStatus = medicineRemind.isTakenInSpecificDate(currentDate)
+            )
+          } + it.medicineRemindList.map { medicineRemind ->
+            TakeMedicineRecord(
+              medicineName = medicineRemind.name,
+              takeStatus = medicineRemind.isTakenInSpecificDate(currentDate.minusDays(1))
+            )
+          } + it.medicineRemindList.map { medicineRemind ->
+            TakeMedicineRecord(
+              medicineName = medicineRemind.name,
+              takeStatus = medicineRemind.isTakenInSpecificDate(currentDate.minusDays(2))
+            )
+          } + it.medicineRemindList.map { medicineRemind ->
+            TakeMedicineRecord(
+              medicineName = medicineRemind.name,
+              takeStatus = medicineRemind.isTakenInSpecificDate(currentDate.minusDays(3))
+            )
+          }).filter { takeMedicineRecord -> takeMedicineRecord.takeStatus.first != IsTake.NotNeed }
+      }
     }
+  }
 }
 
 data class TakeMedicineRecord(
-    val medicineName: String,
-    val takeStatus: Pair<IsTake, LocalDateTime?>
+  val medicineName: String,
+  val takeStatus: Pair<IsTake, LocalDateTime?>
 )

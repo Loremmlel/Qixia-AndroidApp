@@ -20,35 +20,35 @@ import androidx.compose.ui.unit.dp
  * @param offsetY Y轴偏移
  */
 fun Modifier.advancedShadow(
-    color: Color = Color.Black,
-    alpha: Float = 0f,
-    cornersRadius: Dp = 0.dp,
-    shadowBlurRadius: Dp = 0.dp,
-    offsetY: Dp = 0.dp,
-    offsetX: Dp = 0.dp
+  color: Color = Color.Black,
+  alpha: Float = 0f,
+  cornersRadius: Dp = 0.dp,
+  shadowBlurRadius: Dp = 0.dp,
+  offsetY: Dp = 0.dp,
+  offsetX: Dp = 0.dp
 ) = drawBehind {
 
-    val shadowColor = color.copy(alpha = alpha).toArgb()
-    val transparentColor = color.copy(alpha = 0f).toArgb()
+  val shadowColor = color.copy(alpha = alpha).toArgb()
+  val transparentColor = color.copy(alpha = 0f).toArgb()
 
-    drawIntoCanvas {
-        val paint = Paint()
-        val frameworkPaint = paint.asFrameworkPaint()
-        frameworkPaint.color = transparentColor
-        frameworkPaint.setShadowLayer(
-            shadowBlurRadius.toPx(),
-            offsetX.toPx(),
-            offsetY.toPx(),
-            shadowColor
-        )
-        it.drawRoundRect(
-            0f,
-            0f,
-            this.size.width,
-            this.size.height,
-            cornersRadius.toPx(),
-            cornersRadius.toPx(),
-            paint
-        )
-    }
+  drawIntoCanvas {
+    val paint = Paint()
+    val frameworkPaint = paint.asFrameworkPaint()
+    frameworkPaint.color = transparentColor
+    frameworkPaint.setShadowLayer(
+      shadowBlurRadius.toPx(),
+      offsetX.toPx(),
+      offsetY.toPx(),
+      shadowColor
+    )
+    it.drawRoundRect(
+      0f,
+      0f,
+      this.size.width,
+      this.size.height,
+      cornersRadius.toPx(),
+      cornersRadius.toPx(),
+      paint
+    )
+  }
 }

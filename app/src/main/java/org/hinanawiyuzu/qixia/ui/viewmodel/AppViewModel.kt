@@ -7,17 +7,17 @@ import androidx.lifecycle.ViewModel
 import org.hinanawiyuzu.qixia.ui.screen.AppScreenState
 
 class AppViewModel : ViewModel() {
-    var appScreenState by mutableStateOf(AppScreenState.Main)
-        private set
+  var appScreenState by mutableStateOf(AppScreenState.Main)
+    private set
 
-    fun onBottomBarItemClicked(id: Int) {
-        when (id) {
-            0 -> appScreenState = AppScreenState.Main
-            1 -> appScreenState = AppScreenState.Box
-            2 -> appScreenState = AppScreenState.Remind
-            3 -> appScreenState = AppScreenState.Record
-            4 -> appScreenState = AppScreenState.Profile
-        }
-        print("clicked")
+  fun onBottomBarItemClicked(id: Int) {
+    when (id) {
+      0 -> appScreenState = AppScreenState.Main
+      1 -> appScreenState = AppScreenState.Box
+      2 -> appScreenState = AppScreenState.Remind
+      3 -> appScreenState = AppScreenState.Record
+      4 -> appScreenState = AppScreenState.Profile
     }
+    print("clicked")
+  }
 }
