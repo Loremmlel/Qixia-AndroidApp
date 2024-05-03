@@ -1,12 +1,11 @@
 package org.hinanawiyuzu.qixia.data.entity
 
 import androidx.room.*
-import org.hinanawiyuzu.qixia.data.entity.TakeMethod.AfterMeal
-import org.hinanawiyuzu.qixia.data.entity.TakeMethod.AtMeal
-import org.hinanawiyuzu.qixia.data.entity.TakeMethod.BeforeMeal
-import org.hinanawiyuzu.qixia.data.entity.TakeMethod.BeforeSleep
-import org.hinanawiyuzu.qixia.data.entity.TakeMethod.NotMatter
+import org.hinanawiyuzu.qixia.data.entity.IsTake.*
+import org.hinanawiyuzu.qixia.data.entity.TakeMethod.*
+import org.hinanawiyuzu.qixia.utils.numberOfMedicineTakenUntilSpecificDate
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
@@ -21,7 +20,9 @@ import java.time.temporal.ChronoUnit
  * @param method 服药方法（饭前，饭中，饭后，无所谓） -> [TakeMethod]
  * @param isTaken 是否已服用(是一个布尔数组，长度为从开始日期到结束日期的天数差)
  * @param frequency 服药频率 -> [MedicineFrequency]
+ * @param takeTime 用户的实际服药时间
  * @param medicineRepoId 对应的药物仓库id
+ * @param userId 设置该提醒的用户id
  */
 @Entity(
     tableName = "medicine_remind",
@@ -63,6 +64,8 @@ data class MedicineRemind(
     val isTaken: List<Boolean>,
     @TypeConverters(MedicineFrequencyConverter::class)
     val frequency: MedicineFrequency,
+    @TypeConverters(NullableLocalDateTimeListConverter::class)
+    val takeTime: List<LocalDateTime?>,
     val medicineRepoId: Int,
     val userId: Int
 )
@@ -70,7 +73,7 @@ data class MedicineRemind(
 /**
  * 根据服药频率判断是否要显示在某一天中
  */
-fun MedicineRemind.isDisplayedInLocalDate(localDate: LocalDate): Boolean {
+fun MedicineRemind.isDisplayedInSpecificDate(specificDate: LocalDate): Boolean {
     val intervalDays = when (frequency) {
         MedicineFrequency.OnceTwoDays -> 2
         MedicineFrequency.OnceAWeek -> 7
@@ -78,8 +81,27 @@ fun MedicineRemind.isDisplayedInLocalDate(localDate: LocalDate): Boolean {
         MedicineFrequency.OnceAMonth -> 30
         else -> 1
     }
-    val daysDifference = ChronoUnit.DAYS.between(startDate, localDate).toInt()
+    val daysDifference = ChronoUnit.DAYS.between(startDate, specificDate).toInt()
     return daysDifference % intervalDays == 0 && daysDifference >= 0
+}
+
+fun MedicineRemind.isTakenInSpecificDate(specificDate: LocalDate): Pair<IsTake, LocalDateTime?> {
+    if (!this.isDisplayedInSpecificDate(specificDate) || specificDate !in startDate..endDate)
+        return NotNeed to null
+    val index = this.startDate.numberOfMedicineTakenUntilSpecificDate(this.frequency, specificDate) - 1
+    return if (this.isTaken[index]) Taken to this.takeTime[index] else NotTaken to this.remindTime.atDate(specificDate)
+}
+
+/**
+ * 用户是否吃了药
+ * @property Taken 吃了
+ * @property NotTaken 没吃
+ * @property NotNeed 不需要吃
+ */
+enum class IsTake {
+    Taken,
+    NotTaken,
+    NotNeed,
 }
 
 /**

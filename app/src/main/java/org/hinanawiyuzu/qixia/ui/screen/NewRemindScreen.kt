@@ -49,12 +49,6 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
-private enum class LoadState {
-    Loading,
-    Success,
-    Error
-}
-
 
 val selectorHeight: Dp = 45.dp
 

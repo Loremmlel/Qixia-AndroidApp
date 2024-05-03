@@ -117,6 +117,7 @@ class NewRemindViewModel(
                     frequency = frequency!!,
                     isTaken = List(times) { false },
                     medicineRepoId = medicineRepoId!!,
+                    takeTime = List(times) { null },
                     method = method!!,
                     userId = currentLoginUserId
                 )

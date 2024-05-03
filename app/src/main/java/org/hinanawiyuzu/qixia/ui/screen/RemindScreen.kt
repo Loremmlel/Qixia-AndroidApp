@@ -52,7 +52,7 @@ import org.hinanawiyuzu.qixia.components.MyIconButton
 import org.hinanawiyuzu.qixia.data.entity.LocalTimeConverter
 import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
-import org.hinanawiyuzu.qixia.data.entity.isDisplayedInLocalDate
+import org.hinanawiyuzu.qixia.data.entity.isDisplayedInSpecificDate
 import org.hinanawiyuzu.qixia.ui.AppViewModelProvider
 import org.hinanawiyuzu.qixia.ui.route.RemindRoute
 import org.hinanawiyuzu.qixia.ui.theme.*
@@ -390,7 +390,7 @@ private fun TakeMedicineRemind(
     val context = LocalContext.current
     val displayedMedicineReminds = medicineReminds
         .filter {
-            currentSelectedDate in it.startDate..it.endDate && it.isDisplayedInLocalDate(currentSelectedDate)
+            currentSelectedDate in it.startDate..it.endDate && it.isDisplayedInSpecificDate(currentSelectedDate)
         }
         .sortedBy { it.remindTime }
     val displayedImagesUri = displayedMedicineReminds.map { searchImages!!.invoke(it) }

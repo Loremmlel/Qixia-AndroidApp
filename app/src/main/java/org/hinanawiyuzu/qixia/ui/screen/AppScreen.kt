@@ -32,11 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.BlurredBackground
 import org.hinanawiyuzu.qixia.components.MyIconButton
-import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Box
-import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Main
-import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Profile
-import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Record
-import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.Remind
+import org.hinanawiyuzu.qixia.ui.screen.AppScreenState.*
 import org.hinanawiyuzu.qixia.ui.theme.MyColor.bottomAnimatedCircleGradient
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.AppViewModel
@@ -99,7 +95,15 @@ fun AppScreen(
                 )
             }
 
-            Record -> {}
+            Record -> {
+                RecordScreen(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxHeight(if (isBottomBarVisible) 0.9167f else 1f),
+                    changeBottomBarVisibility = { isBottomBarVisible = it }
+                )
+            }
+
             Profile -> {}
         }
         if (isBottomBarVisible) {

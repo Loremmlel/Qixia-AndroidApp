@@ -83,6 +83,13 @@ object AppViewModelProvider {
                 application = application
             )
         }
+        initializer {
+            val application = qixiaApplication()
+            RecordViewModel(
+                medicineRemindRepository = application.container.medicineRemindRepository,
+                application = application
+            )
+        }
     }
 }
 

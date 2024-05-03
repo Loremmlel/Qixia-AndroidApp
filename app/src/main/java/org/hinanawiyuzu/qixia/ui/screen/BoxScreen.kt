@@ -289,9 +289,6 @@ private fun BluetoothLink(
 /**
  * 温度显示
  */
-/**
- * 温度显示
- */
 @Composable
 private fun AnimateTempDisplay(
     modifier: Modifier = Modifier,
@@ -380,6 +377,7 @@ private fun AnimateTempDisplay(
                     color = tickColor,
                     start = startTick,
                     end = endTick,
+                    // 每四个刻度线加粗
                     strokeWidth = if (i % 4 != 0) 2f else 4f
                 )
             }

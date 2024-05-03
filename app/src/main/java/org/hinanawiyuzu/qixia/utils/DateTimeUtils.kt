@@ -81,3 +81,7 @@ fun LocalDateTime.ofChineseIntervalTime(other: LocalDateTime): String {
     result += if (isAfter) "后" else "前"
     return result
 }
+
+fun LocalDateTime.toDisplayChinese(): String {
+    return "${this.monthValue}.${this.dayOfMonth}  ${this.hour}:${String.format("%02d", this.minute)}分"
+}

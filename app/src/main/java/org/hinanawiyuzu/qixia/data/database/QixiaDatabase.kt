@@ -31,7 +31,8 @@ const val dbName = "qixia_database"
     UriConverter::class,
     BooleanListConverter::class,
     LocalDateTimeConverter::class,
-    IntListConverter::class
+    IntListConverter::class,
+    NullableLocalDateTimeListConverter::class,
 )
 abstract class QixiaDatabase : RoomDatabase() {
     abstract fun userInfoDao(): UserDao

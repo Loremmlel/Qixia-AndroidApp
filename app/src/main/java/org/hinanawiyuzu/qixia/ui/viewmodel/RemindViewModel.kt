@@ -18,10 +18,11 @@ import org.hinanawiyuzu.qixia.QixiaApplication
 import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
 import org.hinanawiyuzu.qixia.data.repo.MedicineRemindRepository
 import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
+import org.hinanawiyuzu.qixia.utils.numberOfMedicineTakenUntilSpecificDate
 import org.hinanawiyuzu.qixia.utils.showLongToast
 import org.hinanawiyuzu.qixia.utils.showShortToast
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
+import java.time.LocalDateTime
 
 class RemindViewModel(
     private val medicineRemindRepository: MedicineRemindRepository,
@@ -95,7 +96,17 @@ class RemindViewModel(
                 viewModelScope.launch(Dispatchers.IO) {
                     val newRemind = remind.copy(
                         isTaken = remind.isTaken.mapIndexed { index, b ->
-                            if (index == ChronoUnit.DAYS.between(remind.startDate, currentDate).toInt()) true else b
+                            if (index == remind.startDate.numberOfMedicineTakenUntilSpecificDate(
+                                    remind.frequency, LocalDate.now()
+                                ) - 1
+                            ) true else b
+                        },
+                        takeTime = remind.takeTime.mapIndexed { index, nullableLocalDateTime ->
+                            if (index == remind.startDate.numberOfMedicineTakenUntilSpecificDate(
+                                    remind.frequency, LocalDate.now()
+                                ) - 1
+                            )
+                                LocalDateTime.now() else nullableLocalDateTime
                         }
                     )
                     val newRepo = repo.copy(

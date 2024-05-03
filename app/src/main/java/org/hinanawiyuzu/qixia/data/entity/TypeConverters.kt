@@ -85,6 +85,19 @@ class LocalDateTimeConverter {
     }
 }
 
+class NullableLocalDateTimeListConverter {
+    @TypeConverter
+    fun fromList(list: List<LocalDateTime?>): String {
+        return list.joinToString(",")
+    }
+
+    @TypeConverter
+    fun toList(string: String): List<LocalDateTime?> {
+        return string.split(",").map { if (it == "null") null else LocalDateTime.parse(it) }
+    }
+
+}
+
 class MedicineFrequencyConverter {
     @TypeConverter
     fun fromMedicineFrequency(medicineFrequency: MedicineFrequency): String {

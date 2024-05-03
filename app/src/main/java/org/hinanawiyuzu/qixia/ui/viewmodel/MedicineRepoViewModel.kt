@@ -16,12 +16,7 @@ import org.hinanawiyuzu.qixia.QixiaApplication
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
 import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
 import org.hinanawiyuzu.qixia.ui.route.RemindRoute
-import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByExpiryDateASC
-import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByExpiryDateDESC
-import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByNameASC
-import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByNameDESC
-import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByRemainAmountASC
-import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.ByRemainAmountDESC
+import org.hinanawiyuzu.qixia.ui.viewmodel.SortCondition.*
 
 class MedicineRepoViewModel(
     medicineRepoRepository: MedicineRepoRepository,
