@@ -90,6 +90,13 @@ object AppViewModelProvider {
         application = application
       )
     }
+    initializer {
+      val application = qixiaApplication()
+      ProfileViewModel(
+        userRepository = application.container.userRepository,
+        application = application
+      )
+    }
   }
 }
 

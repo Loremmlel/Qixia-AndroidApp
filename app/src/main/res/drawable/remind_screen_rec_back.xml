@@ -1,21 +1,43 @@
-<vector android:autoMirrored="true" android:height="28dp"
-    android:viewportHeight="28" android:viewportWidth="28"
-    android:width="28dp" xmlns:aapt="http://schemas.android.com/aapt" xmlns:android="http://schemas.android.com/apk/res/android">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="28dp"
+    android:height="28dp"
+    android:autoMirrored="true"
+    android:viewportWidth="28"
+    android:viewportHeight="28">
     <path
-        android:pathData="M8,0.5L20,0.5A7.5,7.5 0,0 1,27.5 8L27.5,20A7.5,7.5 0,0 1,20 27.5L8,27.5A7.5,7.5 0,0 1,0.5 20L0.5,8A7.5,7.5 0,0 1,8 0.5z" android:strokeWidth="1">
+        android:pathData="M8,0.5L20,0.5A7.5,7.5 0,0 1,27.5 8L27.5,20A7.5,7.5 0,0 1,20 27.5L8,27.5A7.5,7.5 0,0 1,0.5 20L0.5,8A7.5,7.5 0,0 1,8 0.5z"
+        android:strokeWidth="1">
         <aapt:attr name="android:fillColor">
-            <gradient android:centerX="14" android:centerY="14"
-                android:gradientRadius="14" android:type="radial">
-                <item android:color="#FFFFFFFF" android:offset="0"/>
-                <item android:color="#FFB4E3CC" android:offset="0.286"/>
-                <item android:color="#FF5BC28F" android:offset="1"/>
+            <gradient
+                android:centerX="14"
+                android:centerY="14"
+                android:gradientRadius="14"
+                android:type="radial">
+                <item
+                    android:color="#FFFFFFFF"
+                    android:offset="0" />
+                <item
+                    android:color="#FFB4E3CC"
+                    android:offset="0.286" />
+                <item
+                    android:color="#FF5BC28F"
+                    android:offset="1" />
             </gradient>
         </aapt:attr>
         <aapt:attr name="android:strokeColor">
-            <gradient android:endX="28" android:endY="28"
-                android:startX="0" android:startY="0" android:type="linear">
-                <item android:color="#FFFFFFFF" android:offset="0"/>
-                <item android:color="#00FFFFFF" android:offset="1"/>
+            <gradient
+                android:endX="28"
+                android:endY="28"
+                android:startX="0"
+                android:startY="0"
+                android:type="linear">
+                <item
+                    android:color="#FFFFFFFF"
+                    android:offset="0" />
+                <item
+                    android:color="#00FFFFFF"
+                    android:offset="1" />
             </gradient>
         </aapt:attr>
     </path>

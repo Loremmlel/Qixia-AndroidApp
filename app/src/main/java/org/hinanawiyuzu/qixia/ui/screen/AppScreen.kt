@@ -104,7 +104,14 @@ fun AppScreen(
         )
       }
 
-      Profile -> {}
+      Profile -> {
+        ProfileScreen(
+          modifier = Modifier
+            .align(Alignment.TopCenter)
+            .fillMaxHeight(if (isBottomBarVisible) 0.9167f else 1f),
+          changeBottomBarVisibility = { isBottomBarVisible = it }
+        )
+      }
     }
     if (isBottomBarVisible) {
       AnimatedBottomAppBar(

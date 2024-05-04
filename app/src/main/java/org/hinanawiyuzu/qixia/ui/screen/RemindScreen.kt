@@ -43,7 +43,6 @@ import androidx.navigation.navArgument
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.FullScreenImageView
 import org.hinanawiyuzu.qixia.components.GrayLine
@@ -128,8 +127,8 @@ fun RemindScreen(
         GrayLine(screenWidthDp = screenWidthDp)
         Calendar(
           modifier = Modifier
-              .fillMaxWidth()
-              .padding(top = 5.dp),
+            .fillMaxWidth()
+            .padding(top = 5.dp),
           currentSelectedDate = viewModel.currentSelectedDate,
           onCalendarClicked = viewModel::onCalendarClicked
         )
@@ -323,22 +322,22 @@ private fun CalendarItem(
   }
   Column(
     modifier = modifier
-        .clickable(
-            interactionSource = MutableInteractionSource(),
-            indication = null
-        ) { onClicked() }
-        .clip(RoundedCornerShape(percent = 40))
-        .aspectRatio(0.77f)
-        .border(
-            width = 2.dp,
-            brush = if (isSelected) MyColor.selectedCalendarCardBoardGradient
-            else MyColor.notSelectedCalendarCardBoardGradient,
-            shape = RoundedCornerShape(percent = 40)
-        )
-        .background(
-            brush = if (isSelected) MyColor.selectedCalendarCardContainerGradient
-            else Brush.linearGradient(colors = listOf(Color.White, Color.White))
-        ),
+      .clickable(
+        interactionSource = MutableInteractionSource(),
+        indication = null
+      ) { onClicked() }
+      .clip(RoundedCornerShape(percent = 40))
+      .aspectRatio(0.77f)
+      .border(
+        width = 2.dp,
+        brush = if (isSelected) MyColor.selectedCalendarCardBoardGradient
+        else MyColor.notSelectedCalendarCardBoardGradient,
+        shape = RoundedCornerShape(percent = 40)
+      )
+      .background(
+        brush = if (isSelected) MyColor.selectedCalendarCardContainerGradient
+        else Brush.linearGradient(colors = listOf(Color.White, Color.White))
+      ),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.SpaceEvenly
   ) {
@@ -408,13 +407,11 @@ private fun TakeMedicineRemind(
 //                }
 //            }
 //        }
-    displayedImages = coroutineScope {
-      displayedImagesUri.map { uri ->
-        async(Dispatchers.IO) {
-          BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
-        }
-      }.awaitAll()
-    }
+    displayedImages = displayedImagesUri.map { uri ->
+      async(Dispatchers.IO) {
+        BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
+      }
+    }.awaitAll()
   }
   Column(
     modifier = modifier,
@@ -515,10 +512,10 @@ private fun RemindCard(
     }
     Column(
       modifier = Modifier
-          .height(remindCardHeightDp.dp)
-          .clip(RoundedCornerShape(percent = 30))
-          .fillMaxWidth()
-          .background(brush = greenCardGradient)
+        .height(remindCardHeightDp.dp)
+        .clip(RoundedCornerShape(percent = 30))
+        .fillMaxWidth()
+        .background(brush = greenCardGradient)
     ) {
       Row(
         modifier = Modifier.fillMaxSize(),
@@ -527,13 +524,13 @@ private fun RemindCard(
         // 药物的图片
         Image(
           modifier = Modifier
-              .clickable(
-                  interactionSource = MutableInteractionSource(),
-                  indication = null,
-              ) { onImageClicked.invoke() }
-              .fillMaxWidth(0.15f)
-              .fillMaxHeight(0.9f)
-              .padding(5.dp),
+            .clickable(
+              interactionSource = MutableInteractionSource(),
+              indication = null,
+            ) { onImageClicked.invoke() }
+            .fillMaxWidth(0.15f)
+            .fillMaxHeight(0.9f)
+            .padding(5.dp),
           bitmap = medicineImg?.asImageBitmap() ?: ImageBitmap(1, 1),
           contentDescription = null,
           contentScale = ContentScale.Crop
@@ -543,8 +540,8 @@ private fun RemindCard(
         ) {
           Column(
             modifier = Modifier
-                .padding(end = 35.dp)
-                .fillMaxHeight(),
+              .padding(end = 35.dp)
+              .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceEvenly
           ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -570,8 +567,8 @@ private fun RemindCard(
             // 药物的服用方式、注意事项
             Card(
               modifier = Modifier
-                  .height(25.dp)
-                  .width(50.dp),
+                .height(25.dp)
+                .width(50.dp),
               colors = CardDefaults.cardColors(
                 containerColor = Color(0x264BFE68)
               ),
@@ -597,18 +594,18 @@ private fun RemindCard(
           if (!checked) {
             Icon(
               modifier = Modifier
-                  .align(Alignment.CenterEnd)
-                  .padding(10.dp)
-                  .fillMaxWidth(0.15f)
-                  .fillMaxHeight(0.7f)
-                  .then(
-                      if (currentSelectedDate == LocalDate.now()) {
-                          Modifier.clickable(
-                              interactionSource = MutableInteractionSource(),
-                              indication = null
-                          ) { onTakeMedicineClicked() }
-                      } else Modifier
-                  ),
+                .align(Alignment.CenterEnd)
+                .padding(10.dp)
+                .fillMaxWidth(0.15f)
+                .fillMaxHeight(0.7f)
+                .then(
+                  if (currentSelectedDate == LocalDate.now()) {
+                    Modifier.clickable(
+                      interactionSource = MutableInteractionSource(),
+                      indication = null
+                    ) { onTakeMedicineClicked() }
+                  } else Modifier
+                ),
               painter = painterResource(id = R.drawable.green_circle),
               contentDescription = "您尚未服用" + medicineRemind.name,
               tint = secondary_color
@@ -616,10 +613,10 @@ private fun RemindCard(
           } else {
             Icon(
               modifier = Modifier
-                  .align(Alignment.CenterEnd)
-                  .padding(end = 10.dp)
-                  .fillMaxWidth(0.15f)
-                  .fillMaxHeight(0.7f),
+                .align(Alignment.CenterEnd)
+                .padding(end = 10.dp)
+                .fillMaxWidth(0.15f)
+                .fillMaxHeight(0.7f),
               painter = painterResource(id = R.drawable.check_circle),
               contentDescription = "您已于" + medicineRemind.remindTime + "服用" + medicineRemind.name,
               tint = secondary_color
@@ -664,8 +661,8 @@ private fun MedicinesLeft(
       if (((Regex("\\d+").find(medicineRepoInfo.remainAmount))?.value ?: "0").toInt() <= 10) {
         MedicineLeftCard(
           modifier = Modifier
-              .padding(bottom = 10.dp)
-              .fillMaxWidth(),
+            .padding(bottom = 10.dp)
+            .fillMaxWidth(),
           medicineRepo = medicineRepoInfo
         )
         isAnyMedicineNotEnough = true
@@ -696,9 +693,9 @@ private fun MedicineLeftCard(
   val leftCardHeightDp = LocalConfiguration.current.screenHeightDp * 0.0396
   Column(
     modifier = modifier
-        .clip(RoundedCornerShape(percent = 40))
-        .background(brush = MyColor.yellowCardGradient)
-        .height(leftCardHeightDp.dp),
+      .clip(RoundedCornerShape(percent = 40))
+      .background(brush = MyColor.yellowCardGradient)
+      .height(leftCardHeightDp.dp),
     verticalArrangement = Arrangement.Center
   ) {
     Row(
@@ -761,8 +758,8 @@ private fun MedicinesExpiry(
       if (medicineRepoInfo.expiryDate < currentSelectedDate) {
         MedicineExpiryCard(
           modifier = Modifier
-              .padding(bottom = 10.dp)
-              .fillMaxWidth(),
+            .padding(bottom = 10.dp)
+            .fillMaxWidth(),
           medicineRepo = medicineRepoInfo
         )
         isAnyMedicineOutOfDate = true
@@ -793,9 +790,9 @@ private fun MedicineExpiryCard(
   val expiryCardHeightDp = LocalConfiguration.current.screenHeightDp * 0.0396
   Column(
     modifier = modifier
-        .clip(RoundedCornerShape(percent = 40))
-        .background(brush = MyColor.redCardGradient)
-        .height(expiryCardHeightDp.dp),
+      .clip(RoundedCornerShape(percent = 40))
+      .background(brush = MyColor.redCardGradient)
+      .height(expiryCardHeightDp.dp),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
