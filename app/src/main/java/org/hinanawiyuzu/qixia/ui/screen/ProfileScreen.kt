@@ -47,6 +47,7 @@ import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.theme.secondary_color
 import org.hinanawiyuzu.qixia.ui.viewmodel.ProfileViewModel
 import org.hinanawiyuzu.qixia.utils.showLongToast
+import org.hinanawiyuzu.qixia.utils.slideComposable
 import org.hinanawiyuzu.qixia.utils.toBitmap
 
 @Composable
@@ -98,7 +99,7 @@ fun ProfileScreen(
             .fillMaxWidth()
             .height(75.dp),
           visible = viewModel.isVIPVisible,
-          onBecomeVIPClicked = { /*TODO*/ },
+          onBecomeVIPClicked = { navController.navigate(ProfileRoute.VIPScreen.name) },
           onCloseClicked = viewModel::closeVIP
         )
         FeatureList(
@@ -130,6 +131,14 @@ fun ProfileScreen(
           viewModel.onLogoutClicked()
         }
       }
+    }
+    slideComposable(
+      route = ProfileRoute.VIPScreen.name
+    ) {
+      changeBottomBarVisibility(false)
+      VIPScreen(
+        navController = navController
+      )
     }
   }
 }
@@ -194,7 +203,7 @@ private fun TopPersonalInformation(
         fontWeight = FontWeight.ExtraBold
       )
       Text(
-        text = phone?.let { "${phone.substring(0..2)}****${phone.substring(phone.length - 4)}" } ?: "",
+        text = phone?.let { "${phone.take(3)}****${phone.takeLast(4)}" } ?: "",
         fontSize = FontSize.tinySize,
         fontWeight = FontWeight.Light,
         color = Color.Gray

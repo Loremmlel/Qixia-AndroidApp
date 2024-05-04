@@ -97,6 +97,13 @@ object AppViewModelProvider {
         application = application
       )
     }
+    initializer {
+      val application = qixiaApplication()
+      VIPViewModel(
+        userRepository = application.container.userRepository,
+        application = application
+      )
+    }
   }
 }
 

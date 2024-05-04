@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 
 object FontSize {
+  val veryTineSize = 10.sp
   val tinySize = 12.sp
   val smallSize = 14.sp
   val normalSize = 16.sp
