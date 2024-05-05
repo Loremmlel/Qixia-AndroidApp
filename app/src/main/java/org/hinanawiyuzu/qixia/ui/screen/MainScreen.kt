@@ -126,7 +126,8 @@ fun MainScreen(
             images = listOf(
               R.drawable.banner_example_1.toBitmap(context),
               R.drawable.banner_example_2.toBitmap(context),
-              R.drawable.banner_example_3.toBitmap(context)
+              R.drawable.banner_example_3.toBitmap(context),
+              R.drawable.banner_example_4.toBitmap(context)
             )
           ) {
             viewModel.onBannerClicked(navController = navController, id = it)

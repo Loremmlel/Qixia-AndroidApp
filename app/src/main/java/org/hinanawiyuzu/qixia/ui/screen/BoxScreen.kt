@@ -1,7 +1,11 @@
 package org.hinanawiyuzu.qixia.ui.screen
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -37,13 +41,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.yxing.ScanCodeActivity
+import com.yxing.ScanCodeConfig
+import com.yxing.def.ScanStyle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.hinanawiyuzu.qixia.R
 import org.hinanawiyuzu.qixia.components.GrayLine
 import org.hinanawiyuzu.qixia.components.MyIconButton
@@ -53,6 +64,8 @@ import org.hinanawiyuzu.qixia.ui.theme.FontSize
 import org.hinanawiyuzu.qixia.ui.theme.MyColor
 import org.hinanawiyuzu.qixia.ui.theme.QixiaTheme
 import org.hinanawiyuzu.qixia.ui.viewmodel.BoxViewModel
+import org.hinanawiyuzu.qixia.ui.viewmodel.shared.SharedTraceabilityViewModel
+import org.hinanawiyuzu.qixia.utils.getActivity
 import org.hinanawiyuzu.qixia.utils.slideComposable
 import org.hinanawiyuzu.qixia.utils.toBitmap
 import java.text.DecimalFormat
@@ -68,11 +81,53 @@ private val fontColor = Color(0xFF053B20)
 fun BoxScreen(
   modifier: Modifier = Modifier,
   changeBottomBarVisibility: (Boolean) -> Unit,
-  viewModel: BoxViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = AppViewModelProvider.factory),
+  viewModel: BoxViewModel = viewModel(factory = AppViewModelProvider.factory),
+  sharedTraceabilityViewModel: SharedTraceabilityViewModel = viewModel(),
   navController: NavHostController = rememberNavController(),
 ) {
   val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
   val currentLoginUser by viewModel.currentUser.collectAsState()
+  val activity = LocalContext.current.getActivity()
+  val scanCodeLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.StartActivityForResult()
+  ) { result ->
+    runBlocking { delay(1000) } // 模拟延迟
+    val data = result.data
+    val extras = data?.extras
+    extras?.let {
+      // 0代表条形码，1代表二维码
+      val codeType = it.getInt(ScanCodeConfig.CODE_TYPE)
+      val code = it.getString(ScanCodeConfig.CODE_KEY)
+      Log.e("qixia", "codeType: $codeType, code: $code")
+      navController.navigate("${BoxRoute.TraceabilityInformationScreen.name}/$code")
+    }
+  }
+  val cameraPermissionLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.RequestPermission()
+  ) { hasPermission ->
+    if (hasPermission) {
+      activity?.let {
+        val scanCodeModel = ScanCodeConfig.create(it).apply {
+          setStyle(ScanStyle.CUSTOMIZE)
+          setPlayAudio(true)
+          setAudioId(com.example.yxing.R.raw.beep)
+          setLimitRect(true)  //是否限制识别区域为设定扫码框大小
+          setScanSize(900, 0, 0)  //设置扫码框位置
+          setShowFrame(true) // 是否显示边框上四个角标
+          setFrameColor(R.color.white)  //设置边框上四个角标颜色
+          setFrameRadius(20)   //设置边框上四个角标圆角  单位 /dp
+          setFrameWith(2)  //设置边框上四个角宽度 单位 /dp
+          setFrameLength(20)  //设置边框上四个角长度
+          setShowShadow(true)  //设置是否显示边框外部阴影
+          setShadeColor(R.color.black_tran30) //设置边框外部阴影颜色
+          setScanBitmapId(com.example.yxing.R.drawable.scan_wechatline)
+        }
+        val intent = Intent(activity, ScanCodeActivity::class.java)
+        intent.putExtra("model", scanCodeModel)
+        scanCodeLauncher.launch(intent)
+      }
+    }
+  }
   // 模拟温度和湿度变化
   LaunchedEffect(Unit) {
     while (true) {
@@ -81,6 +136,7 @@ fun BoxScreen(
       viewModel.currentHumidity += (Random.nextFloat() * 2 - 1f)
     }
   }
+  var isFromBox: Boolean by remember { mutableStateOf(false) }
   NavHost(
     modifier = modifier,
     navController = navController,
@@ -124,8 +180,8 @@ fun BoxScreen(
           }
           AnimateTempDisplay(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .height(300.dp),
+              .fillMaxWidth(0.9f)
+              .height(300.dp),
             currentTemperature = viewModel.currentTemperature,
             currentHumidity = viewModel.currentHumidity
           )
@@ -145,7 +201,11 @@ fun BoxScreen(
                 modifier = Modifier.weight(1f),
                 iconRes = R.drawable.box_screen_add_medicine,
                 text = "新增药品",
-                onClick = {}
+                onClick = {
+                  isFromBox = false
+                  Log.e("qixia", "isFromBox: $isFromBox")
+                  navController.navigate(BoxRoute.NewMedicineScreen.name)
+                }
               )
             }
             Row {
@@ -153,14 +213,17 @@ fun BoxScreen(
                 modifier = Modifier.weight(1f),
                 iconRes = R.drawable.box_screen_scan_medicine,
                 text = "扫一扫药品",
-                onClick = {}
+                onClick = {
+                  isFromBox = true
+                  cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                }
               )
               Spacer(modifier = Modifier.width(10.dp))
               ClickButton(
                 modifier = Modifier.weight(1f),
                 iconRes = R.drawable.box_screen_replenish_medicine,
                 text = "补充药量",
-                onClick = {}
+                onClick = { }
               )
             }
           }
@@ -172,6 +235,33 @@ fun BoxScreen(
     ) {
       changeBottomBarVisibility(false)
       MedicineRepoListScreen(navController = navController)
+    }
+    slideComposable(
+      route = "${BoxRoute.TraceabilityInformationScreen.name}/{code}",
+      arguments = listOf(navArgument("code") { type = NavType.StringType })
+    ) {
+      changeBottomBarVisibility(false)
+      TraceabilityInformationScreen(
+        navController = navController,
+        sharedViewModel = sharedTraceabilityViewModel,
+        isFromBox = isFromBox,
+        backStackEntry = it
+      )
+    }
+    slideComposable(route = BoxRoute.TraceabilityDetailScreen.name) {
+      changeBottomBarVisibility(false)
+      TraceabilityDetailScreen(
+        navController = navController,
+        sharedViewModel = sharedTraceabilityViewModel,
+      )
+    }
+    slideComposable(route = BoxRoute.NewMedicineScreen.name) {
+      changeBottomBarVisibility(false)
+      NewMedicineScreen(
+        navController = navController,
+        sharedViewModel = sharedTraceabilityViewModel,
+        isFromBox = isFromBox,
+      )
     }
   }
 }
@@ -210,10 +300,10 @@ private fun TopBar(
     )
     Box(
       modifier = Modifier
-          .clip(CircleShape)
-          .clickable { onProfilePhotoClicked() }
-          .background(color = Color(0xFFF4F8F2))
-          .size(40.dp),
+        .clip(CircleShape)
+        .clickable { onProfilePhotoClicked() }
+        .background(color = Color(0xFFF4F8F2))
+        .size(40.dp),
       contentAlignment = Alignment.BottomCenter
     ) {
       Image(
@@ -242,10 +332,10 @@ private fun BluetoothLink(
     ) {
       Column(
         modifier = Modifier
-            .width(10.dp)
-            .height(40.dp)
-            .clip(RoundedCornerShape(percent = 30))
-            .background(blockColor)
+          .width(10.dp)
+          .height(40.dp)
+          .clip(RoundedCornerShape(percent = 30))
+          .background(blockColor)
       ) {}
       Text(
         modifier = Modifier.weight(5f),
@@ -256,8 +346,8 @@ private fun BluetoothLink(
     }
     Row(
       modifier = Modifier
-          .padding(horizontal = 20.dp)
-          .fillMaxWidth(),
+        .padding(horizontal = 20.dp)
+        .fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -429,8 +519,8 @@ private fun AnimateTempDisplay(
     )
     TempAndHumidityDisplay(
       modifier = Modifier
-          .align(Alignment.BottomCenter)
-          .fillMaxWidth(0.9f),
+        .align(Alignment.BottomCenter)
+        .fillMaxWidth(0.9f),
       currentTemperature = currentTemperature,
       currentHumidity = currentHumidity
     )
@@ -470,9 +560,9 @@ private fun TempAndHumidityDisplay(
     }
     Spacer(
       modifier = Modifier
-          .width(1.dp)
-          .height(30.dp)
-          .background(Color.LightGray)
+        .width(1.dp)
+        .height(30.dp)
+        .background(Color.LightGray)
     )
     Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
       Image(
@@ -506,11 +596,11 @@ private fun ClickButton(
 ) {
   Row(
     modifier = modifier
-        .clickable { onClick() }
-        .clip(RoundedCornerShape(percent = 15))
-        .fillMaxWidth()
-        .height(CARD_HEIGHT.dp)
-        .background(brush = MyColor.lightGreenCardGradient),
+      .clickable { onClick() }
+      .clip(RoundedCornerShape(percent = 15))
+      .fillMaxWidth()
+      .height(CARD_HEIGHT.dp)
+      .background(brush = MyColor.lightGreenCardGradient),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(10.dp)
   ) {

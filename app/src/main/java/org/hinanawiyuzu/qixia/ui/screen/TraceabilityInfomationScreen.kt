@@ -44,6 +44,7 @@ fun TraceabilityInformationScreen(
   viewModel: TraceabilityInformationViewModel = viewModel(),
   sharedViewModel: SharedTraceabilityViewModel,
   navController: NavHostController = rememberNavController(),
+  isFromBox: Boolean = false,
   backStackEntry: NavBackStackEntry
 ) {
   val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
@@ -91,6 +92,7 @@ fun TraceabilityInformationScreen(
             onAddToMedicineClicked = {
               viewModel.onAddToMedicineClicked(
                 navController = navController,
+                isFromBox = isFromBox,
                 sharedViewModel = sharedViewModel
               )
             }

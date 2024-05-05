@@ -62,5 +62,37 @@ val fakeTraceabilityInformation: List<Traceability> = listOf(
       manufacturerName = "上海信谊延安药业有限公司",
       manufacturerCreditCode = "91310116753162119M"
     )
+  ),
+  Traceability(
+    traceabilityCode = "83796640005455250147",
+    essential = TraceabilityEssential(
+      numberOfPeople = 2,
+      chineseCommonName = "桂林西瓜霜",
+      chineseTradeName = "桂林西瓜霜",
+      standardCode = "8690520800633",
+      dosageForm = "散剂",
+      specification = "每瓶装3.5g",
+      packingSpecification = "2瓶/盒",
+      packageConversionRatio = "2",
+      validity = "36月",
+      registrationCertificateNumber = "国药准字Z45021599",
+      registrationCertificateNumberValidity = "2025-08-26"
+    ),
+    produce = TraceabilityProduce(
+      produceDate = "2023-01-27",
+      validityDate = "2026-01-26",
+      produceBatch = "2301109"
+    ),
+    attribute = TraceabilityAttribute(
+      registerSort = "中药",
+      essentialDrug = "否",
+      prescriptionDrug = "否"
+    ),
+    manufacturer = TraceabilityManufacturer(
+      licenseeName = "桂林三金药业股份有限公司",
+      licenseeCreditCode = "91450300198888809P",
+      manufacturerName = "桂林三金药业股份有限公司",
+      manufacturerCreditCode = "91450300198888809P"
+    )
   )
 )

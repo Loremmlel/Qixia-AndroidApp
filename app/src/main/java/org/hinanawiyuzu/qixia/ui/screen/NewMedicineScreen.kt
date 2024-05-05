@@ -9,9 +9,6 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -77,6 +74,7 @@ fun NewMedicineScreen(
   modifier: Modifier = Modifier,
   viewModel: NewMedicineViewModel = viewModel(factory = AppViewModelProvider.factory),
   sharedViewModel: SharedTraceabilityViewModel,
+  isFromBox: Boolean = false,
   navController: NavHostController = rememberNavController()
 ) {
   val context = LocalContext.current
@@ -128,7 +126,6 @@ fun NewMedicineScreen(
             onUserInputChanged = viewModel::onMedicineNameChanged,
             onInputRegistrationCertificateNumberChanged =
             viewModel::onInputRegistrationCertificateNumberChanged,
-            startSearch = viewModel::startSearch
           )
           Row(
             modifier = Modifier
@@ -178,18 +175,6 @@ fun NewMedicineScreen(
         )
       }
     }
-    AnimatedVisibility(
-      modifier = Modifier
-        .align(Alignment.BottomCenter)
-        .offset(y = (-90).dp),
-      visible = viewModel.showSnackBar,
-      enter = fadeIn(),
-      exit = fadeOut(),
-    ) {
-      Snackbar {
-        Text(text = "未找到该药品，请检查输入是否正确。")
-      }
-    }
     NextButton(
       modifier = Modifier
         .align(Alignment.BottomCenter)
@@ -197,7 +182,7 @@ fun NewMedicineScreen(
         .fillMaxWidth(),
       enabled = viewModel.buttonEnabled,
       buttonHeight = 70.dp,
-      onNextClicked = { viewModel.onNextButtonClicked(navController, context) }
+      onNextClicked = { viewModel.onNextButtonClicked(navController, isFromBox, context) }
     )
   }
 }
@@ -242,7 +227,6 @@ private fun TopBar(
  * @param registrationCertificateNumber 用户输入的注册证号,对应[NewMedicineViewModel.inputRegistrationCertificateNumber]
  * @param onUserInputChanged 用户输入药品名称时的回调,对应[NewMedicineViewModel.onMedicineNameChanged]
  * @param onInputRegistrationCertificateNumberChanged 用户输入注册证号时的回调,对应[NewMedicineViewModel.onInputRegistrationCertificateNumberChanged]
- * @param startSearch 点击搜索按钮时的回调,对应[NewMedicineViewModel.startSearch]
  */
 @Composable
 private fun MedicineSelector(
@@ -252,7 +236,6 @@ private fun MedicineSelector(
   registrationCertificateNumber: String,
   onUserInputChanged: (String) -> Unit,
   onInputRegistrationCertificateNumberChanged: (String) -> Unit,
-  startSearch: () -> Unit
 ) {
   val activity = LocalContext.current.getActivity()
   val containerColor = Color(0xFFF4FFF8)

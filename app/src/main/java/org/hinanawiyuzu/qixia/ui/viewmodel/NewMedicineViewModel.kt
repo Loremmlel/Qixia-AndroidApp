@@ -8,19 +8,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.hinanawiyuzu.qixia.QixiaApplication
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
-import org.hinanawiyuzu.qixia.data.repo.MedicineInfoRepository
 import org.hinanawiyuzu.qixia.data.repo.MedicineRepoRepository
+import org.hinanawiyuzu.qixia.ui.route.BoxRoute
 import org.hinanawiyuzu.qixia.utils.showShortToast
 import org.hinanawiyuzu.qixia.utils.toLocalDate
 import java.time.LocalDate
 
 class NewMedicineViewModel(
-  private val medicineInfoRepository: MedicineInfoRepository,
   private val medicineRepoRepository: MedicineRepoRepository,
   private val application: QixiaApplication
 ) : ViewModel() {
@@ -38,9 +35,6 @@ class NewMedicineViewModel(
 
   // 用户选择的图片Uri
   private var imageUri by mutableStateOf<Uri?>(null)
-
-  // 是否显示提示信息
-  var showSnackBar by mutableStateOf(false)
 
   // 按钮是否可用
   var buttonEnabled by mutableStateOf(false)
@@ -73,25 +67,25 @@ class NewMedicineViewModel(
   }
 
 
-  fun startSearch() {
-    viewModelScope.launch {
-      val result =
-        medicineInfoRepository
-          .getStreamByRegistrationCertificateNumber(inputRegistrationCertificateNumber.uppercase())
-          .firstOrNull()
-      result?.let {
-        medicineName = it.productName!!
-        dosageForm = it.dosageForm
-        specification = it.specification
-      } ?: run {
-        // 如果没查到，就显示提示信息
-        showSnackBar = true
-        delay(2000)
-        showSnackBar = false
-      }
-      checkButtonEnabled()
-    }
-  }
+//  fun startSearch() {
+//    viewModelScope.launch {
+//      val result =
+//        medicineInfoRepository
+//          .getStreamByRegistrationCertificateNumber(inputRegistrationCertificateNumber.uppercase())
+//          .firstOrNull()
+//      result?.let {
+//        medicineName = it.productName!!
+//        dosageForm = it.dosageForm
+//        specification = it.specification
+//      } ?: run {
+//        // 如果没查到，就显示提示信息
+//        showSnackBar = true
+//        delay(2000)
+//        showSnackBar = false
+//      }
+//      checkButtonEnabled()
+//    }
+//  }
 
   fun onExpiryDatePickerConfirmButtonClicked(millis: Long?) {
     expiryDate = millis?.toLocalDate()
@@ -100,6 +94,7 @@ class NewMedicineViewModel(
 
   fun onNextButtonClicked(
     navController: NavController,
+    isFromBox: Boolean,
     context: Context
   ) {
     val medicineRepo = MedicineRepo(
@@ -115,7 +110,10 @@ class NewMedicineViewModel(
     viewModelScope.launch {
       medicineRepoRepository.insert(medicineRepo)
       showShortToast(context, "添加成功")
-      navController.popBackStack()
+      if (isFromBox) {
+        navController.popBackStack(BoxRoute.BoxScreen.name, inclusive = false)
+      } else
+        navController.popBackStack()
     }
   }
 
