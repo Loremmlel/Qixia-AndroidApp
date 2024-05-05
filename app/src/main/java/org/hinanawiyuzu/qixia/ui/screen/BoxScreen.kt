@@ -293,7 +293,7 @@ private fun TopBar(
       )
     }
     Text(
-      text = "主页",
+      text = "药箱",
       style = TextStyle(
         fontSize = FontSize.mediumLargeSize,
       )
