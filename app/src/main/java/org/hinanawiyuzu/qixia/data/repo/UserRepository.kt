@@ -7,7 +7,7 @@ import org.hinanawiyuzu.qixia.data.entity.User
 /**
  * 用户信息仓库
  */
-interface UserRepository {
+sealed interface UserRepository {
   suspend fun insert(user: User): Long
   suspend fun update(user: User)
   suspend fun delete(user: User)

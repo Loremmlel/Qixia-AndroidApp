@@ -105,8 +105,7 @@ class RemindViewModel(
               if (index == remind.startDate.numberOfMedicineTakenUntilSpecificDate(
                   remind.frequency, LocalDate.now()
                 ) - 1
-              )
-                LocalDateTime.now() else nullableLocalDateTime
+              ) LocalDateTime.now() else nullableLocalDateTime
             }
           )
           val newRepo = repo.copy(

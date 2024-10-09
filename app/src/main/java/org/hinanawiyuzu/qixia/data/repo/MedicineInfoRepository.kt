@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.hinanawiyuzu.qixia.data.dao.MedicineInfoDao
 import org.hinanawiyuzu.qixia.data.entity.MedicineInfo
 
-interface MedicineInfoRepository {
+sealed interface MedicineInfoRepository {
   fun getStreamByRegistrationCertificateNumber(registrationCertificateNumber: String): Flow<MedicineInfo>
 }
 

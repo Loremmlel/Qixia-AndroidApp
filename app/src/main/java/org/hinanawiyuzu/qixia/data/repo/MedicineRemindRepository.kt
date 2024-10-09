@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.hinanawiyuzu.qixia.data.dao.MedicineRemindDao
 import org.hinanawiyuzu.qixia.data.entity.MedicineRemind
 
-interface MedicineRemindRepository {
+sealed interface MedicineRemindRepository {
   suspend fun insertAndGetId(medicineRemind: MedicineRemind): Long
   suspend fun update(medicineRemind: MedicineRemind)
   suspend fun delete(medicineRemind: MedicineRemind)

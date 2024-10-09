@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.hinanawiyuzu.qixia.data.dao.MedicineRepoDao
 import org.hinanawiyuzu.qixia.data.entity.MedicineRepo
 
-interface MedicineRepoRepository {
+sealed interface MedicineRepoRepository {
   suspend fun insert(medicineRepo: MedicineRepo)
   suspend fun update(medicineRepo: MedicineRepo)
   suspend fun delete(medicineRepo: MedicineRepo)

@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.hinanawiyuzu.qixia.data.dao.AlarmDateTimeDao
 import org.hinanawiyuzu.qixia.data.entity.AlarmDateTime
 
-interface AlarmDateTimeRepository {
+sealed interface AlarmDateTimeRepository {
   suspend fun insert(alarmDateTime: AlarmDateTime)
   suspend fun delete(alarmDateTime: AlarmDateTime)
 
